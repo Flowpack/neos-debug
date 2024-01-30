@@ -1,22 +1,20 @@
 {
-    "name": "t3n/neos-debug",
-    "description": "Helper package to visualize debug inforamations for neos including fusion content cache",
+    "name": "flowpack/neos-debug",
+    "description": "Neos CMS helper package to visualize debug information for page rendering",
     "license": "MIT",
-    "type": "neos-package",
+    "type": "neos-plugin",
     "require": {
-        "neos/neos": "^7.0 || ^8.0"
+        "neos/neos": "^8.3 || ^9.0",
+        "php": "^8.1"
     },
     "autoload": {
         "psr-4": {
-            "t3n\\Neos\\Debug\\": "Classes/"
+            "Flowpack\\Neos\\Debug\\": "Classes/"
         }
     },
     "extra": {
         "neos": {
-            "package-key": "t3n.Neos.Debug",
-            "loading-order": {
-                "after": [ "neos/neos" ]
-            }
+            "package-key": "Flowpack.Neos.Debug"
         }
     }
 }
