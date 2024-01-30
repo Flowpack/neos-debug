@@ -81,7 +81,7 @@ class NeosDebugApp extends Component<AppProps, AppState> {
 
     writeToConsole(...params: any[]) {
         // eslint-disable-next-line no-console
-        console.debug(...params);
+        console.debug('[Neos.Debug]', ...params);
     }
 
     loadNodes(filter: string): TreeWalker {
@@ -127,11 +127,16 @@ class NeosDebugApp extends Component<AppProps, AppState> {
         this.writeToConsole(this.cacheInfos, 'Parsed cache nodes');
     }
 
-    loadDebugInfos(): void {
+    loadDebugInfos(): boolean {
         const debugNodes = this.loadNodes(DEBUG_PREFIX);
         const dataNode = debugNodes.nextNode();
         this.debugInfos = dataNode ? JSON.parse(dataNode.nodeValue.substring(DEBUG_PREFIX.length)) : null;
+        if (!this.debugInfos) {
+            this.writeToConsole('No debug infos found');
+            return false;
+        }
         this.writeToConsole(this.debugInfos, 'Parsed debug infos');
+        return true;
     }
 
     closeApp = () => {
@@ -150,8 +155,9 @@ class NeosDebugApp extends Component<AppProps, AppState> {
 
     constructor() {
         super();
-        this.loadDebugInfos();
-        this.loadCacheNodes();
+        if (this.loadDebugInfos()) {
+            this.loadCacheNodes();
+        }
     }
 
     render({ active }) {

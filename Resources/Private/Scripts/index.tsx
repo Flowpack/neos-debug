@@ -38,6 +38,6 @@ import NeosDebugApp from './NeosDebugApp';
 
     if (debugCookie && debugCookie[1] === 'true') {
         // Add a single debug web component instance to the document
-        window.addEventListener('load', () => window.__enable_neos_debug());
+        window.addEventListener('load', () => window.__enable_neos_debug(true));
     }
 })();
