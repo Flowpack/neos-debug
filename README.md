@@ -1,29 +1,31 @@
-[![CircleCI](https://circleci.com/gh/t3n/neos-debug.svg?style=svg)](https://circleci.com/gh/t3n/neos-debug) [![Latest Stable Version](https://poser.pugx.org/t3n/neos-debug/v/stable)](https://packagist.org/packages/t3n/neos-debug) [![License](https://poser.pugx.org/t3n/neos-debug/license)](https://packagist.org/packages/t3n/neos-debug)
+# Flowpack.Neos.Debug
 
-# t3n.Neos.Debug
-
-The t3n.Neos.Debug package is a small helper package to add a debug panel to your Neos CMS website. 
+This plugin is a small helper package to add a debug panel to your [Neos CMS](https://www.neoss.io) website. 
 At this point in time you're able to debug your content cache configuration as well as sql queries.
 Additionally, the Server-Timing http header can be enabled that will add request timings to responses. 
 Those then can be viewed in the browser network tab.
 
 _Note: This is still a very early rough version. Contributions are welcome in any Error. Nevertheless, it's already adding value to your debug experience_
 
-![Neos CMS Demo Site with enabled debug console](t3n-neos-debug.jpg 'Neos CMS Demo Site with enabled debug console')
-![Server-Timing header in the browser network tab](server-timing-example.jpg 'Viewing the timings in the browser network tab')
+This plugin is based on the [t3n/neos-debug](https://github.com/t3n/neos-debug) package.
+
+## Screenshots
+
+![Neos CMS Demo Site with enabled debug console](Documentation/debug-bar.jpg 'Neos CMS Demo Site with enabled debug console')
+![Server-Timing header in the browser network tab](Documentation/server-timing.jpg 'Viewing the timings in the browser network tab')
 
 ## Installation & configuration
 
 Install the package via composer
 
 ```
-composer require t3n/neos-debug --dev
+composer require flowpack/neos-debug --dev
 ```
 
 The debug mode is disabled by default. To enable it add this to your Settings.yaml
 
 ```yaml
-t3n:
+Flowpack:
   Neos:
     Debug:
       enabled: true
@@ -45,7 +47,7 @@ To get the debugger running you now need to include some javascript and css to a
 The header is disabled by default. To enable it add this to your Settings.yaml
 
 ```yaml
-t3n:
+Flowpack:
   Neos:
     Debug:
       serverTimingHeader:
@@ -55,7 +57,7 @@ t3n:
 If you only want the header with all timings but not the debug mode, do this:
 
 ```yaml
-t3n:
+Flowpack:
   Neos:
     Debug:                                                  
       enabled: true
@@ -83,7 +85,7 @@ This module will add a new modal including some statistics regarding cache hits 
 In addition to the content cache we're also exposing some debug SQL informations and statistics. It will also detect slow queries. You can configure from when a query should be marked as slow:
 
 ```yaml
-t3n:
+Flowpack:
   Neos:
     Debug:
       sql:
