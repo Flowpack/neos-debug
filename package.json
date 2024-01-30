@@ -35,5 +35,11 @@
     "Last 2 versions",
     "not dead"
   ],
+  "prettier": {
+    "printWidth": 120,
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 4
+  },
   "packageManager": "yarn@4.0.2"
 }
