@@ -1,0 +1,11 @@
+Neos:
+  Flow:
+    http:
+      middlewares:
+        Flowpack.Neos.Debug:MeasureServerTiming:
+          position: 'start 999'
+          middleware: 'Flowpack\Neos\Debug\Http\Middleware\MeasureServerTimingMiddleware'
+
+        Flowpack.Neos.Debug:AddServerTimingHeader:
+          position: 'before dispatch 999'
+          middleware: 'Flowpack\Neos\Debug\Http\Middleware\AddServerTimingMiddleware'

@@ -1,4 +1,4 @@
-t3n:
+Flowpack:
   Neos:
     Debug:
       enabled: false
@@ -9,23 +9,3 @@ t3n:
       sql:
         # Set when a query should be considered as slow query. In ms
         slowQueryAfter: 10
-
-Neos:
-  Neos:
-    fusion:
-      autoInclude:
-        't3n.Neos.Debug': true
-
-  Flow:
-    http:
-      middlewares:
-        t3n.Neos.Debug:MeasureServerTiming:
-          position: 'start 999'
-          middleware: 't3n\Neos\Debug\Http\Middleware\MeasureServerTimingMiddleware'
-        t3n.Neos.Debug:AddServerTimingHeader:
-          position: 'before dispatch 999'
-          middleware: 't3n\Neos\Debug\Http\Middleware\AddServerTimingMiddleware'
-
-    reflection:
-      ignoredTags:
-        'phpcsSuppress': true
