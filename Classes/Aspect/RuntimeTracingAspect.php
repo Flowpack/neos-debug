@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace t3n\Neos\Debug\Aspect;
+namespace Flowpack\Neos\Debug\Aspect;
 
 /**
- * This file is part of the t3n.Neos.Debugger package.
+ * This file is part of the Flowpack.Neos.Debug package.
  *
- * (c) 2019 yeebase media GmbH
+ * (c) Contributors of the Neos Project - www.neos.io
  *
  * This package is Open Source Software. For the full copyright and license
  * information, please view the LICENSE file which was distributed with this
  * source code.
  */
 
+use Flowpack\Neos\Debug\Service\RenderTimer;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
-use t3n\Neos\Debug\Service\RenderTimer;
 
 /**
  * @Flow\Aspect
@@ -24,23 +24,15 @@ use t3n\Neos\Debug\Service\RenderTimer;
  */
 class RuntimeTracingAspect
 {
-    /**
-     * @Flow\Inject
-     *
-     * @var RenderTimer
-     */
-    protected $renderTimer;
+    #[Flow\Inject]
+    protected RenderTimer $renderTimer;
 
-    /**
-     * @Flow\Pointcut("setting(t3n.Neos.Debug.enabled)")
-     */
+    #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled)")]
     public function debuggingActive(): void
     {
     }
 
-    /**
-     * @Flow\Before("method(Neos\Fusion\Core\Cache\RuntimeContentCache->enter()) && t3n\Neos\Debug\Aspect\RuntimeTracingAspect->debuggingActive")
-     */
+    #[Flow\Before("method(Neos\Fusion\Core\Cache\RuntimeContentCache->enter()) && Flowpack\Neos\Debug\Aspect\RuntimeTracingAspect->debuggingActive")]
     public function onEnter(JoinPointInterface $joinPoint): void
     {
         $configuration = $joinPoint->getMethodArgument('configuration');
@@ -48,7 +40,7 @@ class RuntimeTracingAspect
 
         $cacheMode = $configuration['mode'] ?? null;
 
-        if (! $cacheMode) {
+        if (!$cacheMode) {
             return;
         }
 

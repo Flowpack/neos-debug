@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace t3n\Neos\Debug\Service;
+namespace Flowpack\Neos\Debug\Service;
 
 /**
- * This file is part of the t3n.Neos.Debugger package.
+ * This file is part of the Flowpack.Neos.Debug package.
  *
- * (c) 2019 yeebase media GmbH
+ * (c) Contributors of the Neos Project - www.neos.io
  *
  * This package is Open Source Software. For the full copyright and license
  * information, please view the LICENSE file which was distributed with this
@@ -16,25 +16,14 @@ namespace t3n\Neos\Debug\Service;
 
 use Neos\Flow\Annotations as Flow;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope("singleton")]
 class DebugService
 {
-    /**
-     * @var float
-     */
-    protected $startRequestAt;
+    protected float $startRequestAt;
 
-    /**
-     * @var float
-     */
-    protected $stopRequestAt;
+    protected float $stopRequestAt;
 
-    /**
-     * @var mixed[]
-     */
-    protected $metrics = [];
+    protected array $metrics = [];
 
     /**
      * Starts the timer for the request process
@@ -45,7 +34,7 @@ class DebugService
     }
 
     /**
-     * Sets the starttime of the request
+     * Sets the start-time of the request
      */
     public function setStartRequestAt(float $startRequestAt): void
     {
@@ -89,7 +78,7 @@ class DebugService
      */
     public function getRequestTime(): float
     {
-        if (! $this->stopRequestAt) {
+        if (!$this->stopRequestAt) {
             $this->stopRequestTime();
         }
         return round($this->stopRequestAt - $this->startRequestAt, 2);
@@ -97,12 +86,10 @@ class DebugService
 
     /**
      * Returns the list of stored metrics including the request time
-     *
-     * @return mixed[]
      */
     public function getMetrics(): array
     {
-        if (! array_key_exists('processRequest', $this->metrics)) {
+        if (!array_key_exists('processRequest', $this->metrics)) {
             $this->addMetric('processRequest', $this->getRequestTime(), 'Process request');
         }
         return $this->metrics;

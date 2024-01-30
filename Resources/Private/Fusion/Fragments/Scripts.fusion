@@ -1,11 +1,10 @@
-prototype(t3n.Neos.Debug:Fragment.Scripts) < prototype(Neos.Fusion:Component) {
+prototype(Flowpack.Neos.Debug:Fragment.Scripts) < prototype(Neos.Fusion:Component) {
     renderer = afx`
-        <script async @children="attributes.src">
-            <Neos.Fusion:ResourceUri path="resource://t3n.Neos.Debug/Public/Scripts/Plugin.js" />
+        <script async src={StaticResource.uri('Flowpack.Neos.Debug', 'Public/Scripts/Plugin.js')}>
         </script>
     `
 
     @if.notInBackend = ${!documentNode.context.inBackend}
     @if.isHtml = ${request.format == 'html'}
-    @if.isActive = ${Configuration.setting('t3n.Neos.Debug.enabled') && Configuration.setting('t3n.Neos.Debug.htmlOutput.enabled')}
+    @if.isActive = ${Configuration.setting('Flowpack.Neos.Debug.enabled') && Configuration.setting('Flowpack.Neos.Debug.htmlOutput.enabled')}
 }

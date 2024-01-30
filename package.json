@@ -1,5 +1,5 @@
 {
-  "name": "t3n-neos-debug",
+  "name": "flowpack-neos-debug",
   "version": "1.0.0",
   "main": "Resources/Private/Scripts/index.tsx",
   "license": "MIT",

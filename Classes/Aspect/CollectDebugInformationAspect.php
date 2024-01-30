@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace t3n\Neos\Debug\Aspect;
+namespace Flowpack\Neos\Debug\Aspect;
 
 /**
- * This file is part of the t3n.Neos.Debugger package.
+ * This file is part of the Flowpack.Neos.Debug package.
  *
- * (c) 2019 yeebase media GmbH
+ * (c) Contributors of the Neos Project - www.neos.io
  *
  * This package is Open Source Software. For the full copyright and license
  * information, please view the LICENSE file which was distributed with this
@@ -20,76 +20,44 @@ use GuzzleHttp\Psr7\Utils;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
-use t3n\Neos\Debug\Logging\DebugStack;
-use t3n\Neos\Debug\Service\DebugService;
+use Flowpack\Neos\Debug\Logging\DebugStack;
+use Flowpack\Neos\Debug\Service\DebugService;
 
-/**
- * @Flow\Scope("singleton")
- * @Flow\Aspect
- */
+#[Flow\Scope('singleton')]
+#[Flow\Aspect]
 class CollectDebugInformationAspect
 {
-    /**
-     * @Flow\Inject()
-     *
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
+    #[Flow\Inject]
+    protected EntityManagerInterface $entityManager;
 
-    /**
-     * @Flow\Inject
-     *
-     * @var DebugService
-     */
-    protected $debugService;
+    #[Flow\Inject]
+    protected DebugService $debugService;
 
-    /**
-     * @var DebugStack
-     */
-    protected $sqlLoggingStack;
+    protected DebugStack $sqlLoggingStack;
 
-    /**
-     * @var int
-     */
-    protected $contentCacheHits = 0;
+    protected int $contentCacheHits = 0;
 
     /**
      * @var string[]
      */
-    protected $contentCacheMisses = [];
+    protected array $contentCacheMisses = [];
 
-    protected $resourceStreamRequests = [];
+    protected array $resourceStreamRequests = [];
 
-    /**
-     * @Flow\InjectConfiguration(package="t3n.Neos.Debug", path="serverTimingHeader.enabled")
-     *
-     * @var bool
-     */
-    protected $serverTimingHeaderEnabled;
+    #[Flow\InjectConfiguration("Flowpack.Neos.Debug", "serverTimingHeader.enabled")]
+    protected bool $serverTimingHeaderEnabled;
 
-    /**
-     * @Flow\InjectConfiguration(package="t3n.Neos.Debug", path="htmlOutput.enabled")
-     *
-     * @var bool
-     */
-    protected $htmlOutputEnabled;
+    #[Flow\InjectConfiguration("Flowpack.Neos.Debug", "htmlOutput.enabled")]
+    protected bool $htmlOutputEnabled;
 
-    /**
-     * @Flow\Pointcut("setting(t3n.Neos.Debug.enabled)")
-     */
+    #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled)")]
     public function debuggingActive(): void
     {
     }
 
-    /**
-     * @Flow\Around("method(Neos\Neos\View\FusionView->render()) && t3n\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")
-     * @Flow\Around("method(Neos\Fusion\View\FusionView->render()) && t3n\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")
-     *
-     * @param \Neos\Flow\AOP\JoinPointInterface $joinPoint
-     *
-     * @return string|Response
-     */
-    public function addDebugValues(JoinPointInterface $joinPoint)
+    #[Flow\Around("method(Neos\Neos\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
+    #[Flow\Around("method(Neos\Fusion\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
+    public function addDebugValues(JoinPointInterface $joinPoint): string|Response
     {
         $startRenderAt = microtime(true) * 1000;
         $response = $joinPoint->getAdviceChain()->proceed($joinPoint);
@@ -108,7 +76,7 @@ class CollectDebugInformationAspect
             }
         }
 
-        if (! $this->htmlOutputEnabled) {
+        if (!$this->htmlOutputEnabled) {
             return $response;
         }
 
@@ -116,8 +84,7 @@ class CollectDebugInformationAspect
             $output = $response->getBody()->getContents();
             $response->getBody()->rewind();
 
-            if ($response->getHeader('Content-Type') !== 'text/html'
-                && strpos($output, '<!DOCTYPE html>') === false) {
+            if ($response->getHeader('Content-Type') !== 'text/html' && !str_contains($output, '<!DOCTYPE html>')) {
                 return $response;
             }
         } else {
@@ -139,7 +106,8 @@ class CollectDebugInformationAspect
             ],
             'cCacheHits' => $this->contentCacheHits,
             'cCacheMisses' => $this->contentCacheMisses,
-            'cCacheUncached' => 0, // Init as 0 as the actual number has to be resolved from the individual cache entries
+            'cCacheUncached' => 0,
+            // Init as 0 as the actual number has to be resolved from the individual cache entries
             'resourceStreamRequests' => $this->resourceStreamRequests,
         ];
 
@@ -158,10 +126,8 @@ class CollectDebugInformationAspect
         return $output;
     }
 
-    /**
-     * @Flow\Before("method(Neos\Flow\Mvc\Routing\Router->route()) && t3n\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")
-     */
-    public function startSqlLogging(\Neos\Flow\AOP\JoinPointInterface $joinPoint): void
+    #[Flow\Before("method(Neos\Flow\Mvc\Routing\Router->route()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
+    public function startSqlLogging(JoinPointInterface $joinPoint): void
     {
         $this->sqlLoggingStack = new DebugStack();
         $this->entityManager->getConfiguration()->setSQLLogger($this->sqlLoggingStack);
@@ -170,15 +136,14 @@ class CollectDebugInformationAspect
     /**
      * Create an entry for each resource stream request.
      * Those can slow down rendering significantly, so we want to know about them.
-     *
-     * @Flow\Before("method(Neos\Flow\ResourceManagement\ResourceManager->getStreamByResource()) && t3n\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")
      */
-    public function addResourceStreamRequest(\Neos\Flow\AOP\JoinPointInterface $joinPoint): void
+    #[Flow\Before("method(Neos\Flow\ResourceManagement\ResourceManager->getStreamByResource()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
+    public function addResourceStreamRequest(JoinPointInterface $joinPoint): void
     {
         /** @var PersistentResource $resource */
         $resource = $joinPoint->getMethodArgument('resource');
         if ($resource) {
-            $this->resourceStreamRequests[]= [
+            $this->resourceStreamRequests[] = [
                 'sha1' => $resource->getSha1(),
                 'filename' => $resource->getFilename(),
                 'collectionName' => $resource->getCollectionName(),
@@ -186,33 +151,27 @@ class CollectDebugInformationAspect
         }
     }
 
-    /**
-     * @Flow\Around("method(Neos\Fusion\Core\Cache\ContentCache->getCachedSegment()) && t3n\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")
-     *
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingAnyTypeHint
-     */
-    public function addCacheMiss(\Neos\Flow\AOP\JoinPointInterface $joinPoint)
+    #[Flow\Around("method(Neos\Fusion\Core\Cache\ContentCache->getCachedSegment()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
+    public function addCacheMiss(JoinPointInterface $joinPoint)
     {
         $fusionPath = $joinPoint->getMethodArgument('fusionPath');
 
         $result = $joinPoint->getAdviceChain()->proceed($joinPoint);
         if ($result === false) {
-            $this->contentCacheMisses[]= $fusionPath;
+            $this->contentCacheMisses[] = $fusionPath;
         }
         return $result;
     }
 
-    /**
-     * @Flow\AfterReturning("method(Neos\Fusion\Core\Cache\ContentCache->replaceCachePlaceholders()) && t3n\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")
-     */
-    public function addCacheHit(\Neos\Flow\AOP\JoinPointInterface $joinPoint): void
+    #[Flow\AfterReturning("method(Neos\Fusion\Core\Cache\ContentCache->replaceCachePlaceholders()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
+    public function addCacheHit(JoinPointInterface $joinPoint): void
     {
         $result = $joinPoint->getResult();
         $this->contentCacheHits += $result;
     }
 
     /**
-     * Queries look like ['sql' => $sql, 'table' => $tableName, 'params' => $params, 'types' => $types, 'executionMS' => 0]
+     * @param array{sql: string, table: string, params: array, types: string, executionMS: int} $queries
      */
     protected function groupQueries(array $queries): array
     {

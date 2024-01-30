@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace t3n\Neos\Debug\Logging;
+namespace Flowpack\Neos\Debug\Logging;
 
 /**
- * This file is part of the t3n.Neos.Debugger package.
+ * This file is part of the Flowpack.Neos.Debug package.
  *
- * (c) 2019 yeebase media GmbH
+ * (c) Contributors of the Neos Project - www.neos.io
  *
  * This package is Open Source Software. For the full copyright and license
  * information, please view the LICENSE file which was distributed with this
@@ -19,52 +19,31 @@ use Neos\Flow\Annotations as Flow;
 
 class DebugStack implements SQLLogger
 {
-    /**
-     * @var mixed[]
-     */
-    public $queries = [];
+    public array $queries = [];
 
-    /**
-     * @var mixed[]
-     */
-    public $tables = [];
+    public array $tables = [];
 
-    /**
-     * @var int
-     */
-    public $queryCount = 0;
+    public int $queryCount = 0;
 
-    /**
-     * @var float
-     */
-    public $executionTime = 0.0;
+    public float $executionTime = 0.0;
 
-    /**
-     * @var float
-     */
-    protected $startTime = 0;
+    protected float $startTime = 0;
 
-    /**
-     * @var mixed[]
-     */
-    public $slowQueries = [];
+    public array $slowQueries = [];
 
-    /**
-     * @Flow\InjectConfiguration(path="sql.slowQueryAfter")
-     *
-     * @var double
-     */
-    protected $slowQueryAfter;
+    #[Flow\InjectConfiguration("sql.slowQueryAfter")]
+    protected float $slowQueryAfter;
 
-    /**
-     * @param mixed $sql
-     * @param mixed[]|null $params
-     * @param mixed[]|null $types
-     */
     public function startQuery($sql, ?array $params = null, ?array $types = null): void
     {
         $tableName = $this->parseTableName($sql);
-        $this->queries[++$this->queryCount] = ['sql' => $sql, 'table' => $tableName, 'params' => $params, 'types' => $types, 'executionMS' => 0];
+        $this->queries[++$this->queryCount] = [
+            'sql' => $sql,
+            'table' => $tableName,
+            'params' => $params,
+            'types' => $types,
+            'executionMS' => 0
+        ];
         $this->startTime = microtime(true);
     }
 
@@ -79,7 +58,7 @@ class DebugStack implements SQLLogger
         }
 
         $table = $this->queries[$this->queryCount]['table'];
-        if (! array_key_exists($table, $this->tables)) {
+        if (!array_key_exists($table, $this->tables)) {
             $this->tables[$table] = [
                 'queryCount' => 1,
                 'executionTime' => $executionTime,
@@ -95,12 +74,6 @@ class DebugStack implements SQLLogger
         $sql = strtolower($sql);
         $start = strpos($sql, 'from ') + 5;
         $end = strpos($sql, ' ', $start);
-        $tableName = substr($sql, $start, $end - $start);
-
-        if ($tableName === false) {
-            return '';
-        }
-
-        return $tableName;
+        return substr($sql, $start, $end - $start);
     }
 }
