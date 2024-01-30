@@ -44,11 +44,11 @@ class CollectDebugInformationAspect
 
     protected array $resourceStreamRequests = [];
 
-    #[Flow\InjectConfiguration("Flowpack.Neos.Debug", "serverTimingHeader.enabled")]
-    protected bool $serverTimingHeaderEnabled;
+    #[Flow\InjectConfiguration('serverTimingHeader.enabled', 'Flowpack.Neos.Debug')]
+    protected ?bool $serverTimingHeaderEnabled;
 
-    #[Flow\InjectConfiguration("Flowpack.Neos.Debug", "htmlOutput.enabled")]
-    protected bool $htmlOutputEnabled;
+    #[Flow\InjectConfiguration('htmlOutput.enabled', 'Flowpack.Neos.Debug')]
+    protected ?bool $htmlOutputEnabled;
 
     #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled)")]
     public function debuggingActive(): void
@@ -56,8 +56,18 @@ class CollectDebugInformationAspect
     }
 
     #[Flow\Around("method(Neos\Neos\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
+    public function addDebugValuesToNeosFusionView(JoinPointInterface $joinPoint): string|Response
+    {
+        return $this->addDebugValues($joinPoint);
+    }
+
     #[Flow\Around("method(Neos\Fusion\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
-    public function addDebugValues(JoinPointInterface $joinPoint): string|Response
+    public function addDebugValuesToDefaultFusionView(JoinPointInterface $joinPoint): string|Response
+    {
+        return $this->addDebugValues($joinPoint);
+    }
+
+    protected function addDebugValues(JoinPointInterface $joinPoint): string|Response
     {
         $startRenderAt = microtime(true) * 1000;
         $response = $joinPoint->getAdviceChain()->proceed($joinPoint);
@@ -69,7 +79,7 @@ class CollectDebugInformationAspect
         if ($this->serverTimingHeaderEnabled) {
             $this->debugService->addMetric('fusionRenderTime', $renderTime, 'Fusion rendering');
             $this->debugService->addMetric('sqlExecutionTime', $sqlExecutionTime, 'Combined SQL execution');
-            if ($this->contentCacheMisses === 0) {
+            if (!$this->contentCacheMisses) {
                 $this->debugService->addMetric('contentCacheHit', null, 'Content cache hit');
             } else {
                 $this->debugService->addMetric('contentCacheMiss', null, 'Content cache miss');
@@ -81,8 +91,8 @@ class CollectDebugInformationAspect
         }
 
         if ($response instanceof Response) {
-            $output = $response->getBody()->getContents();
-            $response->getBody()->rewind();
+            $output = $response->getBody()?->getContents();
+            $response->getBody()?->rewind();
 
             if ($response->getHeader('Content-Type') !== 'text/html' && !str_contains($output, '<!DOCTYPE html>')) {
                 return $response;
@@ -93,6 +103,7 @@ class CollectDebugInformationAspect
 
         $groupedQueries = $this->groupQueries($this->sqlLoggingStack->queries);
 
+        // TODO: Introduce DTOs for the data
         $data = [
             'startRenderAt' => $startRenderAt,
             'endRenderAt' => $endRenderAt,

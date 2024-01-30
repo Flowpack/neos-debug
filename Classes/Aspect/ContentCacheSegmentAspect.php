@@ -70,6 +70,7 @@ class ContentCacheSegmentAspect
 
     /**
      * @return mixed the result of uncached segments might not be of type string, so we cannot define the return type
+     * @throws PropertyNotAccessibleException
      */
     #[Flow\Around("method(Neos\Fusion\Core\Cache\RuntimeContentCache->evaluateUncached()) && Flowpack\Neos\Debug\Aspect\ContentCacheSegmentAspect->debuggingActive")]
     public function wrapEvaluateUncached(JoinPointInterface $joinPoint): mixed

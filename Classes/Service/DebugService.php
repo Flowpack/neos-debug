@@ -19,9 +19,9 @@ use Neos\Flow\Annotations as Flow;
 #[Flow\Scope("singleton")]
 class DebugService
 {
-    protected float $startRequestAt;
+    protected float $startRequestAt = 0;
 
-    protected float $stopRequestAt;
+    protected float $stopRequestAt = 0;
 
     protected array $metrics = [];
 
