@@ -1,5 +1,7 @@
 # Flowpack.Neos.Debug
 
+⚠️ This plugin rewrite is currently work-in-progress. Only use if you know what you are doing.
+
 This plugin is a small helper package to add a debug panel to your [Neos CMS](https://www.neoss.io) website. 
 At this point in time you're able to debug your content cache configuration as well as sql queries.
 Additionally, the Server-Timing http header can be enabled that will add request timings to responses. 
