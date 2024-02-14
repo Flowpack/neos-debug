@@ -11,12 +11,9 @@ const styles = css`
     bottom: 5.5rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     color: var(--colors-ContrastBrightest);
-    display: flex;
-    flex-direction: column;
     font-size: 12px;
     left: 1rem;
     overflow: auto;
-    padding: 1rem;
     position: fixed;
     right: 1rem;
     top: 1rem;
@@ -25,26 +22,51 @@ const styles = css`
     z-index: 10002;
 
     h1 {
-        margin: 0 0 1rem;
+        margin: 0;
+        font-size: 1.4em;
+        position: sticky;
+        top: 0;
+        padding: 0.5rem;
+        text-align: center;
+        width: 100%;
+        z-index: 1;
+        background-color: var(--colors-PrimaryViolet);
+        color: var(--colors-ContrastBrightest);
+    }
+
+    h2 {
+        margin: 0;
+        font-size: 1.2em;
     }
 `;
 
 const closeButtonStyle = css`
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 0.5rem;
+    top: 0.5rem;
     padding: 1rem;
+    background-color: transparent !important;
     color: white;
+    z-index: 1;
+`;
+
+const contentWrapStyle = css`
+    padding: 1rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 `;
 
 const overlayState = signal<Overlays | null>(null);
 
 type OverlayProps = {
+    title?: string;
     children: ComponentChildren;
     onClose?: () => void;
 };
 
-const Overlay: FunctionComponent<OverlayProps> = ({ children, onClose }) => {
+const Overlay: FunctionComponent<OverlayProps> = ({ title = null, children, onClose }) => {
     const closeOverlay = useCallback(() => {
         overlayState.value = null;
         onClose && onClose();
@@ -67,10 +89,11 @@ const Overlay: FunctionComponent<OverlayProps> = ({ children, onClose }) => {
 
     return (
         <div className={styles}>
-            {children}
+            {title && <h1>{title}</h1>}
             <button type="button" className={closeButtonStyle} onClick={closeOverlay}>
                 <Icon icon={iconXMark} />
             </button>
+            <div className={contentWrapStyle}>{children}</div>
         </div>
     );
 };

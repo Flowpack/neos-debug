@@ -6,6 +6,9 @@ import iconBoltLightning from './icons/bolt-lightning-solid.svg';
 import iconXMark from './icons/circle-xmark-regular.svg';
 import iconNeos from './icons/neos.svg';
 import iconWarning from './icons/triangle-exclamation-solid.svg';
+import iconToggleOff from './icons/toggle-off-solid.svg';
+import iconToggleOn from './icons/toggle-on-solid.svg';
+import iconInfo from './icons/circle-info-solid.svg';
 
 type ICON_SIZE = 'S' | 'M' | 'L' | 'XL';
 
@@ -25,4 +28,15 @@ const Icon: FunctionComponent<{ icon: string; size?: ICON_SIZE }> = ({ icon, siz
     );
 };
 
-export { iconMagnifyingGlass, iconDatabase, iconBoltLightning, iconXMark, iconNeos, iconWarning, Icon };
+export {
+    iconMagnifyingGlass,
+    iconDatabase,
+    iconBoltLightning,
+    iconXMark,
+    iconNeos,
+    iconWarning,
+    iconToggleOn,
+    iconToggleOff,
+    iconInfo,
+    Icon,
+};

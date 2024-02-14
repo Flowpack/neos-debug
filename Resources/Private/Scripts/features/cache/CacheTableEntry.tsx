@@ -2,27 +2,25 @@ import { FunctionComponent, h } from 'preact';
 
 import { css } from '../../styles/css';
 import { useState } from 'preact/hooks';
+import { formatValue, ucFirst } from '../../helper/formatValues';
+import { Icon, iconInfo, iconToggleOff, iconToggleOn } from '../../presentationals/Icon';
 
 const rowStyle = css`
     --color-positive: var(--colors-Success);
     --color-negative: var(--colors-Warn);
     --color-neutral: var(--colors-ContrastBright);
-
-    td {
-        padding: 0.5rem;
-    }
 `;
 
 const highlightPositive = css`
-    background-color: var(--color-positive);
+    border-left: 5px solid var(--color-positive) !important;
 `;
 
 const highlightNeutral = css`
-    background-color: var(--color-neutral);
+    background-color: var(--color-neutral) !important;
 `;
 
 const highlightNegative = css`
-    background-color: var(--color-negative);
+    background-color: var(--color-negative) !important;
 `;
 
 const fusionPathStyle = css`
@@ -56,27 +54,36 @@ const actionsStyle = css`
     gap: 0.5rem;
 `;
 
+const valueStyle = css`
+    display: grid;
+
+    pre {
+        overflow: auto;
+        margin: 0;
+    }
+    .string {
+        color: var(--colors-Success);
+        white-space: normal;
+    }
+    .number {
+        color: var(--colors-Warn);
+    }
+    .boolean {
+        color: var(--colors-PrimaryBlue);
+    }
+    .null {
+        color: var(--colors-ContrastBright);
+    }
+    .key {
+        color: var(--colors-Error);
+    }
+`;
+
 type CacheTableEntryProps = {
     cacheInfo: CacheInfo;
 };
 
 const IGNORED_DETAIL_KEYS = ['mode', 'hit', 'fusionPath'];
-
-function ucFirst(value: string): string {
-    return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-function formatDetailValue(value: any): string {
-    if (typeof value === 'boolean') {
-        return value ? 'Yes' : 'No';
-    }
-
-    if (typeof value === 'object') {
-        return JSON.stringify(value);
-    }
-
-    return value;
-}
 
 const CacheTableEntry: FunctionComponent<CacheTableEntryProps> = ({ cacheInfo }) => {
     const [showPrototypes, setShowPrototypes] = useState(false);
@@ -111,8 +118,16 @@ const CacheTableEntry: FunctionComponent<CacheTableEntryProps> = ({ cacheInfo })
                 </td>
                 <td>
                     <div className={actionsStyle}>
-                        <button onClick={() => setShowPrototypes((prev) => !prev)}>Toggle prototype</button>
-                        <button onClick={() => setShowDetails((prev) => !prev)}>Details</button>
+                        <button
+                            type="button"
+                            onClick={() => setShowPrototypes((prev) => !prev)}
+                            title="Toggle prototypes"
+                        >
+                            <Icon icon={showPrototypes ? iconToggleOn : iconToggleOff} />
+                        </button>
+                        <button type="button" onClick={() => setShowDetails((prev) => !prev)} title="Show details">
+                            <Icon icon={iconInfo} />
+                        </button>
                     </div>
                 </td>
             </tr>
@@ -120,9 +135,13 @@ const CacheTableEntry: FunctionComponent<CacheTableEntryProps> = ({ cacheInfo })
                 Object.keys(cacheInfo)
                     .filter((key) => !IGNORED_DETAIL_KEYS.includes(key))
                     .map((key) => (
-                        <tr key={key}>
-                            <td>{ucFirst(key)}</td>
-                            <td colSpan={3}>{formatDetailValue(cacheInfo[key])}</td>
+                        <tr key={key} className={rowStyle}>
+                            <td colSpan={2}>{ucFirst(key)}</td>
+                            <td colSpan={2}>
+                                <div className={valueStyle}>
+                                    <pre dangerouslySetInnerHTML={{ __html: formatValue(cacheInfo[key]) }} />
+                                </div>
+                            </td>
                         </tr>
                     ))}
         </>
