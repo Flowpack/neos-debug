@@ -15,6 +15,7 @@ namespace Flowpack\Neos\Debug\Service;
  */
 
 use Doctrine\ORM\EntityManagerInterface;
+use Flowpack\Neos\Debug\Domain\Model\Dto\RenderMetrics;
 use Neos\Flow\Annotations as Flow;
 use Flowpack\Neos\Debug\Logging\DebugStack;
 
@@ -24,6 +25,9 @@ class RenderTimer
     #[Flow\Inject]
     protected EntityManagerInterface $entityManager;
 
+    /**
+     * @var RenderMetrics[]
+     */
     protected array $renderMetrics = [];
 
     /**
@@ -34,11 +38,7 @@ class RenderTimer
         $sqlLoggingStack = $this->entityManager->getConfiguration()->getSQLLogger();
         $queryCount = $sqlLoggingStack instanceof DebugStack ? $sqlLoggingStack->queryCount : 0;
 
-        // TODO: Introduce DTO
-        $this->renderMetrics[$fusionPath] = [
-            'startRenderAt' => $this->ts(),
-            'sqlQueryCount' => $queryCount,
-        ];
+        $this->renderMetrics[$fusionPath] = new RenderMetrics($this->ts(), $queryCount);
     }
 
     /**
@@ -52,7 +52,7 @@ class RenderTimer
     /**
      * Stops the timer and returns the computed values
      */
-    public function stop(string $fusionPath): ?array
+    public function stop(string $fusionPath): ?RenderMetrics
     {
         if (!array_key_exists($fusionPath, $this->renderMetrics)) {
             return null;
@@ -62,10 +62,6 @@ class RenderTimer
         $sqlLoggingStack = $this->entityManager->getConfiguration()->getSQLLogger();
         $queryCount = $sqlLoggingStack instanceof DebugStack ? $sqlLoggingStack->queryCount : 0;
 
-        // TODO: Introduce DTO
-        return [
-            'renderTime' => round($this->ts() - $metrics['startRenderAt'], 2) . ' ms',
-            'sqlQueryCount' => $queryCount - $metrics['sqlQueryCount'],
-        ];
+        return $metrics->stop($this->ts(), $queryCount);
     }
 }

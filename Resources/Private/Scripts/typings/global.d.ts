@@ -56,10 +56,29 @@ type DebugInfos = {
         };
     };
     resourceStreamRequests: NeosResource[];
+    thumbnails: Record<string, number>;
     cCacheHits: number;
     // TODO: Create type for cache misses
     cCacheMisses: string[];
     cCacheUncached: number;
+    // TODO: Define type for collected data
+    additionalMetrics: {
+        messages: {
+            timestamp: number;
+            message: string;
+            title: string;
+        }[];
+        cacheAccess: {
+            [key: string]: {
+                cacheIdentifier: string;
+                cacheType: string;
+                hits: number;
+                misses: number;
+                updates: number;
+            };
+        };
+        [key: string]: object;
+    };
 };
 
 type NeosResource = {
@@ -68,4 +87,4 @@ type NeosResource = {
     collectionName: string;
 };
 
-type Overlays = 'cache' | 'query' | 'inspection' | 'warnings';
+type Overlays = 'cache' | 'query' | 'inspection' | 'additionalMetrics';

@@ -22,7 +22,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * Cache control header component
+ * Server-Timing header component
  */
 class AddServerTimingMiddleware implements MiddlewareInterface
 {

@@ -92,8 +92,8 @@ const StatusBar: FunctionComponent = () => {
                 <Icon icon={iconBoltLightning} /> Cache (hits: {cCacheHits}, misses: {cCacheMisses.length}, uncached{' '}
                 {cCacheUncached})
             </button>
-            <button onClick={() => toggleOverlay('warnings')}>
-                <Icon icon={iconWarning} /> Warnings ({Object.keys(resourceStreamRequests).length})
+            <button onClick={() => toggleOverlay('additionalMetrics')}>
+                <Icon icon={iconWarning} /> Additional metrics
             </button>
             <button onClick={closeApp}>
                 <Icon icon={iconXMark} />

@@ -4,10 +4,10 @@ import StatusBar from './features/StatusBar';
 import QueryOverlay from './features/sql/QueryOverlay';
 import CacheOverlay from './features/cache/CacheOverlay';
 import InspectionOverlay from './features/inspection/InspectionOverlay';
+import AdditionalMetricsOverlay from './features/additionalMetrics/AdditionalMetricsOverlay';
 import { DebugProvider } from './context/DebugContext';
 import { css, styleContainer } from './styles/css';
 import prettyDate from './helper/prettyDate';
-import WarningsOverlay from './features/warnings/WarningsOverlay';
 
 const CACHE_PREFIX = '__NEOS_CONTENT_CACHE_DEBUG__';
 const DEBUG_PREFIX = '__NEOS_DEBUG__';
@@ -124,7 +124,6 @@ class NeosDebugApp extends Component<AppProps, AppState> {
             const cacheInfo: CacheInfo = JSON.parse(currentNode.nodeValue.substring(CACHE_PREFIX.length));
             this.processCacheInfo(parentNode, cacheInfo);
         }
-        this.writeToConsole(this.cacheInfos, 'Parsed cache nodes');
     }
 
     loadDebugInfos(): boolean {
@@ -171,7 +170,7 @@ class NeosDebugApp extends Component<AppProps, AppState> {
                     <QueryOverlay />
                     <CacheOverlay />
                     <InspectionOverlay />
-                    <WarningsOverlay />
+                    <AdditionalMetricsOverlay />
                 </div>
             </DebugProvider>
         );

@@ -1,0 +1,7 @@
+Neos\Cache\CacheFactoryInterface:
+  className: Flowpack\Neos\Debug\Cache\CacheFactory
+  arguments:
+    1:
+      setting: Neos.Flow.context
+    3:
+      setting: Neos.Flow.cache.applicationIdentifier

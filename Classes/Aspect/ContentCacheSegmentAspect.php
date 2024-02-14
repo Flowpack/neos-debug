@@ -56,12 +56,12 @@ class ContentCacheSegmentAspect
     {
         $segment = $joinPoint->getAdviceChain()->proceed($joinPoint);
         $fusionPath = $joinPoint->getMethodArgument('fusionPath');
-        $renderTime = $this->renderTimer->stop($fusionPath);
+        $renderMetrics = $this->renderTimer->stop($fusionPath);
 
         return $this->renderCacheInfoIntoSegment($segment, [
             'mode' => static::MODE_CACHED,
             'fusionPath' => $fusionPath,
-            'renderMetrics' => $renderTime,
+            'renderMetrics' => $renderMetrics,
             'entryIdentifier' => $this->interceptedCacheEntryValues,
             'entryTags' => $joinPoint->getMethodArgument('tags'),
             'lifetime' => $joinPoint->getMethodArgument('lifetime')
@@ -146,13 +146,18 @@ class ContentCacheSegmentAspect
     /**
      * @param mixed $segment This is mixed as the RuntimeContentCache might also return none string values
      * @return mixed the cached data might not be of type string, so we cannot define the return type
-     * @throws PropertyNotAccessibleException
      */
-    protected function renderCacheInfoIntoSegment($segment, array $info): mixed
+    protected function renderCacheInfoIntoSegment(mixed $segment, array $info): mixed
     {
+        try {
+            $fusionObjectName = ObjectAccess::getProperty($this->interceptedFusionObject, 'fusionObjectName', true);
+        } catch (PropertyNotAccessibleException) {
+            return $segment;
+        }
+
         $injectPosition = 2;
         $info = array_slice($info, 0, $injectPosition, true)
-            + ['fusionObject' => ObjectAccess::getProperty($this->interceptedFusionObject, 'fusionObjectName', true)]
+            + ['fusionObject' => $fusionObjectName]
             + array_slice($info, $injectPosition, count($info) - $injectPosition, true);
 
         // Add debug data only to html output

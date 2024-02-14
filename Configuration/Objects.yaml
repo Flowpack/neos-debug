@@ -1,0 +1,2 @@
+Flowpack\Neos\Debug\DataFormatter\DataFormatterInterface:
+  className: Flowpack\Neos\Debug\DataFormatter\DataFormatter

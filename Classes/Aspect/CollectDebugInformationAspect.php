@@ -15,13 +15,17 @@ namespace Flowpack\Neos\Debug\Aspect;
  */
 
 use Doctrine\ORM\EntityManagerInterface;
+use Flowpack\Neos\Debug\DataCollector\CacheAccessCollector;
+use Flowpack\Neos\Debug\DataCollector\MessagesCollector;
+use Flowpack\Neos\Debug\Domain\Model\Dto\ResourceStreamRequest;
+use Flowpack\Neos\Debug\Logging\DebugStack;
+use Flowpack\Neos\Debug\Service\DebugService;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
-use Flowpack\Neos\Debug\Logging\DebugStack;
-use Flowpack\Neos\Debug\Service\DebugService;
+use Neos\Media\Domain\Model\AssetInterface;
 
 #[Flow\Scope('singleton')]
 #[Flow\Aspect]
@@ -44,11 +48,19 @@ class CollectDebugInformationAspect
 
     protected array $resourceStreamRequests = [];
 
+    protected array $thumbnails = [];
+
     #[Flow\InjectConfiguration('serverTimingHeader.enabled', 'Flowpack.Neos.Debug')]
     protected ?bool $serverTimingHeaderEnabled;
 
     #[Flow\InjectConfiguration('htmlOutput.enabled', 'Flowpack.Neos.Debug')]
     protected ?bool $htmlOutputEnabled;
+
+    #[Flow\Inject]
+    protected MessagesCollector $messagesCollector;
+
+    #[Flow\Inject]
+    protected CacheAccessCollector $cacheAccessCollector;
 
     #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled)")]
     public function debuggingActive(): void
@@ -120,6 +132,12 @@ class CollectDebugInformationAspect
             'cCacheUncached' => 0,
             // Init as 0 as the actual number has to be resolved from the individual cache entries
             'resourceStreamRequests' => $this->resourceStreamRequests,
+            'thumbnails' => $this->thumbnails,
+            'additionalMetrics' => [
+                // TODO: Iterate over all existing collectors
+                $this->messagesCollector->getName() => $this->messagesCollector->collect(),
+                $this->cacheAccessCollector->getName() => $this->cacheAccessCollector->collect(),
+            ]
         ];
 
         $debugOutput = '<!--__NEOS_DEBUG__ ' . json_encode($data) . '-->';
@@ -154,16 +172,35 @@ class CollectDebugInformationAspect
         /** @var PersistentResource $resource */
         $resource = $joinPoint->getMethodArgument('resource');
         if ($resource) {
-            $this->resourceStreamRequests[] = [
-                'sha1' => $resource->getSha1(),
-                'filename' => $resource->getFilename(),
-                'collectionName' => $resource->getCollectionName(),
-            ];
+            $this->resourceStreamRequests[] = ResourceStreamRequest::fromResource($resource);
+        }
+    }
+
+    /**
+     * Create an entry for each resource stream request.
+     * Those can slow down rendering significantly, so we want to know about them.
+     */
+    #[Flow\AfterReturning("method(Neos\Media\Domain\Service\ThumbnailService->getThumbnail()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
+    public function addGeneratedThumbnails(JoinPointInterface $joinPoint): void
+    {
+        /** @var AssetInterface $asset */
+        $asset = $joinPoint->getMethodArgument('asset');
+        if ($asset) {
+            if (!array_key_exists($asset->getResource()->getSha1(), $this->thumbnails)) {
+                $this->thumbnails[$asset->getResource()->getSha1()] = 1;
+            } else {
+                $this->thumbnails[$asset->getResource()->getSha1()]++;
+            }
+
+            $this->messagesCollector->addMessage(
+                $asset->getResource()->getFilename() . ' (' . $asset->getResource()->getCollectionName() . ')',
+                'Thumbnail generated',
+            );
         }
     }
 
     #[Flow\Around("method(Neos\Fusion\Core\Cache\ContentCache->getCachedSegment()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
-    public function addCacheMiss(JoinPointInterface $joinPoint)
+    public function addCacheMiss(JoinPointInterface $joinPoint): mixed
     {
         $fusionPath = $joinPoint->getMethodArgument('fusionPath');
 
@@ -182,6 +219,7 @@ class CollectDebugInformationAspect
     }
 
     /**
+     * TODO: Move into a helper class
      * @param array{sql: string, table: string, params: array, types: string, executionMS: int} $queries
      */
     protected function groupQueries(array $queries): array
