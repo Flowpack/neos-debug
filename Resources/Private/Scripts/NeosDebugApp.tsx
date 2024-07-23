@@ -62,6 +62,10 @@ const styles = css`
     svg {
         fill: currentColor;
     }
+
+    details summary {
+        cursor: pointer;
+    }
 `;
 
 type AppProps = {

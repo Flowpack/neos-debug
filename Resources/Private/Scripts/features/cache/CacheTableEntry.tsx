@@ -2,8 +2,9 @@ import { FunctionComponent, h } from 'preact';
 
 import { css } from '../../styles/css';
 import { useState } from 'preact/hooks';
-import { formatValue, ucFirst } from '../../helper/formatValues';
+import { ucFirst } from '../../helper/formatValues';
 import { Icon, iconInfo, iconToggleOff, iconToggleOn } from '../../presentationals/Icon';
+import FormattedValue from '../../presentationals/FormattedValue';
 
 const rowStyle = css`
     --color-positive: var(--colors-Success);
@@ -52,31 +53,6 @@ const fusionPathStyle = css`
 const actionsStyle = css`
     display: flex;
     gap: 0.5rem;
-`;
-
-const valueStyle = css`
-    display: grid;
-
-    pre {
-        overflow: auto;
-        margin: 0;
-    }
-    .string {
-        color: var(--colors-Success);
-        white-space: normal;
-    }
-    .number {
-        color: var(--colors-Warn);
-    }
-    .boolean {
-        color: var(--colors-PrimaryBlue);
-    }
-    .null {
-        color: var(--colors-ContrastBright);
-    }
-    .key {
-        color: var(--colors-Error);
-    }
 `;
 
 type CacheTableEntryProps = {
@@ -138,9 +114,7 @@ const CacheTableEntry: FunctionComponent<CacheTableEntryProps> = ({ cacheInfo })
                         <tr key={key} className={rowStyle}>
                             <td colSpan={2}>{ucFirst(key)}</td>
                             <td colSpan={2}>
-                                <div className={valueStyle}>
-                                    <pre dangerouslySetInnerHTML={{ __html: formatValue(cacheInfo[key]) }} />
-                                </div>
+                                <FormattedValue value={cacheInfo[key]} />
                             </td>
                         </tr>
                     ))}

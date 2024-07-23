@@ -22,10 +22,12 @@ use Flowpack\Neos\Debug\Logging\DebugStack;
 use Flowpack\Neos\Debug\Service\DebugService;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
+use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Media\Domain\Model\AssetInterface;
+use Neos\Utility\ObjectAccess;
 
 #[Flow\Scope('singleton')]
 #[Flow\Aspect]
@@ -38,6 +40,9 @@ class CollectDebugInformationAspect
     protected DebugService $debugService;
 
     protected DebugStack $sqlLoggingStack;
+
+    #[Flow\Inject]
+    protected ContextFactoryInterface $contextFactory;
 
     protected int $contentCacheHits = 0;
 
@@ -115,6 +120,24 @@ class CollectDebugInformationAspect
 
         $groupedQueries = $this->groupQueries($this->sqlLoggingStack->queries);
 
+        // Analyse ContentContext
+        $contentContextMetrics = [];
+        foreach ($this->contextFactory->getInstances() as $contextIdentifier => $context) {
+            $firstLevelNodeCache = $context->getFirstLevelNodeCache();
+            $contentContextMetrics[$contextIdentifier] = [
+                'workspace' => $context->getWorkspace()->getName(),
+                'dimensions' => $context->getDimensions(),
+                'invisibleContentShown' => $context->isInvisibleContentShown(),
+                'removedContentShown' => $context->isRemovedContentShown(),
+                'inaccessibleContentShown' => $context->isInaccessibleContentShown(),
+                'firstLevelNodeCache' => [
+                    'nodesByPath' => count(ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByPath', true)),
+                    'nodesByIdentifier' => count(ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByIdentifier', true)),
+                    'childNodesByPathAndNodeTypeFilter' => count(ObjectAccess::getProperty($firstLevelNodeCache, 'childNodesByPathAndNodeTypeFilter', true)),
+                ],
+            ];
+        }
+
         // TODO: Introduce DTOs for the data
         $data = [
             'startRenderAt' => $startRenderAt,
@@ -137,6 +160,7 @@ class CollectDebugInformationAspect
                 // TODO: Iterate over all existing collectors
                 $this->messagesCollector->getName() => $this->messagesCollector->collect(),
                 $this->cacheAccessCollector->getName() => $this->cacheAccessCollector->collect(),
+                'contentContextMetrics' => $contentContextMetrics,
             ]
         ];
 
