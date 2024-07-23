@@ -110,11 +110,9 @@ class NeosDebugApp extends Component<AppProps, AppState> {
         cacheInfo.created =
             new Date(created).toLocaleString() + (mode !== 'uncached' ? ' - ' + prettyDate(created) : '');
 
-        // TODO: Find out what we do with this
-        const clone = parentNode.cloneNode() as HTMLElement;
-        clone.innerHTML = '';
         cacheInfo.markup =
-            clone.outerHTML.replace(/<\/.+/, '').replace(/</g, '&lt;').replace(/>/g, '&gt;').substring(0, 150) + ' ...';
+            parentNode.outerHTML.replace(/<\/.+/, '').replace(/</g, '&lt;').replace(/>/g, '&gt;').substring(0, 150) +
+            ' …';
         this.cacheInfos.push(cacheInfo);
     }
 

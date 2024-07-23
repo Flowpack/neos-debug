@@ -6,6 +6,7 @@ import { useDebugContext } from '../../context/DebugContext';
 import InspectionElement from './InspectionElement';
 import { css } from '../../styles/css';
 import Overlay, { overlayState } from '../../presentationals/Overlay';
+import FormattedValue from '../../presentationals/FormattedValue';
 
 let observer = null;
 
@@ -22,15 +23,6 @@ const tableStyles = css`
         &:first-child {
             font-weight: bold;
         }
-    }
-
-    td span {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        display: inline-block;
-        max-width: 500px;
-        overflow: hidden;
-        vertical-align: text-bottom;
     }
 `;
 
@@ -83,25 +75,17 @@ const InspectionOverlay: FunctionComponent = () => {
                     />
                 ))}
             {activeElement && (
-                <Overlay onClose={() => setActiveElement(null)}>
+                <Overlay onClose={() => setActiveElement(null)} resetOverlay={false}>
                     <table className={tableStyles}>
                         <tbody>
-                            <tr>
-                                <td>Mode</td>
-                                <td>{activeElement.mode}</td>
-                            </tr>
-                            <tr>
-                                <td>Fusion Path</td>
-                                <td>
-                                    <span>{activeElement.fusionPath}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Markup</td>
-                                <td>
-                                    <span>{activeElement.markup}</span>
-                                </td>
-                            </tr>
+                            {Object.keys(activeElement).map((key) => (
+                                <tr key={key}>
+                                    <td>{key}</td>
+                                    <td>
+                                        <FormattedValue value={activeElement[key]} />
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </Overlay>

@@ -40,7 +40,6 @@ const InspectionElement: FunctionComponent<InspectionElementProps> = ({ cacheInf
     const [position, setPosition] = useState<ElementPosition>(null);
 
     const recalculatePosition = useCallback(() => {
-        // console.debug('scroll', fusionPath, parentNode.getBoundingClientRect());
         const { left, top, width, height } = parentNode.getBoundingClientRect();
         const { scrollX, scrollY } = window;
         setPosition({
