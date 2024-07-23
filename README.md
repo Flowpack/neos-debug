@@ -104,3 +104,27 @@ __enable_neos_debug__(true)
 ```
 
 This will set a cookie and the debug mode will still be active after a page refresh.
+
+### Using it in custom Fusion views (e.g. Neos backend modules)
+
+To use the debug widget in custom Fusion views, you can include the necessary resources like this:
+
+```fusion
+    include: resource://Flowpack.Neos.Debug/Private/Fusion/Fragments/Scripts.fusion
+    
+    My.Package.MyController.index {
+        @process.addLoadDebugScript = afx`
+            {value}
+            <Flowpack.Neos.Debug:Fragment.Scripts/>
+        `
+    }
+```
+
+With this modification, you can use the `__enable_neos_debug__()` function in your browser console to enable the debug widget.
+
+⚠️Make sure to remove this script in production environments or when in a shared plugin 
+as the prototype might not be available in every environment.
+
+### License
+
+Licensed under MIT, see [LICENSE](LICENSE)
