@@ -95,6 +95,10 @@ Flowpack:
         slowQueryAfter: 10
 ```
 
+Note: this plugin adds its own SQL logger via an aspect during runtime. If you have a custom logger enabled, 
+it will be wrapped and its functionality should remain. If you experience any issues, disable this
+plugin and check if the problem persists.
+
 ### 🚫 Close
 
 To shutdown the debug console simply close it. If you'd like to persist the active debug state you can add a `true` to the method

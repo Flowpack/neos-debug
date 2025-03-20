@@ -182,7 +182,8 @@ class CollectDebugInformationAspect
     #[Flow\Before("method(Neos\Flow\Mvc\Routing\Router->route()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
     public function startSqlLogging(JoinPointInterface $joinPoint): void
     {
-        $this->sqlLoggingStack = new DebugStack();
+        $configuredSqlLogger = $this->entityManager->getConfiguration()->getSQLLogger();
+        $this->sqlLoggingStack = new DebugStack($configuredSqlLogger);
         $this->entityManager->getConfiguration()->setSQLLogger($this->sqlLoggingStack);
     }
 

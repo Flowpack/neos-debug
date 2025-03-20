@@ -31,8 +31,15 @@ class DebugStack implements SQLLogger
 
     public array $slowQueries = [];
 
-    #[Flow\InjectConfiguration("sql.slowQueryAfter")]
+    #[Flow\InjectConfiguration('sql.slowQueryAfter')]
     protected float $slowQueryAfter;
+
+    /**
+     * @param SQLLogger|null $originalLogger The original SQL logger to delegate to
+     */
+    public function __construct(protected ?SQLLogger $originalLogger = null)
+    {
+    }
 
     public function startQuery($sql, ?array $params = null, ?array $types = null): void
     {
@@ -45,6 +52,7 @@ class DebugStack implements SQLLogger
             'executionMS' => 0
         ];
         $this->startTime = microtime(true);
+        $this->originalLogger?->startQuery($sql, $params, $types);
     }
 
     public function stopQuery(): void
@@ -67,6 +75,7 @@ class DebugStack implements SQLLogger
             $this->tables[$table]['queryCount']++;
             $this->tables[$table]['executionTime'] += $executionTime;
         }
+        $this->originalLogger?->stopQuery();
     }
 
     protected function parseTableName(string $sql): string
