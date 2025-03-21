@@ -1,18 +1,26 @@
 import { FunctionComponent } from 'preact';
 
 import { useDebugContext } from '../../context/DebugContext';
+import QueryTableGroup from './QueryTableGroup';
 import { css } from '../../styles/css';
-import QueryTableRow from './QueryTableRow';
 
 const styles = css`
     width: 100%;
     margin-bottom: 4rem;
     table-layout: fixed;
+    border-collapse: collapse;
 
     th {
         font-weight: bold;
         font-size: 16px;
         padding: 1rem 0.5rem;
+        width: 100px;
+        textAlign: right;
+        
+        &:first-child {
+            text-align: left;
+            width: auto;
+        }
     }
 
     tr {
@@ -31,46 +39,27 @@ const styles = css`
     }
 `;
 
-const tableNameStyle = css`
-    td {
-        border-top: 1px solid --var(--colors-ContrastDark);
-        color: var(--colors-PrimaryBlue);
-    }
-`;
-
 const QueryTable: FunctionComponent = () => {
     const {
         debugInfos: {
-            sqlData: { groupedQueries },
-        },
+            sqlData: { groupedQueries }
+        }
     } = useDebugContext();
 
+    // TODO: Add sorting by column
     return (
         <table className={styles}>
             <thead>
-                <tr>
-                    <th style={{ textAlign: 'left' }}>Query</th>
-                    <th style={{ width: '100px', textAlign: 'right' }}>Total time</th>
-                    <th style={{ width: '100px', textAlign: 'right' }}>Count</th>
-                    <th style={{ width: '100px', textAlign: 'right' }} />
-                </tr>
+            <tr>
+                <th>Query</th>
+                <th>Total time</th>
+                <th>Count</th>
+            </tr>
             </thead>
             <tbody>
-                {Object.keys(groupedQueries).map((tableName) => (
-                    <>
-                        <tr className={tableNameStyle}>
-                            <td colSpan={4}>
-                                <strong>{tableName}</strong>
-                            </td>
-                        </tr>
-                        {Object.keys(groupedQueries[tableName]).map((sqlString) => (
-                            <QueryTableRow
-                                queryString={sqlString}
-                                queryDetails={groupedQueries[tableName][sqlString]}
-                            />
-                        ))}
-                    </>
-                ))}
+            {Object.keys(groupedQueries).sort().map((tableName) => (
+                <QueryTableGroup tableName={tableName} queries={groupedQueries[tableName]} />
+            ))}
             </tbody>
         </table>
     );

@@ -8,8 +8,8 @@ import FormattedValue from '../../presentationals/FormattedValue';
 
 const rowStyle = css`
     --color-positive: var(--colors-Success);
-    --color-negative: var(--colors-Warn);
-    --color-neutral: var(--colors-ContrastBright);
+    --color-negative: var(--colors-Danger);
+    --color-neutral: var(--colors-Warn);
 `;
 
 const highlightPositive = css`
@@ -17,11 +17,11 @@ const highlightPositive = css`
 `;
 
 const highlightNeutral = css`
-    background-color: var(--color-neutral) !important;
+    border-left: 5px solid var(--color-neutral) !important;
 `;
 
 const highlightNegative = css`
-    background-color: var(--color-negative) !important;
+    border-left: 5px solid var(--color-negative) !important;
 `;
 
 const fusionPathStyle = css`

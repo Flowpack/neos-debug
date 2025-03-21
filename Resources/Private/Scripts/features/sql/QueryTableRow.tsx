@@ -14,18 +14,29 @@ const queryTableRowStyle = css`
     }
 
     td {
-        text-align: right;
+        &:first-child {
+            padding-left: 1rem !important;
+        }
+        
+        &:not(:first-child) {
+            text-align: right;
+        }
     }
-`;
-
-const toggleStyle = css`
-    vertical-align: top;
 `;
 
 const sqlStringStyle = css`
     display: inline-block;
     vertical-align: middle;
     max-width: calc(100% - 30px);
+    
+    i {
+        font-style: normal;
+        cursor: pointer;
+        
+        &:hover {
+            color: var(--colors-PrimaryBlueHover);
+        }
+    }
 `;
 
 const collapsedStyle = css`
@@ -39,9 +50,12 @@ const QueryTableRow: FunctionComponent<QueryTableRowProps> = ({ queryString, que
 
     return (
         <tr className={queryTableRowStyle}>
-            <td style={{ textAlign: 'left' }}>
-                <span className={[sqlStringStyle, collapsed && collapsedStyle].join(' ')} title={queryString}>
-                    {queryString}
+            <td title="Toggle details">
+                <span
+                    className={[sqlStringStyle, collapsed && collapsedStyle].join(' ')}
+                    title={queryString}
+                >
+                    <i onClick={() => setCollapsed((prev) => !prev)}>{collapsed ? '▶' : '▼'}</i> {queryString}
                 </span>
                 {!collapsed && (
                     <>
@@ -58,11 +72,6 @@ const QueryTableRow: FunctionComponent<QueryTableRowProps> = ({ queryString, que
             </td>
             <td>{queryDetails.executionTimeSum.toFixed(2)} ms</td>
             <td>{queryDetails.count}</td>
-            <td>
-                <button className={toggleStyle} onClick={() => setCollapsed((prev) => !prev)} title="Toggle details">
-                    {collapsed ? '◀' : '▼'}
-                </button>
-            </td>
         </tr>
     );
 };

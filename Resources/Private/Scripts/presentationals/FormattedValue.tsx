@@ -9,6 +9,7 @@ const valueStyle = css`
     .string {
         color: var(--colors-Success);
         white-space: normal;
+        overflow-wrap: anywhere;
     }
     .number {
         color: var(--colors-Warn);
