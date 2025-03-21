@@ -18,25 +18,27 @@ You should wrap it with \`css\` like this:
 `;var ICON_SIZES={S:"0.75rem",M:"1rem",L:"1.5rem",XL:"2rem"},Icon=({icon,size="M"})=>u4("span",{dangerouslySetInnerHTML:{__html:icon},style:size!="M"?{height:ICON_SIZES[size]}:void 0});function i5(){throw new Error("Cycle detected")}var t3=Symbol.for("preact-signals");function r4(){if(v3>1)v3--;else{for(var i6,t4=!1;f4!==void 0;){var r5=f4;for(f4=void 0,e3++;r5!==void 0;){var n3=r5.o;if(r5.o=void 0,r5.f&=-3,!(8&r5.f)&&l4(r5))try{r5.c()}catch(r6){t4||(i6=r6,t4=!0)}r5=n3}}if(e3=0,v3--,t4)throw i6}}var o3=void 0;var f4=void 0,v3=0,e3=0,u5=0;function c4(i6){if(o3!==void 0){var t4=i6.n;if(t4===void 0||t4.t!==o3)return t4={i:0,S:i6,p:o3.s,n:void 0,t:o3,e:void 0,x:void 0,r:t4},o3.s!==void 0&&(o3.s.n=t4),o3.s=t4,i6.n=t4,32&o3.f&&i6.S(t4),t4;if(t4.i===-1)return t4.i=0,t4.n!==void 0&&(t4.n.p=t4.p,t4.p!==void 0&&(t4.p.n=t4.n),t4.p=o3.s,t4.n=void 0,o3.s.n=t4,o3.s=t4),t4}}function d3(i6){this.v=i6,this.i=0,this.n=void 0,this.t=void 0}d3.prototype.brand=t3;d3.prototype.h=function(){return!0};d3.prototype.S=function(i6){this.t!==i6&&i6.e===void 0&&(i6.x=this.t,this.t!==void 0&&(this.t.e=i6),this.t=i6)};d3.prototype.U=function(i6){if(this.t!==void 0){var t4=i6.e,r5=i6.x;t4!==void 0&&(t4.x=r5,i6.e=void 0),r5!==void 0&&(r5.e=t4,i6.x=void 0),i6===this.t&&(this.t=r5)}};d3.prototype.subscribe=function(i6){var t4=this;return O2(function(){var r5=t4.value,n3=32&this.f;this.f&=-33;try{i6(r5)}finally{this.f|=n3}})};d3.prototype.valueOf=function(){return this.value};d3.prototype.toString=function(){return this.value+""};d3.prototype.toJSON=function(){return this.value};d3.prototype.peek=function(){return this.v};Object.defineProperty(d3.prototype,"value",{get:function(){var i6=c4(this);return i6!==void 0&&(i6.i=this.i),this.v},set:function(t4){if(o3 instanceof _2&&function(){throw new Error("Computed cannot have side-effects")}(),t4!==this.v){e3>100&&i5(),this.v=t4,this.i++,u5++,v3++;try{for(var n3=this.t;n3!==void 0;n3=n3.x)n3.t.N()}finally{r4()}}}});function a4(i6){return new d3(i6)}function l4(i6){for(var t4=i6.s;t4!==void 0;t4=t4.n)if(t4.S.i!==t4.i||!t4.S.h()||t4.S.i!==t4.i)return!0;return!1}function y2(i6){for(var t4=i6.s;t4!==void 0;t4=t4.n){var r5=t4.S.n;if(r5!==void 0&&(t4.r=r5),t4.S.n=t4,t4.i=-1,t4.n===void 0){i6.s=t4;break}}}function w3(i6){for(var t4=i6.s,r5=void 0;t4!==void 0;){var n3=t4.p;t4.i===-1?(t4.S.U(t4),n3!==void 0&&(n3.n=t4.n),t4.n!==void 0&&(t4.n.p=n3)):r5=t4,t4.S.n=t4.r,t4.r!==void 0&&(t4.r=void 0),t4=n3}i6.s=r5}function _2(i6){d3.call(this,void 0),this.x=i6,this.s=void 0,this.g=u5-1,this.f=4}(_2.prototype=new d3).h=function(){if(this.f&=-3,1&this.f)return!1;if((36&this.f)==32||(this.f&=-5,this.g===u5))return!0;if(this.g=u5,this.f|=1,this.i>0&&!l4(this))return this.f&=-2,!0;var i6=o3;try{y2(this),o3=this;var t4=this.x();(16&this.f||this.v!==t4||this.i===0)&&(this.v=t4,this.f&=-17,this.i++)}catch(i7){this.v=i7,this.f|=16,this.i++}return o3=i6,w3(this),this.f&=-2,!0};_2.prototype.S=function(i6){if(this.t===void 0){this.f|=36;for(var t4=this.s;t4!==void 0;t4=t4.n)t4.S.S(t4)}d3.prototype.S.call(this,i6)};_2.prototype.U=function(i6){if(this.t!==void 0&&(d3.prototype.U.call(this,i6),this.t===void 0)){this.f&=-33;for(var t4=this.s;t4!==void 0;t4=t4.n)t4.S.U(t4)}};_2.prototype.N=function(){if(!(2&this.f)){this.f|=6;for(var i6=this.t;i6!==void 0;i6=i6.x)i6.t.N()}};_2.prototype.peek=function(){if(this.h()||i5(),16&this.f)throw this.v;return this.v};Object.defineProperty(_2.prototype,"value",{get:function(){1&this.f&&i5();var t4=c4(this);if(this.h(),t4!==void 0&&(t4.i=this.i),16&this.f)throw this.v;return this.v}});function p4(i6){return new _2(i6)}function g3(i6){var t4=i6.u;if(i6.u=void 0,typeof t4=="function"){v3++;var n3=o3;o3=void 0;try{t4()}catch(t5){throw i6.f&=-2,i6.f|=8,b3(i6),t5}finally{o3=n3,r4()}}}function b3(i6){for(var t4=i6.s;t4!==void 0;t4=t4.n)t4.S.U(t4);i6.x=void 0,i6.s=void 0,g3(i6)}function x2(i6){if(o3!==this)throw new Error("Out-of-order effect");w3(this),o3=i6,this.f&=-2,8&this.f&&b3(this),r4()}function E2(i6){this.x=i6,this.u=void 0,this.s=void 0,this.o=void 0,this.f=32}E2.prototype.c=function(){var i6=this.S();try{if(8&this.f||this.x===void 0)return;var t4=this.x();typeof t4=="function"&&(this.u=t4)}finally{i6()}};E2.prototype.S=function(){1&this.f&&i5(),this.f|=1,this.f&=-9,g3(this),y2(this),v3++;var t4=o3;return o3=this,x2.bind(this,t4)};E2.prototype.N=function(){2&this.f||(this.f|=2,this.o=f4,f4=this)};E2.prototype.d=function(){this.f|=8,1&this.f||b3(this)};function O2(i6){var t4=new E2(i6);try{t4.c()}catch(i7){throw t4.d(),i7}return t4.d.bind(t4)}var v4,s5;function l5(n3,i6){l[n3]=i6.bind(null,l[n3]||function(){})}function d4(n3){s5&&s5(),s5=n3&&n3.S()}function p5(n3){var r5=this,f5=n3.data,o4=useSignal(f5);o4.value=f5;var e4=F2(function(){for(var n4=r5.__v;n4=n4.__;)if(n4.__c){n4.__c.__$f|=4;break}return r5.__$u.c=function(){var n5;!t(e4.peek())&&((n5=r5.base)==null?void 0:n5.nodeType)===3?r5.base.data=e4.peek():(r5.__$f|=1,r5.setState({}))},p4(function(){var n5=o4.value.value;return n5===0?0:n5===!0?"":n5||""})},[]);return e4.value}p5.displayName="_st";Object.defineProperties(d3.prototype,{constructor:{configurable:!0,value:void 0},type:{configurable:!0,value:p5},props:{configurable:!0,get:function(){return{data:this}}},__b:{configurable:!0,value:1}});l5("__b",function(n3,r5){if(typeof r5.type=="string"){var i6,t4=r5.props;for(var f5 in t4)if(f5!=="children"){var o4=t4[f5];o4 instanceof d3&&(i6||(r5.__np=i6={}),i6[f5]=o4,t4[f5]=o4.peek())}}n3(r5)});l5("__r",function(n3,r5){d4();var i6,t4=r5.__c;t4&&(t4.__$f&=-2,(i6=t4.__$u)===void 0&&(t4.__$u=i6=function(n4){var r6;return O2(function(){r6=this}),r6.c=function(){t4.__$f|=1,t4.setState({})},r6}())),v4=t4,d4(i6),n3(r5)});l5("__e",function(n3,r5,i6,t4){d4(),v4=void 0,n3(r5,i6,t4)});l5("diffed",function(n3,r5){d4(),v4=void 0;var i6;if(typeof r5.type=="string"&&(i6=r5.__e)){var t4=r5.__np,f5=r5.props;if(t4){var o4=i6.U;if(o4)for(var e4 in o4){var u6=o4[e4];u6!==void 0&&!(e4 in t4)&&(u6.d(),o4[e4]=void 0)}else i6.U=o4={};for(var a5 in t4){var c5=o4[a5],s6=t4[a5];c5===void 0?(c5=_3(i6,a5,s6,f5),o4[a5]=c5):c5.o(s6,f5)}}}n3(r5)});function _3(n3,r5,i6,t4){var f5=r5 in n3&&n3.ownerSVGElement===void 0,o4=a4(i6);return{o:function(n4,r6){o4.value=n4,t4=r6},d:O2(function(){var i7=o4.value.value;t4[r5]!==i7&&(t4[r5]=i7,f5?n3[r5]=i7:i7?n3.setAttribute(r5,i7):n3.removeAttribute(r5))})}}l5("unmount",function(n3,r5){if(typeof r5.type=="string"){var i6=r5.__e;if(i6){var t4=i6.U;if(t4){i6.U=void 0;for(var f5 in t4){var o4=t4[f5];o4&&o4.d()}}}}else{var e4=r5.__c;if(e4){var u6=e4.__$u;u6&&(e4.__$u=void 0,u6.d())}}n3(r5)});l5("__h",function(n3,r5,i6,t4){(t4<3||t4===9)&&(r5.__$f|=2),n3(r5,i6,t4)});b.prototype.shouldComponentUpdate=function(n3,r5){var i6=this.__$u;if(!(i6&&i6.s!==void 0||4&this.__$f)||3&this.__$f)return!0;for(var t4 in r5)return!0;for(var f5 in n3)if(f5!=="__source"&&n3[f5]!==this.props[f5])return!0;for(var o4 in this.props)if(!(o4 in n3))return!0;return!1};function useSignal(n3){return F2(function(){return a4(n3)},[])}function useComputed(n3){var r5=_(n3);return r5.current=n3,v4.__$f|=4,F2(function(){return p4(function(){return r5.current()})},[])}var styles=css`
     align-items: flex-start;
     background-color: var(--colors-ContrastDarker);
-    bottom: 5.5rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     color: var(--colors-ContrastBrightest);
     font-size: 12px;
     left: 1rem;
-    overflow: auto;
     position: fixed;
     right: 1rem;
     top: 1rem;
     max-width: 1280px;
     margin: 0 auto;
     z-index: 10002;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    max-height: calc(100vh - 6rem);
+    overflow: hidden;
 
     h1 {
         margin: 0;
         font-size: 1.4em;
         position: sticky;
         top: 0;
-        padding: 0.5rem;
+        padding: 0.5rem 0;
         text-align: center;
         width: 100%;
         z-index: 1;
@@ -62,7 +64,9 @@ You should wrap it with \`css\` like this:
     display: flex;
     flex-direction: column;
     gap: 1rem;
-`,overlayState=a4(null),Overlay=({title=null,children,onClose})=>{let closeOverlay=T2(()=>{overlayState.value=null,onClose&&onClose()},[]);return p3(()=>{let escapeEvent=event=>{event.key==="Escape"&&closeOverlay()};return window.addEventListener("keydown",escapeEvent),()=>{window.removeEventListener("keydown",escapeEvent)}}),u4("div",{className:styles,children:[title&&u4("h1",{children:title}),u4("button",{type:"button",className:closeButtonStyle,onClick:closeOverlay,children:u4(Icon,{icon:circle_xmark_regular_default})}),u4("div",{className:contentWrapStyle,children})]})};var Overlay_default=Overlay;var styles2=css`
+    overflow: auto;
+    max-height: calc(100% - 40px);
+`,overlayState=a4(null),Overlay=({title=null,children,onClose,resetOverlay=!0})=>{let closeOverlay=T2(()=>{resetOverlay&&(overlayState.value=null),onClose&&onClose()},[]);return p3(()=>{let escapeEvent=event=>{event.key==="Escape"&&closeOverlay()};return window.addEventListener("keydown",escapeEvent),()=>{window.removeEventListener("keydown",escapeEvent)}}),u4("div",{className:styles,children:[title&&u4("h1",{children:title}),u4("button",{type:"button",className:closeButtonStyle,onClick:closeOverlay,children:u4(Icon,{icon:circle_xmark_regular_default})}),u4("div",{className:contentWrapStyle,children})]})};var Overlay_default=Overlay;var styles2=css`
     --button-bg: transparent;
     background-color: var(--colors-ContrastDarker);
     border-top-left-radius: 0.5rem;
@@ -120,27 +124,62 @@ You should wrap it with \`css\` like this:
     }
 
     td {
-        text-align: right;
+        &:first-child {
+            padding-left: 1rem !important;
+        }
+        
+        &:not(:first-child) {
+            text-align: right;
+        }
     }
-`,toggleStyle=css`
-    vertical-align: top;
 `,sqlStringStyle=css`
     display: inline-block;
     vertical-align: middle;
     max-width: calc(100% - 30px);
+    
+    i {
+        font-style: normal;
+        cursor: pointer;
+        
+        &:hover {
+            color: var(--colors-PrimaryBlueHover);
+        }
+    }
 `,collapsedStyle=css`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-`,QueryTableRow=({queryString,queryDetails})=>{let[collapsed,setCollapsed]=h2(!0);return u4("tr",{className:queryTableRowStyle,children:[u4("td",{style:{textAlign:"left"},children:[u4("span",{className:[sqlStringStyle,collapsed&&collapsedStyle].join(" "),title:queryString,children:queryString}),!collapsed&&u4(g,{children:[u4("strong",{style:{margin:"1rem 0 .5rem",display:"block"},children:"Calls by parameters:"}),u4("ul",{children:Object.keys(queryDetails.params).map(param=>u4("li",{children:[param,": ",queryDetails.params[param]]}))})]})]}),u4("td",{children:[queryDetails.executionTimeSum.toFixed(2)," ms"]}),u4("td",{children:queryDetails.count}),u4("td",{children:u4("button",{className:toggleStyle,onClick:()=>setCollapsed(prev2=>!prev2),title:"Toggle details",children:collapsed?"\u25C0":"\u25BC"})})]})},QueryTableRow_default=QueryTableRow;var styles3=css`
+`,QueryTableRow=({queryString,queryDetails})=>{let[collapsed,setCollapsed]=h2(!0);return u4("tr",{className:queryTableRowStyle,children:[u4("td",{title:"Toggle details",children:[u4("span",{className:[sqlStringStyle,collapsed&&collapsedStyle].join(" "),title:queryString,children:[u4("i",{onClick:()=>setCollapsed(prev2=>!prev2),children:collapsed?"\u25B6":"\u25BC"})," ",queryString]}),!collapsed&&u4(g,{children:[u4("strong",{style:{margin:"1rem 0 .5rem",display:"block"},children:"Calls by parameters:"}),u4("ul",{children:Object.keys(queryDetails.params).map(param=>u4("li",{children:[param,": ",queryDetails.params[param]]}))})]})]}),u4("td",{children:[queryDetails.executionTimeSum.toFixed(2)," ms"]}),u4("td",{children:queryDetails.count})]})},QueryTableRow_default=QueryTableRow;var tableNameStyle=css`
+    cursor: pointer;
+    
+    &:hover {
+        background-color: var(--colors-ContrastNeutral);
+    }
+        
+    td {
+        color: var(--colors-PrimaryBlue);
+        
+        &:not(:first-child) {
+            text-align: right;
+        }
+    }
+`,QueryTableGroup=({tableName,queries})=>{let[collapsed,setCollapsed]=h2(!0);return u4(g,{children:[u4("tr",{className:tableNameStyle,onClick:()=>setCollapsed(prev2=>!prev2),children:[u4("td",{children:[collapsed?"\u25B6":"\u25BC"," ",u4("strong",{children:tableName})]}),u4("td",{children:[Object.values(queries).reduce((acc,details)=>acc+details.executionTimeSum,0).toFixed(2)," ms"]}),u4("td",{children:Object.values(queries).reduce((acc,details)=>acc+details.count,0)})]}),!collapsed&&Object.keys(queries).map(sqlString=>u4(QueryTableRow_default,{queryString:sqlString,queryDetails:queries[sqlString]}))]})},QueryTableGroup_default=QueryTableGroup;var styles3=css`
     width: 100%;
     margin-bottom: 4rem;
     table-layout: fixed;
+    border-collapse: collapse;
 
     th {
         font-weight: bold;
         font-size: 16px;
         padding: 1rem 0.5rem;
+        width: 100px;
+        textAlign: right;
+        
+        &:first-child {
+            text-align: left;
+            width: auto;
+        }
     }
 
     tr {
@@ -157,15 +196,14 @@ You should wrap it with \`css\` like this:
         border-bottom: 1px solid var(--colors-ContrastDark);
         vertical-align: top;
     }
-`,tableNameStyle=css`
-    td {
-        border-top: 1px solid --var(--colors-ContrastDark);
-        color: var(--colors-PrimaryBlue);
-    }
-`,QueryTable=()=>{let{debugInfos:{sqlData:{groupedQueries}}}=useDebugContext();return u4("table",{className:styles3,children:[u4("thead",{children:u4("tr",{children:[u4("th",{style:{textAlign:"left"},children:"Query"}),u4("th",{style:{width:"100px",textAlign:"right"},children:"Total time"}),u4("th",{style:{width:"100px",textAlign:"right"},children:"Count"}),u4("th",{style:{width:"100px",textAlign:"right"}})]})}),u4("tbody",{children:Object.keys(groupedQueries).map(tableName=>u4(g,{children:[u4("tr",{className:tableNameStyle,children:u4("td",{colSpan:4,children:u4("strong",{children:tableName})})}),Object.keys(groupedQueries[tableName]).map(sqlString=>u4(QueryTableRow_default,{queryString:sqlString,queryDetails:groupedQueries[tableName][sqlString]}))]}))})]})},QueryTable_default=QueryTable;var noticeStyle=css`
+`,QueryTable=()=>{let{debugInfos:{sqlData:{groupedQueries}}}=useDebugContext();return u4("table",{className:styles3,children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"Query"}),u4("th",{children:"Total time"}),u4("th",{children:"Count"})]})}),u4("tbody",{children:Object.keys(groupedQueries).sort().map(tableName=>u4(QueryTableGroup_default,{tableName,queries:groupedQueries[tableName]}))})]})},QueryTable_default=QueryTable;var noticeStyle=css`
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    
+    span {
+        display: inline-flex;
+    }
 
     svg {
         color: var(--colors-PrimaryBlue);
@@ -180,7 +218,10 @@ You should wrap it with \`css\` like this:
     th {
         text-align: left;
         padding: 0.5rem;
-        white-space: nowrap;
+        word-break: break-word;
+        /* This regex-like pattern helps break at uppercase letters in camelCase */
+        overflow-wrap: break-word;
+        hyphens: auto;
         position: sticky;
         top: 0;
         background-color: var(--colors-ContrastDarker);
@@ -191,16 +232,37 @@ You should wrap it with \`css\` like this:
         vertical-align: baseline;
         padding: 0.5rem;
     }
-`,Table=({children})=>u4("div",{className:tableWrapperStyle,children:u4("table",{className:tableStyle,children})}),Table_default=Table;function ucFirst(value){return value.charAt(0).toUpperCase()+value.slice(1)}function formatValue(value){return typeof value=="boolean"?value?"Yes":"No":typeof value=="object"?syntaxHighlight(value):value}function syntaxHighlight(json){return typeof json!="string"&&(json=JSON.stringify(json,void 0,2)),json=json.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"),json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,function(match2){let cls="number";return/^"/.test(match2)?/:$/.test(match2)?cls="key":cls="string":/true|false/.test(match2)?cls="boolean":/null/.test(match2)&&(cls="null"),'<span class="'+cls+'">'+match2+"</span>"})}var rowStyle=css`
+`,Table=({children})=>u4("div",{className:tableWrapperStyle,children:u4("table",{className:tableStyle,children})}),Table_default=Table;function ucFirst(value){return value.charAt(0).toUpperCase()+value.slice(1)}function formatValue(value){return typeof value=="boolean"?value?"Yes":"No":typeof value=="object"?syntaxHighlight(value):value}function syntaxHighlight(json){return typeof json!="string"&&(json=JSON.stringify(json,void 0,2)),json=json.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"),json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,function(match2){let cls="number";return/^"/.test(match2)?/:$/.test(match2)?cls="key":cls="string":/true|false/.test(match2)?cls="boolean":/null/.test(match2)&&(cls="null"),'<span class="'+cls+'">'+match2+"</span>"})}var valueStyle=css`
+    overflow: auto;
+    margin: 0;
+
+    .string {
+        color: var(--colors-Success);
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+    .number {
+        color: var(--colors-Warn);
+    }
+    .boolean {
+        color: var(--colors-PrimaryBlue);
+    }
+    .null {
+        color: var(--colors-ContrastBright);
+    }
+    .key {
+        color: var(--colors-Error);
+    }
+`,FormattedValue=({value})=>u4("pre",{class:valueStyle,dangerouslySetInnerHTML:{__html:formatValue(value)}}),FormattedValue_default=FormattedValue;var rowStyle=css`
     --color-positive: var(--colors-Success);
-    --color-negative: var(--colors-Warn);
-    --color-neutral: var(--colors-ContrastBright);
+    --color-negative: var(--colors-Danger);
+    --color-neutral: var(--colors-Warn);
 `,highlightPositive=css`
     border-left: 5px solid var(--color-positive) !important;
 `,highlightNeutral=css`
-    background-color: var(--color-neutral) !important;
+    border-left: 5px solid var(--color-neutral) !important;
 `,highlightNegative=css`
-    background-color: var(--color-negative) !important;
+    border-left: 5px solid var(--color-negative) !important;
 `,fusionPathStyle=css`
     word-break: break-word;
     display: flex;
@@ -228,30 +290,7 @@ You should wrap it with \`css\` like this:
 `,actionsStyle=css`
     display: flex;
     gap: 0.5rem;
-`,valueStyle=css`
-    display: grid;
-
-    pre {
-        overflow: auto;
-        margin: 0;
-    }
-    .string {
-        color: var(--colors-Success);
-        white-space: normal;
-    }
-    .number {
-        color: var(--colors-Warn);
-    }
-    .boolean {
-        color: var(--colors-PrimaryBlue);
-    }
-    .null {
-        color: var(--colors-ContrastBright);
-    }
-    .key {
-        color: var(--colors-Error);
-    }
-`,IGNORED_DETAIL_KEYS=["mode","hit","fusionPath"],CacheTableEntry=({cacheInfo})=>{let[showPrototypes,setShowPrototypes]=h2(!1),[showDetails,setShowDetails]=h2(!1),regex=/([^<>/]+)<([^<>:/]+:[^<>:/]+)(?::(.*?))?>(?:\/|$)/g,formattedString=cacheInfo.fusionPath.replace(regex,'<span class="fragment">$1</span><span class="prototype">&lt;$2$3&gt;</span><i>/</i>'),modeStyle=cacheInfo.mode=="cached"?highlightPositive:cacheInfo.mode=="dynamic"?highlightNeutral:highlightNegative,cacheHitStyle=cacheInfo.hit?highlightPositive:highlightNegative;return u4(g,{children:[u4("tr",{className:rowStyle,"data-cache-hit":cacheInfo.hit,children:[u4("td",{className:modeStyle,children:ucFirst(cacheInfo.mode)}),u4("td",{className:cacheHitStyle,children:cacheInfo.hit?"Yes":"No"}),u4("td",{children:u4("div",{className:fusionPathStyle,"data-show-prototypes":showPrototypes,dangerouslySetInnerHTML:{__html:formattedString}})}),u4("td",{children:u4("div",{className:actionsStyle,children:[u4("button",{type:"button",onClick:()=>setShowPrototypes(prev2=>!prev2),title:"Toggle prototypes",children:u4(Icon,{icon:showPrototypes?toggle_on_solid_default:toggle_off_solid_default})}),u4("button",{type:"button",onClick:()=>setShowDetails(prev2=>!prev2),title:"Show details",children:u4(Icon,{icon:circle_info_solid_default})})]})})]}),showDetails&&Object.keys(cacheInfo).filter(key=>!IGNORED_DETAIL_KEYS.includes(key)).map(key=>u4("tr",{className:rowStyle,children:[u4("td",{colSpan:2,children:ucFirst(key)}),u4("td",{colSpan:2,children:u4("div",{className:valueStyle,children:u4("pre",{dangerouslySetInnerHTML:{__html:formatValue(cacheInfo[key])}})})})]},key))]})},CacheTableEntry_default=CacheTableEntry;var headerStyle=css`
+`,IGNORED_DETAIL_KEYS=["mode","hit","fusionPath"],CacheTableEntry=({cacheInfo})=>{let[showPrototypes,setShowPrototypes]=h2(!1),[showDetails,setShowDetails]=h2(!1),regex=/([^<>/]+)<([^<>:/]+:[^<>:/]+)(?::(.*?))?>(?:\/|$)/g,formattedString=cacheInfo.fusionPath.replace(regex,'<span class="fragment">$1</span><span class="prototype">&lt;$2$3&gt;</span><i>/</i>'),modeStyle=cacheInfo.mode=="cached"?highlightPositive:cacheInfo.mode=="dynamic"?highlightNeutral:highlightNegative,cacheHitStyle=cacheInfo.hit?highlightPositive:highlightNegative;return u4(g,{children:[u4("tr",{className:rowStyle,"data-cache-hit":cacheInfo.hit,children:[u4("td",{className:modeStyle,children:ucFirst(cacheInfo.mode)}),u4("td",{className:cacheHitStyle,children:cacheInfo.hit?"Yes":"No"}),u4("td",{children:u4("div",{className:fusionPathStyle,"data-show-prototypes":showPrototypes,dangerouslySetInnerHTML:{__html:formattedString}})}),u4("td",{children:u4("div",{className:actionsStyle,children:[u4("button",{type:"button",onClick:()=>setShowPrototypes(prev2=>!prev2),title:"Toggle prototypes",children:u4(Icon,{icon:showPrototypes?toggle_on_solid_default:toggle_off_solid_default})}),u4("button",{type:"button",onClick:()=>setShowDetails(prev2=>!prev2),title:"Show details",children:u4(Icon,{icon:circle_info_solid_default})})]})})]}),showDetails&&Object.keys(cacheInfo).filter(key=>!IGNORED_DETAIL_KEYS.includes(key)).map(key=>u4("tr",{className:rowStyle,children:[u4("td",{colSpan:2,children:ucFirst(key)}),u4("td",{colSpan:2,children:u4(FormattedValue_default,{value:cacheInfo[key]})})]},key))]})},CacheTableEntry_default=CacheTableEntry;var headerStyle=css`
     display: flex;
     gap: 1rem;
 `,cacheOverlayInnerStyle=css`
@@ -288,16 +327,16 @@ You should wrap it with \`css\` like this:
             font-weight: bold;
         }
     }
-
-    td span {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        display: inline-block;
-        max-width: 500px;
-        overflow: hidden;
-        vertical-align: text-bottom;
+`,InspectionOverlay=()=>{let visible=useComputed(()=>overlayState.value==="inspection"),{cacheInfos}=useDebugContext(),[visibleElements,setVisibleElements]=h2({}),[activeElement,setActiveElement]=h2(null),checkElementVisibility=T2(entries=>{entries.forEach(entry=>{let id=entry.target.dataset.neosDebugId;visibleElements[id]=entry.isIntersecting}),setVisibleElements({...visibleElements})},[]);return p3(()=>(observer||(observer=new IntersectionObserver(checkElementVisibility,{threshold:.1,rootMargin:"0px"})),visible?cacheInfos.forEach(cacheInfo=>observer.observe(cacheInfo.parentNode)):cacheInfos.forEach(cacheInfo=>observer.unobserve(cacheInfo.parentNode)),()=>{observer&&cacheInfos.forEach(cacheInfo=>observer.unobserve(cacheInfo.parentNode))}),[visible.value]),visible.value?u4(g,{children:[cacheInfos.filter(cacheInfo=>visibleElements[cacheInfo.fusionPath]).map(cacheInfo=>u4(InspectionElement_default,{cacheInfo,setActiveElement},cacheInfo.fusionPath)),activeElement&&u4(Overlay_default,{onClose:()=>setActiveElement(null),resetOverlay:!1,children:u4("table",{className:tableStyles,children:u4("tbody",{children:Object.keys(activeElement).map(key=>u4("tr",{children:[u4("td",{children:key}),u4("td",{children:u4(FormattedValue_default,{value:activeElement[key]})})]},key))})})})]}):null},InspectionOverlay_default=InspectionOverlay;var detailsStyle=css`
+    summary {
+        cursor: pointer;
+        padding: 5px 0;
+    
+        &:hover {
+            color: var(--colors-PrimaryBlueHover);
+        }
     }
-`,InspectionOverlay=()=>{let visible=useComputed(()=>overlayState.value==="inspection"),{cacheInfos}=useDebugContext(),[visibleElements,setVisibleElements]=h2({}),[activeElement,setActiveElement]=h2(null),checkElementVisibility=T2(entries=>{entries.forEach(entry=>{let id=entry.target.dataset.neosDebugId;visibleElements[id]=entry.isIntersecting}),setVisibleElements({...visibleElements})},[]);return p3(()=>(observer||(observer=new IntersectionObserver(checkElementVisibility,{threshold:.1,rootMargin:"0px"})),visible?cacheInfos.forEach(cacheInfo=>observer.observe(cacheInfo.parentNode)):cacheInfos.forEach(cacheInfo=>observer.unobserve(cacheInfo.parentNode)),()=>{observer&&cacheInfos.forEach(cacheInfo=>observer.unobserve(cacheInfo.parentNode))}),[visible.value]),visible.value?u4(g,{children:[cacheInfos.filter(cacheInfo=>visibleElements[cacheInfo.fusionPath]).map(cacheInfo=>u4(InspectionElement_default,{cacheInfo,setActiveElement},cacheInfo.fusionPath)),activeElement&&u4(Overlay_default,{onClose:()=>setActiveElement(null),children:u4("table",{className:tableStyles,children:u4("tbody",{children:[u4("tr",{children:[u4("td",{children:"Mode"}),u4("td",{children:activeElement.mode})]}),u4("tr",{children:[u4("td",{children:"Fusion Path"}),u4("td",{children:u4("span",{children:activeElement.fusionPath})})]}),u4("tr",{children:[u4("td",{children:"Markup"}),u4("td",{children:u4("span",{children:activeElement.markup})})]})]})})})]}):null},InspectionOverlay_default=InspectionOverlay;var AdditionalMetricsOverlay=()=>{let visible=useComputed(()=>overlayState.value==="additionalMetrics"),{debugInfos:{resourceStreamRequests,thumbnails,additionalMetrics}}=useDebugContext();return visible.value?u4(Overlay_default,{title:"Other metrics",children:[u4("h2",{children:["Resource stream requests (",Object.keys(resourceStreamRequests).length,")"]}),u4(Notice_default,{children:"These requests show how many persistent resources are loaded during rendering to read their contents."}),u4(Table_default,{children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"Filename"}),u4("th",{children:"SHA1"}),u4("th",{children:"Collection"})]})}),u4("tbody",{children:Object.values(resourceStreamRequests).map((resource,index)=>u4("tr",{children:[u4("td",{children:resource.filename}),u4("td",{children:resource.sha1}),u4("td",{children:resource.collectionName})]},index))})]}),u4("hr",{}),u4("h2",{children:["Generated thumbnails (",Object.keys(thumbnails).length,")"]}),u4(Table_default,{children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"SHA1"}),u4("th",{children:"Usages"})]})}),u4("tbody",{children:Object.keys(thumbnails).map((sha1,index)=>u4("tr",{children:[u4("td",{children:sha1}),u4("td",{children:thumbnails[sha1]})]},index))})]}),Object.keys(additionalMetrics.cacheAccess??[]).length>0&&u4(g,{children:[u4("hr",{}),u4("h2",{children:"Cache access"}),u4(Table_default,{children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"Cache identifier"}),u4("th",{children:"Backend type"}),u4("th",{children:"Hits"}),u4("th",{children:"Misses"}),u4("th",{children:"Sets"})]})}),u4("tbody",{children:Object.keys(additionalMetrics.cacheAccess).sort().map(cacheIdentifier=>u4("tr",{children:[u4("td",{children:cacheIdentifier}),u4("td",{children:additionalMetrics.cacheAccess[cacheIdentifier].cacheType}),u4("td",{children:additionalMetrics.cacheAccess[cacheIdentifier].hits}),u4("td",{children:additionalMetrics.cacheAccess[cacheIdentifier].misses}),u4("td",{children:additionalMetrics.cacheAccess[cacheIdentifier].updates})]}))})]})]})]}):null},AdditionalMetricsOverlay_default=AdditionalMetricsOverlay;function prettyDate(time){let date=new Date((time||"").replace(/-/g,"/").replace(/[TZ]/g," ")),diff=(new Date().getTime()-date.getTime())/1e3,dayDiff=Math.floor(diff/86400);if(!(isNaN(dayDiff)||dayDiff<0||dayDiff>=31))return dayDiff===0&&(diff<60&&"just now"||diff<120&&"1 minute ago"||diff<3600&&Math.floor(diff/60)+" minutes ago"||diff<7200&&"1 hour ago"||diff<86400&&Math.floor(diff/3600)+" hours ago")||dayDiff===1&&"Yesterday"||dayDiff<7&&dayDiff+" days ago"||dayDiff<31&&Math.ceil(dayDiff/7)+" weeks ago"}var CACHE_PREFIX="__NEOS_CONTENT_CACHE_DEBUG__",DEBUG_PREFIX="__NEOS_DEBUG__",styles5=css`
+`,AdditionalMetricsOverlay=()=>{let visible=useComputed(()=>overlayState.value==="additionalMetrics"),{debugInfos:{resourceStreamRequests,thumbnails,additionalMetrics}}=useDebugContext();return visible.value?u4(Overlay_default,{title:"Other metrics",children:[u4("details",{className:detailsStyle,children:[u4("summary",{children:["Resource stream requests (",Object.keys(resourceStreamRequests).length,")"]}),u4(Notice_default,{children:"These requests show how many persistent resources are loaded during rendering to read their contents."}),Object.values(resourceStreamRequests).length>0&&u4(Table_default,{children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"Filename"}),u4("th",{children:"SHA1"}),u4("th",{children:"Collection"})]})}),u4("tbody",{children:Object.values(resourceStreamRequests).map((resource,index)=>u4("tr",{children:[u4("td",{children:resource.filename}),u4("td",{children:resource.sha1}),u4("td",{children:resource.collectionName})]},index))})]})]}),u4("details",{className:detailsStyle,children:[u4("summary",{children:["Generated thumbnails (",Object.keys(thumbnails).length,")"]}),Object.keys(thumbnails).length>0&&u4(Table_default,{children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"SHA1"}),u4("th",{children:"Usages"})]})}),u4("tbody",{children:Object.keys(thumbnails).map((sha1,index)=>u4("tr",{children:[u4("td",{children:sha1}),u4("td",{children:thumbnails[sha1]})]},index))})]})]}),Object.keys(additionalMetrics.cacheAccess??[]).length>0&&u4("details",{className:detailsStyle,children:[u4("summary",{children:"Cache access"}),u4(Table_default,{children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"Cache identifier"}),u4("th",{children:"Backend type"}),u4("th",{children:"Hits"}),u4("th",{children:"Misses"}),u4("th",{children:"Sets"})]})}),u4("tbody",{children:Object.keys(additionalMetrics.cacheAccess).sort().map(cacheIdentifier=>u4("tr",{children:[u4("td",{children:cacheIdentifier}),u4("td",{children:additionalMetrics.cacheAccess[cacheIdentifier].cacheType}),u4("td",{children:additionalMetrics.cacheAccess[cacheIdentifier].hits}),u4("td",{children:additionalMetrics.cacheAccess[cacheIdentifier].misses}),u4("td",{children:additionalMetrics.cacheAccess[cacheIdentifier].updates})]}))})]})]}),Object.keys(additionalMetrics.contentContextMetrics??[]).length>0&&u4("details",{className:detailsStyle,children:[u4("summary",{children:"Content context metrics"}),u4(Table_default,{children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"Identifier"}),Object.keys(Object.values(additionalMetrics.contentContextMetrics)[0]).map(key=>u4("th",{children:key},key))]})}),u4("tbody",{children:Object.keys(additionalMetrics.contentContextMetrics).map(contextIdentifier=>u4("tr",{children:[u4("td",{children:contextIdentifier}),Object.keys(additionalMetrics.contentContextMetrics[contextIdentifier]).map(key=>u4("td",{children:u4(FormattedValue_default,{value:additionalMetrics.contentContextMetrics[contextIdentifier][key]})},key))]}))})]})]})]}):null},AdditionalMetricsOverlay_default=AdditionalMetricsOverlay;function prettyDate(time){let date=new Date((time||"").replace(/-/g,"/").replace(/[TZ]/g," ")),diff=(new Date().getTime()-date.getTime())/1e3,dayDiff=Math.floor(diff/86400);if(!(isNaN(dayDiff)||dayDiff<0||dayDiff>=31))return dayDiff===0&&(diff<60&&"just now"||diff<120&&"1 minute ago"||diff<3600&&Math.floor(diff/60)+" minutes ago"||diff<7200&&"1 hour ago"||diff<86400&&Math.floor(diff/3600)+" hours ago")||dayDiff===1&&"Yesterday"||dayDiff<7&&dayDiff+" days ago"||dayDiff<31&&Math.ceil(dayDiff/7)+" weeks ago"}var CACHE_PREFIX="__NEOS_CONTENT_CACHE_DEBUG__",DEBUG_PREFIX="__NEOS_DEBUG__",styles5=css`
     --colors-PrimaryViolet: #26224c;
     --colors-PrimaryVioletHover: #342f5f;
     --colors-PrimaryBlue: #00adee;
@@ -347,5 +386,9 @@ You should wrap it with \`css\` like this:
     svg {
         fill: currentColor;
     }
-`,NeosDebugApp=class extends b{constructor(){super();this.cacheInfos=[];this.closeApp=()=>{let{cookiename}=this.props;document.cookie=`${cookiename}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict`,document.querySelector("neos-debug").setAttribute("active","false"),this.writeToConsole("%c Closing Neos Debug tool","color: white; background: #f9423a; line-height: 20px; font-weight: bold")};this.loadDebugInfos()&&this.loadCacheNodes()}writeToConsole(...params){console.debug("[Neos.Debug]",...params)}loadNodes(filter){return document.createTreeWalker(document.getRootNode(),NodeFilter.SHOW_COMMENT,{acceptNode:node2=>node2.nodeValue.indexOf(filter)===0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP})}processCacheInfo(parentNode,cacheInfo){let{mode,created,fusionPath}=cacheInfo;mode==="uncached"&&this.debugInfos.cCacheUncached++,cacheInfo.hit=mode!=="uncached"&&this.debugInfos.cCacheMisses.includes(fusionPath),cacheInfo.parentNode=parentNode,parentNode.dataset.neosDebugId=cacheInfo.fusionPath,cacheInfo.created=new Date(created).toLocaleString()+(mode!=="uncached"?" - "+prettyDate(created):"");let clone=parentNode.cloneNode();clone.innerHTML="",cacheInfo.markup=clone.outerHTML.replace(/<\/.+/,"").replace(/</g,"&lt;").replace(/>/g,"&gt;").substring(0,150)+" ...",this.cacheInfos.push(cacheInfo)}loadCacheNodes(){let cacheNodes=this.loadNodes(CACHE_PREFIX);for(;cacheNodes.nextNode();){let{currentNode}=cacheNodes,parentNode=currentNode.previousElementSibling;if(!parentNode)continue;let cacheInfo=JSON.parse(currentNode.nodeValue.substring(CACHE_PREFIX.length));this.processCacheInfo(parentNode,cacheInfo)}}loadDebugInfos(){let dataNode=this.loadNodes(DEBUG_PREFIX).nextNode();return this.debugInfos=dataNode?JSON.parse(dataNode.nodeValue.substring(DEBUG_PREFIX.length)):null,this.debugInfos?(this.writeToConsole(this.debugInfos,"Parsed debug infos"),!0):(this.writeToConsole("No debug infos found"),!1)}render({active}){return active==="false"||!this.debugInfos?null:u4(DebugProvider,{closeApp:this.closeApp,debugInfos:this.debugInfos,cacheInfos:this.cacheInfos,children:[u4("div",{dangerouslySetInnerHTML:{__html:styleContainer.innerHTML}}),u4("div",{className:styles5,children:[u4(StatusBar_default,{}),u4(QueryOverlay_default,{}),u4(CacheOverlay_default,{}),u4(InspectionOverlay_default,{}),u4(AdditionalMetricsOverlay_default,{})]})]})}};NeosDebugApp.tagName="neos-debug",NeosDebugApp.observedAttributes=["active","cookiename"],NeosDebugApp.options={shadow:!0};var NeosDebugApp_default=NeosDebugApp;(()=>{let COOKIE_NAME="__neos_debug__",component=null,registered=!1;window.__enable_neos_debug=(setCookie=!1)=>{console.debug("%c Starting Neos Debug Tool ... ","color: white; background: #f9423a; line-height: 20px; font-weight: bold"),setCookie?document.cookie=`${COOKIE_NAME}=true;path=/;SameSite=Strict`:console.debug('Start the Debug tool with "__enable_neos_debug__(true)" to start up the Debug tool on every page load'),registered||(preact_custom_element_esm_default(NeosDebugApp_default,null,null,NeosDebugApp_default.options),registered=!0,component=document.createElement(NeosDebugApp_default.tagName),component.setAttribute("cookiename",COOKIE_NAME),document.body.appendChild(component)),component.setAttribute("active","true")};let debugCookie=document.cookie.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));debugCookie&&debugCookie[1]==="true"&&window.addEventListener("load",()=>window.__enable_neos_debug(!0))})();})();
+
+    details summary {
+        cursor: pointer;
+    }
+`,NeosDebugApp=class extends b{constructor(){super();this.cacheInfos=[];this.closeApp=()=>{let{cookiename}=this.props;document.cookie=`${cookiename}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Strict`,document.querySelector("neos-debug").setAttribute("active","false"),this.writeToConsole("%c Closing Neos Debug tool","color: white; background: #f9423a; line-height: 20px; font-weight: bold")};this.loadDebugInfos()&&this.loadCacheNodes()}writeToConsole(...params){console.debug("[Neos.Debug]",...params)}loadNodes(filter){return document.createTreeWalker(document.getRootNode(),NodeFilter.SHOW_COMMENT,{acceptNode:node2=>node2.nodeValue.indexOf(filter)===0?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP})}processCacheInfo(parentNode,cacheInfo){let{mode,created,fusionPath}=cacheInfo;mode==="uncached"&&this.debugInfos.cCacheUncached++,cacheInfo.hit=mode!=="uncached"&&this.debugInfos.cCacheMisses.includes(fusionPath),cacheInfo.parentNode=parentNode,parentNode.dataset.neosDebugId=cacheInfo.fusionPath,cacheInfo.created=new Date(created).toLocaleString()+(mode!=="uncached"?" - "+prettyDate(created):""),cacheInfo.markup=parentNode.outerHTML.replace(/<\/.+/,"").replace(/</g,"&lt;").replace(/>/g,"&gt;").substring(0,150)+" \u2026",this.cacheInfos.push(cacheInfo)}loadCacheNodes(){let cacheNodes=this.loadNodes(CACHE_PREFIX);for(;cacheNodes.nextNode();){let{currentNode}=cacheNodes,parentNode=currentNode.previousElementSibling;if(!parentNode)continue;let cacheInfo=JSON.parse(currentNode.nodeValue.substring(CACHE_PREFIX.length));this.processCacheInfo(parentNode,cacheInfo)}}loadDebugInfos(){let dataNode=this.loadNodes(DEBUG_PREFIX).nextNode();return this.debugInfos=dataNode?JSON.parse(dataNode.nodeValue.substring(DEBUG_PREFIX.length)):null,this.debugInfos?(this.writeToConsole(this.debugInfos,"Parsed debug infos"),!0):(this.writeToConsole("No debug infos found"),!1)}render({active}){return active==="false"||!this.debugInfos?null:u4(DebugProvider,{closeApp:this.closeApp,debugInfos:this.debugInfos,cacheInfos:this.cacheInfos,children:[u4("div",{dangerouslySetInnerHTML:{__html:styleContainer.innerHTML}}),u4("div",{className:styles5,children:[u4(StatusBar_default,{}),u4(QueryOverlay_default,{}),u4(CacheOverlay_default,{}),u4(InspectionOverlay_default,{}),u4(AdditionalMetricsOverlay_default,{})]})]})}};NeosDebugApp.tagName="neos-debug",NeosDebugApp.observedAttributes=["active","cookiename"],NeosDebugApp.options={shadow:!0};var NeosDebugApp_default=NeosDebugApp;(()=>{let COOKIE_NAME="__neos_debug__",component=null,registered=!1;window.__enable_neos_debug=(setCookie=!1)=>{console.debug("%c Starting Neos Debug Tool ... ","color: white; background: #f9423a; line-height: 20px; font-weight: bold"),setCookie?document.cookie=`${COOKIE_NAME}=true;path=/;SameSite=Strict`:console.debug('Start the Debug tool with "__enable_neos_debug__(true)" to start up the Debug tool on every page load'),registered||(preact_custom_element_esm_default(NeosDebugApp_default,null,null,NeosDebugApp_default.options),registered=!0,component=document.createElement(NeosDebugApp_default.tagName),component.setAttribute("cookiename",COOKIE_NAME),document.body.appendChild(component)),component.setAttribute("active","true")};let debugCookie=document.cookie.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));debugCookie&&debugCookie[1]==="true"&&window.addEventListener("load",()=>window.__enable_neos_debug(!0))})();})();
 //# sourceMappingURL=Plugin.js.map
