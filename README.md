@@ -1,7 +1,5 @@
 # Flowpack.Neos.Debug
 
-⚠️ This plugin rewrite is currently work-in-progress. Only use if you know what you are doing.
-
 This plugin is a small helper package to add a debug panel to your [Neos CMS](https://www.neoss.io) website. 
 At this point in time you're able to debug your content cache configuration as well as sql queries.
 Additionally, the Server-Timing http header can be enabled that will add request timings to responses. 
@@ -9,12 +7,14 @@ Those then can be viewed in the browser network tab.
 
 _Note: This is still a very early rough version. Contributions are welcome in any Error. Nevertheless, it's already adding value to your debug experience_
 
-This plugin is based on the [t3n/neos-debug](https://github.com/t3n/neos-debug) package.
+This plugin is based on the now unmaintained [t3n/neos-debug](https://github.com/t3n/neos-debug) package and replaces it fully.
 
 ## Screenshots
 
-![Neos CMS Demo Site with enabled debug console](Documentation/debug-bar.jpg 'Neos CMS Demo Site with enabled debug console')
-![Server-Timing header in the browser network tab](Documentation/server-timing.jpg 'Viewing the timings in the browser network tab')
+![Neos CMS Demo Site with debug console showing cache visualization](Documentation/NeosDebugFusionCache.jpg 'Neos CMS Demo Site with debug console showing cache visualization')
+![Neos CMS Demo Site with debug console showing database queries](Documentation/NeosDebugDatabaseQueries.jpg 'Neos CMS Demo Site with debug console showing database queries')
+![Neos CMS Demo Site with debug console showing other metrics](Documentation/NeosDebugOtherMetrics.jpg 'Neos CMS Demo Site with debug console showing other metrics')
+![Server-Timing header in the browser network tab](Documentation/NeosDebugServerTiming.jpg 'Viewing the timings in the browser network tab')
 
 ## Installation & configuration
 
