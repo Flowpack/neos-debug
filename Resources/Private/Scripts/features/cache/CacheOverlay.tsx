@@ -43,7 +43,7 @@ const CacheOverlay = () => {
                     <thead>
                         <tr>
                             <th style={{ width: 'fit-content' }}>Mode</th>
-                            <th style={{ width: 'min-content' }}>Cache hit</th>
+                            <th style={{ width: 'min-content', whiteSpace: 'nowrap' }}>Cache hit</th>
                             <th style={{ width: '100%' }}>Fusion path</th>
                             <th style={{ width: 'min-content' }}>Actions</th>
                         </tr>
