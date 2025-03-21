@@ -60,6 +60,26 @@ const contentWrapStyle = css`
     gap: 1rem;
     overflow: auto;
     max-height: calc(100% - 40px);
+    
+    /**
+     * Scollbars
+     */
+    ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--colors-ContrastDark);
+    }
+    
+    ::-webkit-scrollbar-corner {
+        background-color: var(--colors-ContrastDarker);
+    }
 `;
 
 const overlayState = signal<Overlays | null>(null);
