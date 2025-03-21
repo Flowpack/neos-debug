@@ -59,7 +59,7 @@ const contentWrapStyle = css`
     flex-direction: column;
     gap: 1rem;
     overflow: auto;
-    max-height: calc(100% - 50px);
+    max-height: calc(100% - 40px);
 `;
 
 const overlayState = signal<Overlays | null>(null);
