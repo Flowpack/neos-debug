@@ -6,6 +6,10 @@ const noticeStyle = css`
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    
+    span {
+        display: inline-flex;
+    }
 
     svg {
         color: var(--colors-PrimaryBlue);

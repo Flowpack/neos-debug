@@ -13,7 +13,10 @@ const tableStyle = css`
     th {
         text-align: left;
         padding: 0.5rem;
-        white-space: nowrap;
+        word-break: break-word;
+        /* This regex-like pattern helps break at uppercase letters in camelCase */
+        overflow-wrap: break-word;
+        hyphens: auto;
         position: sticky;
         top: 0;
         background-color: var(--colors-ContrastDarker);
