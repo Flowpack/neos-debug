@@ -35,7 +35,7 @@ Flowpack:
 
 To bring up the debug panel run this command in your js console:
 ```js
-__enable_neos_debug__()
+__enable_neos_debug()
 ```
 
 _Disclaimer: Once the debug mode is enabled you might expose sensitive data. Make sure to **not** use this in production. At least be warned_
@@ -72,7 +72,7 @@ Flowpack:
 ## Usage
 
 To enable the cache visualization open your browsers developer console and execute
-`__enable_neos_debug__()`. This will bring up the debug console at the bottom of your screen.
+`__enable_neos_debug()`. This will bring up the debug console at the bottom of your screen.
 
 ### 🔦 Inspect
 
@@ -104,7 +104,7 @@ plugin and check if the problem persists.
 To shutdown the debug console simply close it. If you'd like to persist the active debug state you can add a `true` to the method
 
 ```
-__enable_neos_debug__(true)
+__enable_neos_debug(true)
 ```
 
 This will set a cookie and the debug mode will still be active after a page refresh.
@@ -124,7 +124,7 @@ To use the debug widget in custom Fusion views, you can include the necessary re
     }
 ```
 
-With this modification, you can use the `__enable_neos_debug__()` function in your browser console to enable the debug widget.
+With this modification, you can use the `__enable_neos_debug()` function in your browser console to enable the debug widget.
 
 ⚠️Make sure to remove this script in production environments or when in a shared plugin 
 as the prototype might not be available in every environment.

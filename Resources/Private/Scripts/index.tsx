@@ -19,7 +19,7 @@ import NeosDebugApp from './NeosDebugApp';
         } else {
             // eslint-disable-next-line no-console
             console.debug(
-                'Start the Debug tool with "__enable_neos_debug__(true)" to start up the Debug tool on every page load',
+                'Start the Debug tool with "__enable_neos_debug(true)" to start up the Debug tool on every page load',
             );
         }
 
