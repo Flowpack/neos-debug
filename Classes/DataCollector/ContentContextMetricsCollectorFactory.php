@@ -19,7 +19,7 @@ class ContentContextMetricsCollectorFactory
 
     public function build(): ?ContentContextMetricsCollectorInterface
     {
-        // ContextFactory only exists before Neos 9.x
+        // ContextFactoryInterface only exists before Neos 9.x
         if (interface_exists(\Neos\ContentRepository\Domain\Service\ContextFactoryInterface::class)) {
             return new ContentContextMetricsCollectorNeos8(
                 $this->dataFormatter,
