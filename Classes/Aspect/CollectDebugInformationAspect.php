@@ -27,7 +27,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Media\Domain\Model\AssetInterface;
-use Neos\Utility\ObjectAccess;
+use Psr\Http\Message\StreamInterface;
 
 #[Flow\Scope('singleton')]
 #[Flow\Aspect]
@@ -73,18 +73,18 @@ class CollectDebugInformationAspect
     }
 
     #[Flow\Around("method(Neos\Neos\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
-    public function addDebugValuesToNeosFusionView(JoinPointInterface $joinPoint): string|Response
+    public function addDebugValuesToNeosFusionView(JoinPointInterface $joinPoint): string|Response|StreamInterface
     {
         return $this->addDebugValues($joinPoint);
     }
 
     #[Flow\Around("method(Neos\Fusion\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
-    public function addDebugValuesToDefaultFusionView(JoinPointInterface $joinPoint): string|Response
+    public function addDebugValuesToDefaultFusionView(JoinPointInterface $joinPoint): string|Response|StreamInterface
     {
         return $this->addDebugValues($joinPoint);
     }
 
-    protected function addDebugValues(JoinPointInterface $joinPoint): string|Response
+    protected function addDebugValues(JoinPointInterface $joinPoint): string|Response|StreamInterface
     {
         $startRenderAt = microtime(true) * 1000;
         $response = $joinPoint->getAdviceChain()->proceed($joinPoint);
@@ -114,7 +114,10 @@ class CollectDebugInformationAspect
             if ($response->getHeader('Content-Type') !== 'text/html' && !str_contains($output, '<!DOCTYPE html>')) {
                 return $response;
             }
+        } elseif ($response instanceof StreamInterface) {
+            $output = $response->getContents();
         } else {
+            // legacy 8.3
             $output = $response;
         }
 
@@ -157,8 +160,12 @@ class CollectDebugInformationAspect
 
         if ($response instanceof Response) {
             return $response->withBody(Utils::streamFor($output));
+        } elseif ($response instanceof StreamInterface) {
+            return Utils::streamFor($output);
+        } else {
+            // legacy 8.3
+            return $output;
         }
-        return $output;
     }
 
     #[Flow\Before("method(Neos\Flow\Mvc\Routing\Router->route()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
