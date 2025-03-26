@@ -96,7 +96,11 @@ class ContentCacheSegmentAspect
         return $this->renderCacheInfoIntoSegment($segment, [
             'mode' => static::MODE_UNCACHED,
             'fusionPath' => $joinPoint->getMethodArgument('fusionPath'),
-            'contextVariables' => array_keys($joinPoint->getMethodArgument('contextVariables')),
+            'contextVariables' => array_keys($joinPoint->isMethodArgument('serializedContext')
+                ? $joinPoint->getMethodArgument('serializedContext')
+                // legacy 8.3
+                : $joinPoint->getMethodArgument('contextVariables')
+            ),
         ]);
     }
 
@@ -111,7 +115,11 @@ class ContentCacheSegmentAspect
             'entryIdentifier' => $this->interceptedCacheEntryValues,
             'entryTags' => $joinPoint->getMethodArgument('tags'),
             'lifetime' => $joinPoint->getMethodArgument('lifetime'),
-            'contextVariables' => array_keys($joinPoint->getMethodArgument('contextVariables')),
+            'contextVariables' => array_keys($joinPoint->isMethodArgument('serializedContext')
+                ? $joinPoint->getMethodArgument('serializedContext')
+                // legacy 8.3
+                : $joinPoint->getMethodArgument('contextVariables')
+            ),
             'entryDiscriminator' => $joinPoint->getMethodArgument('cacheDiscriminator'),
         ]);
     }
