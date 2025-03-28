@@ -4,7 +4,7 @@ prototype(Flowpack.Neos.Debug:Fragment.Scripts) < prototype(Neos.Fusion:Componen
         </script>
     `
 
-    @if.notInBackend = ${!documentNode.context.inBackend}
+    @if.notInBackend = ${documentNode.context && !documentNode.context.inBackend || renderingMode && !renderingMode.isEdit}
     @if.isHtml = ${request.format == 'html'}
     @if.isActive = ${Configuration.setting('Flowpack.Neos.Debug.enabled') && Configuration.setting('Flowpack.Neos.Debug.htmlOutput.enabled')}
 }

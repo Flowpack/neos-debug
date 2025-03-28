@@ -27,7 +27,8 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Media\Domain\Model\AssetInterface;
-use Neos\Utility\ObjectAccess;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 #[Flow\Scope('singleton')]
 #[Flow\Aspect]
@@ -73,18 +74,18 @@ class CollectDebugInformationAspect
     }
 
     #[Flow\Around("method(Neos\Neos\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
-    public function addDebugValuesToNeosFusionView(JoinPointInterface $joinPoint): string|Response
+    public function addDebugValuesToNeosFusionView(JoinPointInterface $joinPoint): string|ResponseInterface|StreamInterface
     {
         return $this->addDebugValues($joinPoint);
     }
 
     #[Flow\Around("method(Neos\Fusion\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
-    public function addDebugValuesToDefaultFusionView(JoinPointInterface $joinPoint): string|Response
+    public function addDebugValuesToDefaultFusionView(JoinPointInterface $joinPoint): string|ResponseInterface|StreamInterface
     {
         return $this->addDebugValues($joinPoint);
     }
 
-    protected function addDebugValues(JoinPointInterface $joinPoint): string|Response
+    protected function addDebugValues(JoinPointInterface $joinPoint): string|ResponseInterface|StreamInterface
     {
         $startRenderAt = microtime(true) * 1000;
         $response = $joinPoint->getAdviceChain()->proceed($joinPoint);
@@ -107,7 +108,7 @@ class CollectDebugInformationAspect
             return $response;
         }
 
-        if ($response instanceof Response) {
+        if ($response instanceof ResponseInterface) {
             $output = $response->getBody()?->getContents();
             $response->getBody()?->rewind();
 
@@ -145,7 +146,7 @@ class CollectDebugInformationAspect
                 $this->contentContextMetricsCollector->getName() => $this->contentContextMetricsCollector->collect(),
             ]
         ];
-
+        $output = (string)$output;
         $debugOutput = '<!--__NEOS_DEBUG__ ' . json_encode($data) . '-->';
         $htmlEndPosition = strpos($output, '</html>');
 
@@ -158,6 +159,11 @@ class CollectDebugInformationAspect
         if ($response instanceof Response) {
             return $response->withBody(Utils::streamFor($output));
         }
+
+        if ($response instanceof StreamInterface) {
+            return Utils::streamFor($output);
+        }
+
         return $output;
     }
 
