@@ -84,7 +84,6 @@ class ContentCacheSegmentAspect
             'renderTime' => round(($end - $start) * 1000, 2) . ' ms',
             'fusionPath' => $joinPoint->getMethodArgument('path'),
             'contextVariables' => array_keys($joinPoint->getMethodArgument('contextArray')),
-            ''
         ]);
     }
 
@@ -93,10 +92,18 @@ class ContentCacheSegmentAspect
     {
         $segment = $joinPoint->getAdviceChain()->proceed($joinPoint);
 
+        if ($joinPoint->isMethodArgument('contextVariables')) {
+            // Neos 8.x
+            $contextVariables = $joinPoint->getMethodArgument('contextVariables');
+        } else {
+            // Neos 9.x
+            $contextVariables = $joinPoint->getMethodArgument('serializedContext');
+        }
+
         return $this->renderCacheInfoIntoSegment($segment, [
             'mode' => static::MODE_UNCACHED,
             'fusionPath' => $joinPoint->getMethodArgument('fusionPath'),
-            'contextVariables' => array_keys($joinPoint->getMethodArgument('contextVariables')),
+            'contextVariables' => array_keys($contextVariables),
         ]);
     }
 
@@ -105,13 +112,21 @@ class ContentCacheSegmentAspect
     {
         $segment = $joinPoint->getAdviceChain()->proceed($joinPoint);
 
+        if ($joinPoint->isMethodArgument('contextVariables')) {
+            // Neos 8.x
+            $contextVariables = $joinPoint->getMethodArgument('contextVariables');
+        } else {
+            // Neos 9.x
+            $contextVariables = $joinPoint->getMethodArgument('serializedContext');
+        }
+
         return $this->renderCacheInfoIntoSegment($segment, [
             'mode' => static::MODE_DYNAMIC,
             'fusionPath' => $joinPoint->getMethodArgument('fusionPath'),
             'entryIdentifier' => $this->interceptedCacheEntryValues,
             'entryTags' => $joinPoint->getMethodArgument('tags'),
             'lifetime' => $joinPoint->getMethodArgument('lifetime'),
-            'contextVariables' => array_keys($joinPoint->getMethodArgument('contextVariables')),
+            'contextVariables' => array_keys($contextVariables),
             'entryDiscriminator' => $joinPoint->getMethodArgument('cacheDiscriminator'),
         ]);
     }
