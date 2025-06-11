@@ -70,7 +70,7 @@ const styles = css`
 
 const StatusBar: FunctionComponent = () => {
     const {
-        debugInfos: { renderTime, sqlData, cCacheHits, cCacheMisses, cCacheUncached, resourceStreamRequests },
+        debugInfos: { renderTime, sqlData, cCacheHits, cCacheMisses, cCacheUncached },
         closeApp,
     } = useDebugContext();
 
