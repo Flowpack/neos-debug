@@ -101,7 +101,7 @@ class NeosDebugApp extends Component<AppProps, AppState> {
             this.debugInfos.cCacheUncached++;
         }
 
-        cacheInfo.hit = mode !== 'uncached' && this.debugInfos.cCacheMisses.includes(fusionPath);
+        cacheInfo.hit = mode !== 'uncached' && !this.debugInfos.cCacheMisses.includes(fusionPath);
         cacheInfo.parentNode = parentNode;
 
         parentNode.dataset.neosDebugId = cacheInfo.fusionPath;
