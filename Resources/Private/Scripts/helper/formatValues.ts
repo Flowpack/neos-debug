@@ -16,7 +16,12 @@ export function formatValue(value: any): string {
 
 export function syntaxHighlight(json: string | object): string {
     if (typeof json != 'string') {
-        json = JSON.stringify(json, undefined, 2);
+        try {
+            json = JSON.stringify(json, undefined, 2);
+        } catch (e) {
+            console.error('Failed to stringify JSON:', e);
+            return 'Invalid JSON';
+        }
     }
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return json.replace(
