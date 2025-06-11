@@ -81,8 +81,9 @@ class DebugStack implements SQLLogger
     protected function parseTableName(string $sql): string
     {
         $sql = strtolower($sql);
-        $start = strpos($sql, 'from ') + 5;
-        $end = strpos($sql, ' ', $start);
-        return substr($sql, $start, $end - $start);
+        if (preg_match('/from\s+([`"\[]?[\w.]+[`"\]]?)/', $sql, $matches)) {
+            return trim($matches[1], '`"[]');
+        }
+        return '';
     }
 }
