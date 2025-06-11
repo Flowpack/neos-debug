@@ -1,8 +1,8 @@
-import { FunctionComponent } from 'preact';
+import { FunctionComponent } from "preact";
 
-import { useDebugContext } from '../../context/DebugContext';
-import QueryTableGroup from './QueryTableGroup';
-import { css } from '../../styles/css';
+import { useDebugContext } from "../../context/DebugContext";
+import QueryTableGroup from "./QueryTableGroup";
+import { css } from "../../styles/css";
 
 const styles = css`
     width: 100%;
@@ -46,20 +46,24 @@ const QueryTable: FunctionComponent = () => {
         }
     } = useDebugContext();
 
-    // TODO: Add sorting by column
     return (
         <table className={styles}>
             <thead>
-            <tr>
-                <th>Query</th>
-                <th>Total time</th>
-                <th>Count</th>
-            </tr>
+                <tr>
+                    <th>Query</th>
+                    <th>Total time</th>
+                    <th>Count</th>
+                </tr>
             </thead>
             <tbody>
-            {Object.keys(groupedQueries).sort().map((tableName) => (
-                <QueryTableGroup tableName={tableName} queries={groupedQueries[tableName]} />
-            ))}
+                {Object.keys(groupedQueries)
+                    .sort((a, b) => {
+                        // Sort descending by execution time
+                        return groupedQueries[b].executionTimeSum - groupedQueries[a].executionTimeSum;
+                    })
+                    .map((tableName) => (
+                        <QueryTableGroup tableName={tableName} queryGroup={groupedQueries[tableName]} />
+                    ))}
             </tbody>
         </table>
     );

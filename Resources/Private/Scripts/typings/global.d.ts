@@ -35,6 +35,14 @@ type CacheInfo = {
     parentNode: HTMLElement;
 };
 
+type QueryGroup = {
+    queries: {
+        [key: SQLQueryString]: QueryDetails;
+    };
+    executionTimeSum: number;
+    count: number;
+}
+
 type DebugInfos = {
     renderTime: number;
     startRenderAt: number;
@@ -50,9 +58,7 @@ type DebugInfos = {
             };
         };
         groupedQueries: {
-            [key: SQLTableName]: {
-                [key: SQLQueryString]: QueryDetails;
-            };
+            [key: SQLTableName]: QueryGroup;
         };
     };
     resourceStreamRequests: NeosResource[];

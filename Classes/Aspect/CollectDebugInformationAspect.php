@@ -244,24 +244,30 @@ class CollectDebugInformationAspect
             $paramString = json_encode($params);
 
             if (!array_key_exists($table, $carry)) {
-                $carry[$table] = [];
+                $carry[$table] = [
+                    'queries' => [],
+                    'executionTimeSum' => 0,
+                    'count' => 0,
+                ];
             }
 
             if (!array_key_exists($sql, $carry[$table])) {
-                $carry[$table][$sql] = [
+                $carry[$table]['queries'][$sql] = [
                     'executionTimeSum' => 0,
                     'count' => 0,
                     'params' => [],
                 ];
             }
 
-            $carry[$table][$sql]['executionTimeSum'] += $executionMS;
-            $carry[$table][$sql]['count']++;
+            $carry[$table]['executionTimeSum'] += $executionMS;
+            $carry[$table]['count']++;
+            $carry[$table]['queries'][$sql]['executionTimeSum'] += $executionMS;
+            $carry[$table]['queries'][$sql]['count']++;
 
-            if (!array_key_exists($paramString, $carry[$table][$sql]['params'])) {
-                $carry[$table][$sql]['params'][$paramString] = 1;
+            if (!array_key_exists($paramString, $carry[$table]['queries'][$sql]['params'])) {
+                $carry[$table]['queries'][$sql]['params'][$paramString] = 1;
             } else {
-                $carry[$table][$sql]['params'][$paramString]++;
+                $carry[$table]['queries'][$sql]['params'][$paramString]++;
             }
 
             return $carry;

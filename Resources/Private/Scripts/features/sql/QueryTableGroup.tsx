@@ -1,8 +1,8 @@
-import { FunctionComponent } from 'preact';
-import { useState } from 'preact/hooks';
+import { FunctionComponent } from "preact";
+import { useState } from "preact/hooks";
 
-import { css } from '../../styles/css';
-import QueryTableRow from './QueryTableRow';
+import { css } from "../../styles/css";
+import QueryTableRow from "./QueryTableRow";
 
 const tableNameStyle = css`
     cursor: pointer;
@@ -22,27 +22,31 @@ const tableNameStyle = css`
 
 interface QueryTableGroupProps {
     tableName: string;
-    queries: Record<string, QueryDetails>;
+    queryGroup: QueryGroup;
 }
 
-const QueryTableGroup: FunctionComponent<QueryTableGroupProps> = ({ tableName, queries }) => {
+const QueryTableGroup: FunctionComponent<QueryTableGroupProps> = ({ tableName, queryGroup }) => {
     const [collapsed, setCollapsed] = useState(true);
 
     return (
         <>
             <tr className={tableNameStyle} onClick={() => setCollapsed((prev) => !prev)}>
                 <td>
-                    {collapsed ? '▶' : '▼'} <strong>{tableName}</strong>
+                    {collapsed ? "▶" : "▼"} <strong>{tableName}</strong>
                 </td>
-                <td>{Object.values(queries).reduce((acc, details) => acc + details.executionTimeSum, 0).toFixed(2)} ms</td>
-                <td>{Object.values(queries).reduce((acc, details) => acc + details.count, 0)}</td>
+                <td>{queryGroup.executionTimeSum.toFixed(2)} ms</td>
+                <td>{queryGroup.count}</td>
             </tr>
-            {!collapsed && Object.keys(queries).map((sqlString) => (
-                <QueryTableRow
-                    queryString={sqlString}
-                    queryDetails={queries[sqlString]}
-                />
-            ))}
+            {!collapsed && Object.keys(queryGroup.queries)
+                .sort((a, b) => {
+                    // Sort descending by execution time
+                    return queryGroup.queries[b].executionTimeSum - queryGroup.queries[a].executionTimeSum;
+                }).map((sqlString) => (
+                    <QueryTableRow
+                        queryString={sqlString}
+                        queryDetails={queryGroup.queries[sqlString]}
+                    />
+                ))}
         </>
     );
 };
