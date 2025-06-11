@@ -215,6 +215,7 @@ class CollectDebugInformationAspect
     #[Flow\Around("method(Neos\Fusion\Core\Cache\ContentCache->getCachedSegment()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
     public function addCacheMiss(JoinPointInterface $joinPoint): mixed
     {
+        /** @var string $fusionPath */
         $fusionPath = $joinPoint->getMethodArgument('fusionPath');
 
         $result = $joinPoint->getAdviceChain()->proceed($joinPoint);
@@ -227,8 +228,9 @@ class CollectDebugInformationAspect
     #[Flow\AfterReturning("method(Neos\Fusion\Core\Cache\ContentCache->replaceCachePlaceholders()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
     public function addCacheHit(JoinPointInterface $joinPoint): void
     {
+        /** @var bool|int $result */
         $result = $joinPoint->getResult();
-        $this->contentCacheHits += $result;
+        $this->contentCacheHits += $result ?: 0;
     }
 
     /**
