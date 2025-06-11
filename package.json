@@ -41,5 +41,5 @@
     "singleQuote": true,
     "tabWidth": 4
   },
-  "packageManager": "yarn@4.0.2"
+  "packageManager": "yarn@4.9.2"
 }
