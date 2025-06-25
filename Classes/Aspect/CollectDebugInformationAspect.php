@@ -27,6 +27,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Media\Domain\Model\AssetInterface;
+use Neos\Media\Domain\Model\Thumbnail;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -198,7 +199,7 @@ class CollectDebugInformationAspect
     {
         /** @var AssetInterface $asset */
         $asset = $joinPoint->getMethodArgument('asset');
-        if ($asset) {
+        if ($asset instanceof Thumbnail) {
             if (!array_key_exists($asset->getResource()->getSha1(), $this->thumbnails)) {
                 $this->thumbnails[$asset->getResource()->getSha1()] = 1;
             } else {
