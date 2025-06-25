@@ -199,7 +199,8 @@ class CollectDebugInformationAspect
     {
         /** @var AssetInterface $asset */
         $asset = $joinPoint->getMethodArgument('asset');
-        if ($asset instanceof Thumbnail) {
+        $thumbnailOrOriginalAsset = $joinPoint->getResult();
+        if ($asset && $thumbnailOrOriginalAsset instanceof Thumbnail) {
             if (!array_key_exists($asset->getResource()->getSha1(), $this->thumbnails)) {
                 $this->thumbnails[$asset->getResource()->getSha1()] = 1;
             } else {
