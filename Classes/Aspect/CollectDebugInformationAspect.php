@@ -253,7 +253,7 @@ class CollectDebugInformationAspect
                 ];
             }
 
-            if (!array_key_exists($sql, $carry[$table])) {
+            if (!array_key_exists($sql, $carry[$table]['queries'])) {
                 $carry[$table]['queries'][$sql] = [
                     'executionTimeSum' => 0,
                     'count' => 0,
