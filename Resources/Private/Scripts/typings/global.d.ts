@@ -43,6 +43,16 @@ type QueryGroup = {
     count: number;
 }
 
+type SlowQuery = {
+    executionMS: number;
+    params: {
+        [key: string]: any;
+    };
+    sql: SQLQueryString;
+    table: SQLTableName;
+    types: number[];
+}
+
 type DebugInfos = {
     renderTime: number;
     startRenderAt: number;
@@ -50,7 +60,7 @@ type DebugInfos = {
     sqlData: {
         queryCount: number;
         executionTime: number;
-        slowQueries: SQLQueryString[];
+        slowQueries: SlowQuery[];
         tables: {
             [key: SQLTableName]: {
                 queryCount: number;
