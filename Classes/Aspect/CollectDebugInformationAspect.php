@@ -113,7 +113,8 @@ class CollectDebugInformationAspect
             $output = $response->getBody()?->getContents();
             $response->getBody()?->rewind();
 
-            if ($response->getHeader('Content-Type') !== 'text/html' && !str_contains($output, '<!DOCTYPE html>')) {
+            $contentType = $response->getHeaderLine('Content-Type');
+            if (!str_contains($contentType, 'text/html') && !str_contains($output, '<!DOCTYPE html')) {
                 return $response;
             }
         } else {
