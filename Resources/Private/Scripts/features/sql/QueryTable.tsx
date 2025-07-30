@@ -42,7 +42,7 @@ const styles = css`
 const QueryTable: FunctionComponent = () => {
     const {
         debugInfos: {
-            sqlData: { groupedQueries }
+            sqlData: { groupedQueries, slowQueries }
         }
     } = useDebugContext();
 
@@ -62,7 +62,11 @@ const QueryTable: FunctionComponent = () => {
                         return groupedQueries[b].executionTimeSum - groupedQueries[a].executionTimeSum;
                     })
                     .map((tableName) => (
-                        <QueryTableGroup tableName={tableName} queryGroup={groupedQueries[tableName]} />
+                        <QueryTableGroup
+                            tableName={tableName}
+                            queryGroup={groupedQueries[tableName]}
+                            slowQueries={slowQueries}
+                        />
                     ))}
             </tbody>
         </table>

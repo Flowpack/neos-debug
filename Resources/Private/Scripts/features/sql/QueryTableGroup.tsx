@@ -3,8 +3,10 @@ import { useState } from "preact/hooks";
 
 import { css } from "../../styles/css";
 import QueryTableRow from "./QueryTableRow";
+import { classnames } from "../../helper/classnames";
+import {Icon, iconWarning} from "../../presentationals/Icon";
 
-const tableNameStyle = css`
+const tableRowStyle = css`
     cursor: pointer;
     
     &:hover {
@@ -20,19 +22,37 @@ const tableNameStyle = css`
     }
 `;
 
+const slowQueryStyle = css`
+    svg {
+        color: var(--colors-Warn);
+    }
+`;
+
+const tableNameStyle = css`
+    display: inline-flex;
+    gap: 1ch;
+`;
+
 interface QueryTableGroupProps {
     tableName: string;
     queryGroup: QueryGroup;
+    slowQueries: SlowQuery[];
 }
 
-const QueryTableGroup: FunctionComponent<QueryTableGroupProps> = ({ tableName, queryGroup }) => {
+const QueryTableGroup: FunctionComponent<QueryTableGroupProps> = ({ tableName, queryGroup, slowQueries }) => {
     const [collapsed, setCollapsed] = useState(true);
+
+    const slowQueriesForTable = slowQueries.filter((slowQuery) => slowQuery.table === tableName);
 
     return (
         <>
-            <tr className={tableNameStyle} onClick={() => setCollapsed((prev) => !prev)}>
+            <tr className={classnames(tableRowStyle, slowQueriesForTable.length > 0 && slowQueryStyle)} onClick={() => setCollapsed((prev) => !prev)}>
                 <td>
-                    {collapsed ? "▶" : "▼"} <strong>{tableName}</strong>
+                    <span className={tableNameStyle}>
+                        {collapsed ? "▶" : "▼"}
+                        {slowQueriesForTable.length > 0 && <Icon icon={iconWarning}/>}
+                        <strong>{tableName}</strong>
+                    </span>
                 </td>
                 <td>{queryGroup.executionTimeSum.toFixed(2)} ms</td>
                 <td>{queryGroup.count}</td>
@@ -45,6 +65,7 @@ const QueryTableGroup: FunctionComponent<QueryTableGroupProps> = ({ tableName, q
                     <QueryTableRow
                         queryString={sqlString}
                         queryDetails={queryGroup.queries[sqlString]}
+                        slowQueries={slowQueriesForTable.filter(({sql}) => sql === sqlString)}
                     />
                 ))}
         </>
