@@ -138,7 +138,7 @@ You should wrap it with \`css\` like this:
             color: var(--colors-PrimaryBlue);
         }
     }
-`,StatusBar=()=>{let{debugInfos:{renderTime,sqlData,cCacheHits,cCacheMisses,cCacheUncached},closeApp}=useDebugContext(),toggleOverlay=T2(overlay=>{overlayState.value=overlayState.value===overlay?null:overlay},[]);return u4("div",{className:styles2,children:[u4(Icon,{icon:neos_default,size:"L"}),u4("div",{children:[renderTime," ms render time"]}),u4("button",{onClick:()=>toggleOverlay("inspection"),children:[u4(Icon,{icon:magnifying_glass_chart_solid_default})," Inspect"]}),u4("button",{onClick:()=>toggleOverlay("query"),children:[u4(Icon,{icon:database_solid_default})," SQL (",sqlData.queryCount," queries, ",sqlData.slowQueries.length," are slow)"]}),u4("button",{onClick:()=>toggleOverlay("cache"),children:[u4(Icon,{icon:bolt_lightning_solid_default})," Cache (hits: ",cCacheHits,", misses: ",cCacheMisses.length,", uncached"," ",cCacheUncached,")"]}),u4("button",{onClick:()=>toggleOverlay("additionalMetrics"),children:[u4(Icon,{icon:triangle_exclamation_solid_default})," Additional metrics"]}),u4("button",{onClick:closeApp,children:u4(Icon,{icon:circle_xmark_regular_default})})]})},StatusBar_default=StatusBar;var queryTableRowStyle=css`
+`,StatusBar=()=>{let{debugInfos:{renderTime,sqlData,cCacheHits,cCacheMisses,cCacheUncached},closeApp}=useDebugContext(),toggleOverlay=T2(overlay=>{overlayState.value=overlayState.value===overlay?null:overlay},[]);return u4("div",{className:styles2,children:[u4(Icon,{icon:neos_default,size:"L"}),u4("div",{children:[renderTime," ms render time"]}),u4("button",{onClick:()=>toggleOverlay("inspection"),children:[u4(Icon,{icon:magnifying_glass_chart_solid_default})," Inspect"]}),u4("button",{onClick:()=>toggleOverlay("query"),children:[u4(Icon,{icon:database_solid_default})," SQL (",sqlData.queryCount," queries, ",sqlData.slowQueries.length," are slow)"]}),u4("button",{onClick:()=>toggleOverlay("cache"),children:[u4(Icon,{icon:bolt_lightning_solid_default})," Cache (hits: ",cCacheHits,", misses: ",cCacheMisses.length,", uncached"," ",cCacheUncached,")"]}),u4("button",{onClick:()=>toggleOverlay("additionalMetrics"),children:[u4(Icon,{icon:triangle_exclamation_solid_default})," Additional metrics"]}),u4("button",{onClick:closeApp,children:u4(Icon,{icon:circle_xmark_regular_default})})]})},StatusBar_default=StatusBar;function classnames3(...args){return args.filter(Boolean).join(" ")}var queryTableRowStyle=css`
     ul {
         margin: 0;
     }
@@ -153,9 +153,10 @@ You should wrap it with \`css\` like this:
         }
     }
 `,sqlStringStyle=css`
-    display: inline-block;
+    display: inline-flex;
     vertical-align: middle;
     max-width: calc(100% - 30px);
+    gap: 1ch;
     
     i {
         font-style: normal;
@@ -169,7 +170,25 @@ You should wrap it with \`css\` like this:
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-`,QueryTableRow=({queryString,queryDetails})=>{let[collapsed,setCollapsed]=h2(!0);return u4("tr",{className:queryTableRowStyle,children:[u4("td",{title:"Toggle details",children:[u4("span",{className:[sqlStringStyle,collapsed&&collapsedStyle].join(" "),title:queryString,children:[u4("i",{onClick:()=>setCollapsed(prev2=>!prev2),children:collapsed?"\u25B6":"\u25BC"})," ",queryString]}),!collapsed&&u4(g,{children:[u4("strong",{style:{margin:"1rem 0 .5rem",display:"block"},children:"Calls by parameters:"}),u4("ul",{children:Object.keys(queryDetails.params).map(param=>u4("li",{children:[param,": ",queryDetails.params[param]]}))})]})]}),u4("td",{children:[queryDetails.executionTimeSum.toFixed(2)," ms"]}),u4("td",{children:queryDetails.count})]})},QueryTableRow_default=QueryTableRow;var tableNameStyle=css`
+`,slowQueryStyle=css`
+    svg {
+        color: var(--colors-Warn);
+    }
+`,parameterTableRowStyle=css`
+    td {
+        text-align: end;
+        
+        &:first-child {
+            text-align: start;
+            padding-left: 2rem !important;
+            overflow-wrap: anywhere;
+        }
+    }
+    
+    svg {
+        color: var(--colors-Warn);
+    }
+`,QueryTableRow=({queryString,queryDetails,slowQueries})=>{let[collapsed,setCollapsed]=h2(!0),hasSlowQuery=slowQueries.length>0;return u4(g,{children:[u4("tr",{className:queryTableRowStyle,children:[u4("td",{title:"Toggle details",children:u4("span",{className:classnames3(sqlStringStyle,collapsed&&collapsedStyle,hasSlowQuery&&slowQueryStyle),title:queryString,children:[u4("i",{onClick:()=>setCollapsed(prev2=>!prev2),children:collapsed?"\u25B6":"\u25BC"}),hasSlowQuery&&u4(Icon,{icon:triangle_exclamation_solid_default}),u4("span",{children:queryString})]})}),u4("td",{children:[queryDetails.executionTimeSum.toFixed(2)," ms"]}),u4("td",{children:queryDetails.count})]}),!collapsed&&u4(g,{children:[u4("tr",{classNames:parameterTableRowStyle,children:[u4("td",{colSpan:2,children:"Calls by parameters"}),u4("td",{children:"Count"})]}),Object.keys(queryDetails.params).sort((a5,b4)=>queryDetails.params[b4]-queryDetails.params[a5]).map(paramString=>{let isSlow=slowQueries.find(({params})=>JSON.stringify(params)===paramString);return u4("tr",{className:parameterTableRowStyle,children:[u4("td",{colSpan:2,children:[isSlow&&u4(Icon,{icon:triangle_exclamation_solid_default})," ",paramString]}),u4("td",{children:queryDetails.params[paramString]})]},paramString)})]})]})},QueryTableRow_default=QueryTableRow;var tableRowStyle=css`
     cursor: pointer;
     
     &:hover {
@@ -183,7 +202,14 @@ You should wrap it with \`css\` like this:
             text-align: right;
         }
     }
-`,QueryTableGroup=({tableName,queryGroup})=>{let[collapsed,setCollapsed]=h2(!0);return u4(g,{children:[u4("tr",{className:tableNameStyle,onClick:()=>setCollapsed(prev2=>!prev2),children:[u4("td",{children:[collapsed?"\u25B6":"\u25BC"," ",u4("strong",{children:tableName})]}),u4("td",{children:[queryGroup.executionTimeSum.toFixed(2)," ms"]}),u4("td",{children:queryGroup.count})]}),!collapsed&&Object.keys(queryGroup.queries).sort((a5,b4)=>queryGroup.queries[b4].executionTimeSum-queryGroup.queries[a5].executionTimeSum).map(sqlString=>u4(QueryTableRow_default,{queryString:sqlString,queryDetails:queryGroup.queries[sqlString]}))]})},QueryTableGroup_default=QueryTableGroup;var styles3=css`
+`,slowQueryStyle2=css`
+    svg {
+        color: var(--colors-Warn);
+    }
+`,tableNameStyle=css`
+    display: inline-flex;
+    gap: 1ch;
+`,QueryTableGroup=({tableName,queryGroup,slowQueries})=>{let[collapsed,setCollapsed]=h2(!0),slowQueriesForTable=slowQueries.filter(slowQuery=>slowQuery.table===tableName);return u4(g,{children:[u4("tr",{className:classnames3(tableRowStyle,slowQueriesForTable.length>0&&slowQueryStyle2),onClick:()=>setCollapsed(prev2=>!prev2),children:[u4("td",{children:u4("span",{className:tableNameStyle,children:[collapsed?"\u25B6":"\u25BC",slowQueriesForTable.length>0&&u4(Icon,{icon:triangle_exclamation_solid_default}),u4("strong",{children:tableName})]})}),u4("td",{children:[queryGroup.executionTimeSum.toFixed(2)," ms"]}),u4("td",{children:queryGroup.count})]}),!collapsed&&Object.keys(queryGroup.queries).sort((a5,b4)=>queryGroup.queries[b4].executionTimeSum-queryGroup.queries[a5].executionTimeSum).map(sqlString=>u4(QueryTableRow_default,{queryString:sqlString,queryDetails:queryGroup.queries[sqlString],slowQueries:slowQueriesForTable.filter(({sql})=>sql===sqlString)}))]})},QueryTableGroup_default=QueryTableGroup;var styles3=css`
     width: 100%;
     margin-bottom: 4rem;
     table-layout: fixed;
@@ -216,7 +242,7 @@ You should wrap it with \`css\` like this:
         border-bottom: 1px solid var(--colors-ContrastDark);
         vertical-align: top;
     }
-`,QueryTable=()=>{let{debugInfos:{sqlData:{groupedQueries}}}=useDebugContext();return u4("table",{className:styles3,children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"Query"}),u4("th",{children:"Total time"}),u4("th",{children:"Count"})]})}),u4("tbody",{children:Object.keys(groupedQueries).sort((a5,b4)=>groupedQueries[b4].executionTimeSum-groupedQueries[a5].executionTimeSum).map(tableName=>u4(QueryTableGroup_default,{tableName,queryGroup:groupedQueries[tableName]}))})]})},QueryTable_default=QueryTable;var noticeStyle=css`
+`,QueryTable=()=>{let{debugInfos:{sqlData:{groupedQueries,slowQueries}}}=useDebugContext();return u4("table",{className:styles3,children:[u4("thead",{children:u4("tr",{children:[u4("th",{children:"Query"}),u4("th",{children:"Total time"}),u4("th",{children:"Count"})]})}),u4("tbody",{children:Object.keys(groupedQueries).sort((a5,b4)=>groupedQueries[b4].executionTimeSum-groupedQueries[a5].executionTimeSum).map(tableName=>u4(QueryTableGroup_default,{tableName,queryGroup:groupedQueries[tableName],slowQueries}))})]})},QueryTable_default=QueryTable;var noticeStyle=css`
     display: flex;
     gap: 0.5rem;
     align-items: center;
