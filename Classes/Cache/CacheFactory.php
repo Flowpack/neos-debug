@@ -75,11 +75,16 @@ class CacheFactory extends \Neos\Flow\Cache\CacheFactory
 
         CacheAccessCollector::registerCache($cacheIdentifier, $backendObjectName);
 
-        return $this->instantiateBackend(
-            $proxyBackendFQDN,
-            $backendOptions,
-            $environmentConfiguration,
-            $persistent
-        );
+
+        try {
+            return $this->instantiateBackend(
+                $proxyBackendFQDN,
+                $backendOptions,
+                $environmentConfiguration,
+                $persistent
+            );
+        } catch (\Throwable $throwable) {
+            throw new \RuntimeException(sprintf('Cannot instantiate debug proxied backend "%s" for cache "%s"', $backendObjectName, $cacheIdentifier), 1773330049, $throwable);
+        }
     }
 }
