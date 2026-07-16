@@ -111,6 +111,30 @@ const AdditionalMetricsOverlay = () => {
                     </Table>
                 </details>
             )}
+            {Object.keys(additionalMetrics.messages ?? []).length > 0 && (
+                <details className={detailsStyle}>
+                    <summary>Messages ({additionalMetrics.messages.length})</summary>
+                    <Table>
+                        <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Title</th>
+                            <th>Message</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {Object.values(additionalMetrics.messages)
+                        .map(({timestamp, title, message}, i) => (
+                            <tr key={i}>
+                                <td>{timestamp}</td>
+                                <td>{title}</td>
+                                <td>{message}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>
+                </details>
+            )}
             {Object.keys(additionalMetrics.contentContextMetrics ?? []).length > 0 && (
                 <details className={detailsStyle}>
                     <summary>Content context metrics</summary>

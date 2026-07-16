@@ -70,7 +70,7 @@ const styles = css`
 
 const StatusBar: FunctionComponent = () => {
     const {
-        debugInfos: { renderTime, sqlData, cCacheHits, cCacheMisses, cCacheUncached },
+        debugInfos: { renderTime, sqlData, cCacheHits, cCacheMisses, cCacheUncached, additionalMetrics },
         closeApp,
     } = useDebugContext();
 
@@ -93,7 +93,7 @@ const StatusBar: FunctionComponent = () => {
                 {cCacheUncached})
             </button>
             <button onClick={() => toggleOverlay('additionalMetrics')}>
-                <Icon icon={iconWarning} /> Additional metrics
+                <Icon icon={iconWarning} /> Additional metrics{additionalMetrics.messages?.length > 0 ? ` (${additionalMetrics.messages?.length})` : ''}
             </button>
             <button onClick={closeApp}>
                 <Icon icon={iconXMark} />
