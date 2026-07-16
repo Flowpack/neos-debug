@@ -9,6 +9,7 @@ import iconWarning from './icons/triangle-exclamation-solid.svg';
 import iconToggleOff from './icons/toggle-off-solid.svg';
 import iconToggleOn from './icons/toggle-on-solid.svg';
 import iconInfo from './icons/circle-info-solid.svg';
+import iconCaretDown from './icons/caret-down-solid.svg';
 
 type ICON_SIZE = 'S' | 'M' | 'L' | 'XL';
 
@@ -38,5 +39,6 @@ export {
     iconToggleOn,
     iconToggleOff,
     iconInfo,
+    iconCaretDown,
     Icon,
 };
