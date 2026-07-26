@@ -3,10 +3,12 @@ import { useComputed } from '@preact/signals';
 import { useDebugContext } from '../../context/DebugContext';
 import Overlay, { overlayState } from '../../presentationals/Overlay';
 import Table from '../../presentationals/Table';
-
-import { css } from '../../styles/css';
 import ContentContextMetrics from './ContentContextMetrics';
 import MessagesMetrics from './MessagesMetrics';
+import ResourceStreamRequestMetrics from './ResourceStreamRequestMetrics';
+import ThumbnailMetrics from './ThumbnailMetrics';
+
+import { css } from '../../styles/css';
 
 const detailsStyle = css`
     summary {
@@ -18,7 +20,6 @@ const detailsStyle = css`
         }
     }
 `;
-import ResourceStreamRequestMetrics from './ResourceStreamRequestMetrics';
 
 const getExecutionTimeColor = (ms: number): string => {
     if (ms > 200) return 'var(--colors-Error)';
@@ -44,27 +45,7 @@ const AdditionalMetricsOverlay = () => {
     return (
         <Overlay title="Other metrics">
             <ResourceStreamRequestMetrics resourceStreamRequests={resourceStreamRequests} />
-            <details className={detailsStyle}>
-                <summary>Generated thumbnails ({Object.keys(thumbnails).length})</summary>
-                {Object.keys(thumbnails).length > 0 && (
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>SHA1</th>
-                                <th>Usages</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.keys(thumbnails).map((sha1, index) => (
-                                <tr key={index}>
-                                    <td>{sha1}</td>
-                                    <td>{thumbnails[sha1]}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                )}
-            </details>
+            <ThumbnailMetrics thumbnails={thumbnails} />
             {Object.keys(additionalMetrics.cacheAccess ?? []).length > 0 && (
                 <details className={detailsStyle}>
                     <summary>Cache access</summary>

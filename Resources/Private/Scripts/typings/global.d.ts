@@ -77,7 +77,7 @@ type DebugInfos = {
         };
     };
     resourceStreamRequests: NeosResource[];
-    thumbnails: Record<string, number>;
+    thumbnails: ThumbnailMetrics;
     cCacheHits: number;
     // TODO: Create type for cache misses
     cCacheMisses: string[];
@@ -101,7 +101,9 @@ type DebugInfos = {
         searchQueries: SearchQuery[];
         [key: string]: object;
     };
-};
+}
+
+type ThumbnailMetrics = Record<string, number>;
 
 type NeosResource = {
     sha1: string;
