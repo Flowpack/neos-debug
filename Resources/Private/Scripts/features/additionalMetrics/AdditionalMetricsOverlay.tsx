@@ -7,6 +7,7 @@ import Notice from '../../presentationals/Notice';
 
 import { css } from '../../styles/css';
 import ContentContextMetrics from './ContentContextMetrics';
+import MessagesMetrics from './MessagesMetrics';
 
 const detailsStyle = css`
     summary {
@@ -120,27 +121,7 @@ const AdditionalMetricsOverlay = () => {
                 </details>
             )}
             {Object.keys(additionalMetrics.messages ?? []).length > 0 && (
-                <details className={detailsStyle}>
-                    <summary>Messages ({additionalMetrics.messages.length})</summary>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Title</th>
-                                <th>Message</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.values(additionalMetrics.messages).map(({ timestamp, title, message }, i) => (
-                                <tr key={i}>
-                                    <td>{timestamp}</td>
-                                    <td>{title}</td>
-                                    <td>{message}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </details>
+                <MessagesMetrics messages={additionalMetrics.messages} />
             )}
             {Object.keys(additionalMetrics.contentContextMetrics ?? []).length > 0 && (
                 <ContentContextMetrics metrics={additionalMetrics.contentContextMetrics} />
