@@ -5,8 +5,12 @@ type CacheMetricsProps = {
 };
 
 const CacheMetrics = ({ cacheAccess }: CacheMetricsProps) => {
+    const totalHits = Object.values(cacheAccess).reduce((carry, cache) => carry + cache.hits, 0);
+    const totalMisses = Object.values(cacheAccess).reduce((carry, cache) => carry + cache.misses, 0);
+    const totalSets = Object.values(cacheAccess).reduce((carry, cache) => carry + cache.updates, 0);
+
     return (
-        <Details summary={`Cache access`}>
+        <Details summary={`Cache access (${totalHits} hits, ${totalMisses} misses, ${totalSets} sets)`}>
             <Table>
                 <thead>
                     <tr>
