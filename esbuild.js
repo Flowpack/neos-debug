@@ -8,6 +8,7 @@ const options = {
     minifyIdentifiers: false, // Enabling this would break the embedded CSS of the plugin
     minifyWhitespace: true,
     minifySyntax: true,
+    minify: !isWatch,
     target: 'es2020',
     sourcemap: true,
     entryPoints: { Plugin: 'Resources/Private/Scripts/index.tsx' },
