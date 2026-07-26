@@ -4,10 +4,9 @@ import { useDebugContext } from '../../context/DebugContext';
 import Overlay, { overlayState } from '../../presentationals/Overlay';
 import Table from '../../presentationals/Table';
 import Notice from '../../presentationals/Notice';
-import FormattedValue from '../../presentationals/FormattedValue';
-import { Icon, iconMagnifyingGlass } from '../../presentationals/Icon';
 
 import { css } from '../../styles/css';
+import ContentContextMetrics from './ContentContextMetrics';
 
 const detailsStyle = css`
     summary {
@@ -42,7 +41,7 @@ const AdditionalMetricsOverlay = () => {
     if (!visible.value) return null;
 
     return (
-        <Overlay title='Other metrics'>
+        <Overlay title="Other metrics">
             <details className={detailsStyle}>
                 <summary>Resource stream requests ({Object.keys(resourceStreamRequests).length})</summary>
                 <Notice>
@@ -52,20 +51,20 @@ const AdditionalMetricsOverlay = () => {
                 {Object.values(resourceStreamRequests).length > 0 && (
                     <Table>
                         <thead>
-                        <tr>
-                            <th>Filename</th>
-                            <th>SHA1</th>
-                            <th>Collection</th>
-                        </tr>
+                            <tr>
+                                <th>Filename</th>
+                                <th>SHA1</th>
+                                <th>Collection</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {Object.values(resourceStreamRequests).map((resource, index) => (
-                            <tr key={index}>
-                                <td>{resource.filename}</td>
-                                <td>{resource.sha1}</td>
-                                <td>{resource.collectionName}</td>
-                            </tr>
-                        ))}
+                            {Object.values(resourceStreamRequests).map((resource, index) => (
+                                <tr key={index}>
+                                    <td>{resource.filename}</td>
+                                    <td>{resource.sha1}</td>
+                                    <td>{resource.collectionName}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </Table>
                 )}
@@ -75,18 +74,18 @@ const AdditionalMetricsOverlay = () => {
                 {Object.keys(thumbnails).length > 0 && (
                     <Table>
                         <thead>
-                        <tr>
-                            <th>SHA1</th>
-                            <th>Usages</th>
-                        </tr>
+                            <tr>
+                                <th>SHA1</th>
+                                <th>Usages</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {Object.keys(thumbnails).map((sha1, index) => (
-                            <tr key={index}>
-                                <td>{sha1}</td>
-                                <td>{thumbnails[sha1]}</td>
-                            </tr>
-                        ))}
+                            {Object.keys(thumbnails).map((sha1, index) => (
+                                <tr key={index}>
+                                    <td>{sha1}</td>
+                                    <td>{thumbnails[sha1]}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </Table>
                 )}
@@ -96,26 +95,26 @@ const AdditionalMetricsOverlay = () => {
                     <summary>Cache access</summary>
                     <Table>
                         <thead>
-                        <tr>
-                            <th>Cache identifier</th>
-                            <th>Backend type</th>
-                            <th>Hits</th>
-                            <th>Misses</th>
-                            <th>Sets</th>
-                        </tr>
+                            <tr>
+                                <th>Cache identifier</th>
+                                <th>Backend type</th>
+                                <th>Hits</th>
+                                <th>Misses</th>
+                                <th>Sets</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {Object.keys(additionalMetrics.cacheAccess)
-                        .sort()
-                        .map((cacheIdentifier: string) => (
-                            <tr>
-                                <td>{cacheIdentifier}</td>
-                                <td>{additionalMetrics.cacheAccess[cacheIdentifier].cacheType}</td>
-                                <td>{additionalMetrics.cacheAccess[cacheIdentifier].hits}</td>
-                                <td>{additionalMetrics.cacheAccess[cacheIdentifier].misses}</td>
-                                <td>{additionalMetrics.cacheAccess[cacheIdentifier].updates}</td>
-                            </tr>
-                        ))}
+                            {Object.keys(additionalMetrics.cacheAccess)
+                                .sort()
+                                .map((cacheIdentifier: string) => (
+                                    <tr>
+                                        <td>{cacheIdentifier}</td>
+                                        <td>{additionalMetrics.cacheAccess[cacheIdentifier].cacheType}</td>
+                                        <td>{additionalMetrics.cacheAccess[cacheIdentifier].hits}</td>
+                                        <td>{additionalMetrics.cacheAccess[cacheIdentifier].misses}</td>
+                                        <td>{additionalMetrics.cacheAccess[cacheIdentifier].updates}</td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </Table>
                 </details>
@@ -125,81 +124,50 @@ const AdditionalMetricsOverlay = () => {
                     <summary>Messages ({additionalMetrics.messages.length})</summary>
                     <Table>
                         <thead>
-                        <tr>
-                            <th>Timestamp</th>
-                            <th>Title</th>
-                            <th>Message</th>
-                        </tr>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Title</th>
+                                <th>Message</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {Object.values(additionalMetrics.messages)
-                        .map(({timestamp, title, message}, i) => (
-                            <tr key={i}>
-                                <td>{timestamp}</td>
-                                <td>{title}</td>
-                                <td>{message}</td>
-                            </tr>
-                        ))}
+                            {Object.values(additionalMetrics.messages).map(({ timestamp, title, message }, i) => (
+                                <tr key={i}>
+                                    <td>{timestamp}</td>
+                                    <td>{title}</td>
+                                    <td>{message}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </Table>
                 </details>
             )}
             {Object.keys(additionalMetrics.contentContextMetrics ?? []).length > 0 && (
-                <details className={detailsStyle}>
-                    <summary>Content context metrics</summary>
-                    <Table>
-                        <thead>
-                        <tr>
-                            <th>Identifier</th>
-                            {Object.keys(Object.values(additionalMetrics.contentContextMetrics)[0]).map((key) => (
-                                <th key={key}>{key}</th>
-                            ))}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {Object.keys(additionalMetrics.contentContextMetrics).map((contextIdentifier: string) => (
-                            <tr>
-                                <td>{contextIdentifier}</td>
-                                {Object.keys(additionalMetrics.contentContextMetrics[contextIdentifier]).map(
-                                    (key) => (
-                                        <td key={key}>
-                                            <FormattedValue
-                                                value={
-                                                    additionalMetrics.contentContextMetrics[contextIdentifier][key]
-                                                }
-                                            />
-                                        </td>
-                                    )
-                                )}
-                            </tr>
-                        ))}
-                        </tbody>
-                    </Table>
-                </details>
+                <ContentContextMetrics metrics={additionalMetrics.contentContextMetrics} />
             )}
             {(additionalMetrics.searchQueries ?? []).length > 0 && (
                 <details className={detailsStyle}>
                     <summary>
-                        Search queries ({additionalMetrics.searchQueries.length}) — {additionalMetrics.searchQueries.reduce((sum, q) => sum + q.executionTime, 0).toFixed(2)}ms total
+                        Search queries ({additionalMetrics.searchQueries.length}) —{' '}
+                        {additionalMetrics.searchQueries.reduce((sum, q) => sum + q.executionTime, 0).toFixed(2)}ms
+                        total
                     </summary>
                     <Table>
                         <thead>
-                        <tr>
-                            <th></th>
-                            <th>Implementation</th>
-                            <th>Execution time</th>
-                        </tr>
+                            <tr>
+                                <th>Implementation</th>
+                                <th>Execution time</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {additionalMetrics.searchQueries.map((query, index) => (
-                            <tr key={index}>
-                                <td><Icon icon={iconMagnifyingGlass} size='S' /></td>
-                                <td title={query.className}>{shortClassName(query.className)}</td>
-                                <td style={{ color: getExecutionTimeColor(query.executionTime) }}>
-                                    {query.executionTime.toFixed(2)}ms
-                                </td>
-                            </tr>
-                        ))}
+                            {additionalMetrics.searchQueries.map((query, index) => (
+                                <tr key={index}>
+                                    <td title={query.className}>{shortClassName(query.className)}</td>
+                                    <td style={{ color: getExecutionTimeColor(query.executionTime) }}>
+                                        {query.executionTime.toFixed(2)}ms
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </Table>
                 </details>
