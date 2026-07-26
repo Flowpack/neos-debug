@@ -7,6 +7,25 @@ on:
     branches: [ main ]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build JS bundle
+    steps:
+      - name: Checkout package
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build
+        run: yarn build
+
   quality:
     runs-on: ubuntu-latest
 
