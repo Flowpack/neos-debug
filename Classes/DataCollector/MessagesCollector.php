@@ -16,6 +16,9 @@ class MessagesCollector extends AbstractDataCollector
      */
     private array $messages = [];
 
+    /**
+     * @return Message[]
+     */
     public function collect(): array
     {
         return $this->messages;

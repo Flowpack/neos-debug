@@ -10,7 +10,8 @@ class DataFormatter implements DataFormatterInterface
     public function formatVar(mixed $var): string
     {
         /** @noinspection ForgottenDebugOutputInspection */
-        return \Neos\Flow\var_dump($var, null, true, true);
+        /** @phpstan-ignore function.notFound */
+        return (string)\Neos\Flow\var_dump($var, null, true, true);
     }
 
     public function formatDuration(float $durationInSeconds): string

@@ -19,8 +19,14 @@ use Neos\Flow\Annotations as Flow;
 
 class DebugStack implements SQLLogger
 {
+    /**
+     * @var array<int, array{sql: string, table: string, params: array<string, mixed>|null, types: array<string, string>|null, executionMS: float}>
+     */
     public array $queries = [];
 
+    /**
+     * @var array<string, array{queryCount: int, executionTime: float}>
+     */
     public array $tables = [];
 
     public int $queryCount = 0;
@@ -29,6 +35,9 @@ class DebugStack implements SQLLogger
 
     protected float $startTime = 0;
 
+    /**
+     * @var array<int, array{sql: string, table: string, params: array<string, mixed>|null, types: array<string, string>|null, executionMS: float}>
+     */
     public array $slowQueries = [];
 
     #[Flow\InjectConfiguration('sql.slowQueryAfter')]
@@ -41,6 +50,11 @@ class DebugStack implements SQLLogger
     {
     }
 
+    /**
+     * @param string $sql
+     * @param array<string, mixed>|null $params
+     * @param array<string, string>|null $types
+     */
     public function startQuery($sql, ?array $params = null, ?array $types = null): void
     {
         $tableName = $this->parseTableName($sql);
@@ -49,7 +63,7 @@ class DebugStack implements SQLLogger
             'table' => $tableName,
             'params' => $params,
             'types' => $types,
-            'executionMS' => 0
+            'executionMS' => 0.0,
         ];
         $this->startTime = microtime(true);
         $this->originalLogger?->startQuery($sql, $params, $types);
@@ -58,14 +72,22 @@ class DebugStack implements SQLLogger
     public function stopQuery(): void
     {
         $executionTime = (microtime(true) - $this->startTime) * 1000;
-        $this->queries[$this->queryCount]['executionMS'] = $executionTime;
+        $query = $this->queries[$this->queryCount];
+        $this->queries[$this->queryCount] = [
+            'sql' => $query['sql'],
+            'table' => $query['table'],
+            'params' => $query['params'],
+            'types' => $query['types'],
+            'executionMS' => $executionTime,
+        ];
         $this->executionTime += $executionTime;
 
+        $queryData = $this->queries[$this->queryCount];
         if ($executionTime > $this->slowQueryAfter) {
-            $this->slowQueries[] = $this->queries[$this->queryCount];
+            $this->slowQueries[] = $queryData;
         }
 
-        $table = $this->queries[$this->queryCount]['table'];
+        $table = $queryData['table'];
         if (!array_key_exists($table, $this->tables)) {
             $this->tables[$table] = [
                 'queryCount' => 1,

@@ -23,6 +23,7 @@ class DebugService
 
     protected float $stopRequestAt = 0;
 
+    /** @var array<string, array{value: float|null, description: string|null}> */
     protected array $metrics = [];
 
     /**
@@ -60,7 +61,7 @@ class DebugService
     {
         $this->metrics[$this->cleanString($name)] = [
             'value' => $value,
-            'description' => $this->cleanString($description),
+            'description' => $description !== null ? $this->cleanString($description) : null,
         ];
     }
 
@@ -69,7 +70,7 @@ class DebugService
      */
     protected function cleanString(string $input): string
     {
-        return preg_replace('/[^A-Za-z0-9 ]/', '', $input);
+        return preg_replace('/[^A-Za-z0-9 ]/', '', $input) ?? '';
     }
 
     /**
@@ -86,6 +87,7 @@ class DebugService
 
     /**
      * Returns the list of stored metrics including the request time
+     * @return array<string, array{value: float|null, description: string|null}>
      */
     public function getMetrics(): array
     {

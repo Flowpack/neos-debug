@@ -38,7 +38,11 @@ class RuntimeTracingAspect
         $configuration = $joinPoint->getMethodArgument('configuration');
         $fusionPath = $joinPoint->getMethodArgument('fusionPath');
 
-        $cacheMode = $configuration['mode'] ?? null;
+        if (!is_string($fusionPath)) {
+            return;
+        }
+
+        $cacheMode = is_array($configuration) ? ($configuration['mode'] ?? null) : null;
 
         if (!$cacheMode) {
             return;

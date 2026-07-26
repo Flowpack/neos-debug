@@ -14,8 +14,14 @@ use Neos\Flow\Annotations as Flow;
 class CacheFactory extends \Neos\Flow\Cache\CacheFactory
 {
 
+    /**
+     * @var array<string, bool>
+     */
     protected array $trackedBackends = [];
 
+    /**
+     * @param array<string, mixed> $backendOptions
+     */
     public function create(
         string $cacheIdentifier,
         string $cacheObjectName,
@@ -36,6 +42,9 @@ class CacheFactory extends \Neos\Flow\Cache\CacheFactory
         return $cache;
     }
 
+    /**
+     * @param array<string, mixed> $backendOptions
+     */
     public function instantiateProxyBackend(
         string $cacheIdentifier,
         string $backendObjectName,

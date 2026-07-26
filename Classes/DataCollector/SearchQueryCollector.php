@@ -27,6 +27,9 @@ class SearchQueryCollector extends AbstractDataCollector
         ];
     }
 
+    /**
+     * @return array<int, array{className: string, executionTime: float}>
+     */
     public function collect(): array
     {
         return $this->queries;

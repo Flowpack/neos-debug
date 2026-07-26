@@ -40,9 +40,9 @@ class ContentContextMetricsCollectorNeos8 extends AbstractDataCollector implemen
                 'removedContentShown' => $context->isRemovedContentShown(),
                 'inaccessibleContentShown' => $context->isInaccessibleContentShown(),
                 'firstLevelNodeCache' => [
-                    'nodesByPath' => count(ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByPath', true)),
-                    'nodesByIdentifier' => count(ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByIdentifier', true)),
-                    'childNodesByPathAndNodeTypeFilter' => count(ObjectAccess::getProperty($firstLevelNodeCache, 'childNodesByPathAndNodeTypeFilter', true)),
+                    'nodesByPath' => count((array)ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByPath', true)),
+                    'nodesByIdentifier' => count((array)ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByIdentifier', true)),
+                    'childNodesByPathAndNodeTypeFilter' => count((array)ObjectAccess::getProperty($firstLevelNodeCache, 'childNodesByPathAndNodeTypeFilter', true)),
                 ],
             ];
         }

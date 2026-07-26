@@ -29,12 +29,16 @@ class CacheAccessCollector extends AbstractDataCollector
 
     public static function trackGet(string $cacheIdentifier, string $entryIdentifier, bool $hit): void
     {
-        self::$metricsByCache[$cacheIdentifier]?->trackAccess($entryIdentifier, $hit);
+        if (isset(self::$metricsByCache[$cacheIdentifier])) {
+            self::$metricsByCache[$cacheIdentifier]->trackAccess($entryIdentifier, $hit);
+        }
     }
 
     public static function trackSet(string $cacheIdentifier, string $entryIdentifier): void
     {
-        self::$metricsByCache[$cacheIdentifier]?->trackUpdate($entryIdentifier);
+        if (isset(self::$metricsByCache[$cacheIdentifier])) {
+            self::$metricsByCache[$cacheIdentifier]->trackUpdate($entryIdentifier);
+        }
     }
 
     /**

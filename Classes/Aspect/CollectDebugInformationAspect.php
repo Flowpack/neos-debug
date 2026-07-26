@@ -51,8 +51,16 @@ class CollectDebugInformationAspect
      */
     protected array $contentCacheMisses = [];
 
+    /**
+     * List of resource stream requests that were made during rendering.
+     * @var ResourceStreamRequest[]
+     */
     protected array $resourceStreamRequests = [];
 
+    /**
+     * Map of resource sha1 to number of generated thumbnails
+     * @var array<string, int>
+     */
     protected array $thumbnails = [];
 
     #[Flow\InjectConfiguration('serverTimingHeader.enabled', 'Flowpack.Neos.Debug')]
@@ -93,6 +101,7 @@ class CollectDebugInformationAspect
     protected function addDebugValues(JoinPointInterface $joinPoint): string|ResponseInterface|StreamInterface
     {
         $startRenderAt = microtime(true) * 1000;
+        /** @var string|ResponseInterface|StreamInterface $response */
         $response = $joinPoint->getAdviceChain()->proceed($joinPoint);
         $endRenderAt = microtime(true) * 1000;
 
@@ -114,7 +123,9 @@ class CollectDebugInformationAspect
         }
 
         if ($response instanceof ResponseInterface) {
+            /** @phpstan-ignore nullsafe.neverNull */
             $output = $response->getBody()?->getContents();
+            /** @phpstan-ignore nullsafe.neverNull */
             $response->getBody()?->rewind();
 
             $contentType = $response->getHeaderLine('Content-Type');
@@ -243,13 +254,19 @@ class CollectDebugInformationAspect
 
     /**
      * TODO: Move into a helper class
-     * @param array{sql: string, table: string, params: array, types: string, executionMS: int} $queries
+     * @param array<int, array{sql: string, table: string, params: array<string, mixed>|null, types: array<string, string>|null, executionMS: float}> $queries
+     * @return array<string, array{queries: array<string, array{executionTimeSum: float, count: int, params: array<string, int>}>, executionTimeSum: float, count: int}>
      */
     protected function groupQueries(array $queries): array
     {
-        return array_reduce($queries, static function ($carry, $queryData) {
-            ['sql' => $sql, 'table' => $table, 'params' => $params, 'executionMS' => $executionMS] = $queryData;
-            $paramString = json_encode($params);
+        /** @var array<string, array{queries: array<string, array{executionTimeSum: float, count: int, params: array<string, int>}>, executionTimeSum: float, count: int}> $initial */
+        $initial = [];
+        return array_reduce($queries, static function (array $carry, array $queryData): array {
+            $sql = $queryData['sql'];
+            $table = $queryData['table'];
+            $params = $queryData['params'];
+            $executionMS = $queryData['executionMS'];
+            $paramString = (string)json_encode($params);
 
             if (!array_key_exists($table, $carry)) {
                 $carry[$table] = [
@@ -279,6 +296,6 @@ class CollectDebugInformationAspect
             }
 
             return $carry;
-        }, []);
+        }, $initial);
     }
 }

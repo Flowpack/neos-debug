@@ -27,6 +27,9 @@ class ResourceStreamRequest implements \JsonSerializable
         );
     }
 
+    /**
+     * @return array{sha1: string, filename: string, collectionName: string}
+     */
     public function toArray(): array
     {
         return [

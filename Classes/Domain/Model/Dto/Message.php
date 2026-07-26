@@ -19,6 +19,9 @@ class Message
         $this->timestamp = microtime(true);
     }
 
+    /**
+     * @return array{message: string, title: string|null, timestamp: float}
+     */
     public function toArray(): array
     {
         return [
