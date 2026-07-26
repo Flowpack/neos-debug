@@ -55,6 +55,7 @@ type SlowQuery = {
 
 type SearchQuery = {
     className: string;
+    methodName: string;
     executionTime: number;
 };
 

@@ -21,6 +21,7 @@ const SearchQueryMetrics = ({searchQueries}: SearchQueryMetricsProps) => {
                 <thead>
                     <tr>
                         <th>Implementation</th>
+                        <th>Method</th>
                         <th>Execution time</th>
                     </tr>
                 </thead>
@@ -28,6 +29,7 @@ const SearchQueryMetrics = ({searchQueries}: SearchQueryMetricsProps) => {
                     {searchQueries.map((query, index) => (
                         <tr key={index}>
                             <td title={query.className}>{shortClassName(query.className)}</td>
+                            <td>{query.methodName}</td>
                             <td style={{ color: getExecutionTimeColor(query.executionTime) }}>
                                 {query.executionTime.toFixed(2)}ms
                             </td>

@@ -23,8 +23,8 @@ class SearchQueryAspect
     {
     }
 
-    #[Flow\Around("within(Neos\ContentRepository\Search\Search\QueryBuilderInterface) && method(.*->execute()) && Flowpack\Neos\Debug\Aspect\SearchQueryAspect->debuggingActive")]
-    public function trackSearchQueryExecution(JoinPointInterface $joinPoint): mixed
+    #[Flow\Around("within(Neos\ContentRepository\Search\Search\QueryBuilderInterface) && method(.*->(execute|count|query|exactMatch|fulltext|sortDesc|sortAsc|limit|from|nodeType|aggregation)()) && Flowpack\Neos\Debug\Aspect\SearchQueryAspect->debuggingActive")]
+    public function trackSearchQueryMethod(JoinPointInterface $joinPoint): mixed
     {
         if (!$this->searchQueryTrackingEnabled) {
             return $joinPoint->getAdviceChain()->proceed($joinPoint);
@@ -36,6 +36,7 @@ class SearchQueryAspect
 
         $this->searchQueryCollector->addQuery(
             $joinPoint->getClassName(),
+            $joinPoint->getMethodName(),
             $executionTime
         );
 

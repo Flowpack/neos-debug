@@ -10,7 +10,7 @@ use Neos\Flow\Annotations as Flow;
 class SearchQueryCollector extends AbstractDataCollector
 {
     /**
-     * @var array<int, array{className: string, executionTime: float}>
+     * @var array<int, array{className: string, methodName: string, executionTime: float}>
      */
     private array $queries = [];
 
@@ -19,16 +19,17 @@ class SearchQueryCollector extends AbstractDataCollector
         return 'searchQueries';
     }
 
-    public function addQuery(string $className, float $executionTime): void
+    public function addQuery(string $className, string $methodName, float $executionTime): void
     {
         $this->queries[] = [
             'className' => $className,
+            'methodName' => $methodName,
             'executionTime' => round($executionTime, 2),
         ];
     }
 
     /**
-     * @return array<int, array{className: string, executionTime: float}>
+     * @return array<int, array{className: string, methodName: string, executionTime: float}>
      */
     public function collect(): array
     {
