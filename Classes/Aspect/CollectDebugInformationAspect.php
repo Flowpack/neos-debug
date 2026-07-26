@@ -75,7 +75,7 @@ class CollectDebugInformationAspect
     #[Flow\Inject]
     protected CacheAccessCollector $cacheAccessCollector;
 
-    #[Flow\Inject()]
+    #[Flow\Inject]
     protected ContentContextMetricsCollectorInterface $contentContextMetricsCollector;
 
     #[Flow\Inject]
@@ -224,7 +224,7 @@ class CollectDebugInformationAspect
                 $this->thumbnails[$asset->getResource()->getSha1()]++;
             }
 
-            $this->messagesCollector->addMessage(
+            MessagesCollector::addMessage(
                 $asset->getResource()->getFilename() . ' (' . $asset->getResource()->getCollectionName() . ')',
                 'Thumbnail generated',
             );

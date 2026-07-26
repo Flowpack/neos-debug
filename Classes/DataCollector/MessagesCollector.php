@@ -7,21 +7,24 @@ namespace Flowpack\Neos\Debug\DataCollector;
 use Flowpack\Neos\Debug\Domain\Model\Dto\Message;
 use Neos\Flow\Annotations as Flow;
 
+/**
+ * A collector for custom debug data that can be accessed statically
+ */
 #[Flow\Scope("singleton")]
 class MessagesCollector extends AbstractDataCollector
 {
 
     /**
-     * @var Message[] $messages
+     * @var Message[]
      */
-    private array $messages = [];
+    protected static array $messages = [];
 
     /**
      * @return Message[]
      */
     public function collect(): array
     {
-        return $this->messages;
+        return self::$messages;
     }
 
     public function getName(): string
@@ -29,8 +32,8 @@ class MessagesCollector extends AbstractDataCollector
         return 'messages';
     }
 
-    public function addMessage(string $message, ?string $title = null): void
+    public static function addMessage(string $message, ?string $title = null): void
     {
-        $this->messages[] = new Message($message, $title);
+        self::$messages[] = new Message($message, $title);
     }
 }
