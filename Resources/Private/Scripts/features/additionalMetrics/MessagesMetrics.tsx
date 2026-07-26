@@ -1,11 +1,7 @@
 import { Table, Details } from '../../presentationals';
 
 type MessagesMetricsProps = {
-    messages: {
-        timestamp: string;
-        title: string;
-        message: string;
-    }[];
+    messages: CustomMessages;
 };
 
 const MessagesMetrics = ({messages}: MessagesMetricsProps) => {

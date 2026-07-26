@@ -1,10 +1,10 @@
 import { Table, Details } from '../../presentationals';
 
-type ThumbnailMetricsProps = {
+type ThumbnailGenerationMetricsProps = {
     thumbnails: ThumbnailMetrics;
 };
 
-const ThumbnailMetrics = ({ thumbnails }: ThumbnailMetricsProps) => {
+const ThumbnailGenerationMetrics = ({ thumbnails }: ThumbnailGenerationMetricsProps) => {
     return (
         <Details summary={`Generated thumbnails (${Object.keys(thumbnails).length})`}>
             {Object.keys(thumbnails).length > 0 && (
@@ -29,4 +29,4 @@ const ThumbnailMetrics = ({ thumbnails }: ThumbnailMetricsProps) => {
     );
 };
 
-export default ThumbnailMetrics;
+export default ThumbnailGenerationMetrics;

@@ -84,26 +84,30 @@ type DebugInfos = {
     cCacheUncached: number;
     // TODO: Define type for collected data
     additionalMetrics: {
-        messages: {
-            timestamp: number;
-            message: string;
-            title: string;
-        }[];
-        cacheAccess: {
-            [key: string]: {
-                cacheIdentifier: string;
-                cacheType: string;
-                hits: number;
-                misses: number;
-                updates: number;
-            };
-        };
+        messages: CustomMessages;
+        cacheAccess: CacheAccessMetrics;
         searchQueries: SearchQuery[];
         [key: string]: object;
     };
 }
 
 type ThumbnailMetrics = Record<string, number>;
+
+type CacheAccessMetrics = {
+    [key: string]: {
+        cacheIdentifier: string;
+        cacheType: string;
+        hits: number;
+        misses: number;
+        updates: number;
+    };
+};
+
+type CustomMessages = {
+    timestamp: number;
+    message: string;
+    title: string;
+}[];
 
 type NeosResource = {
     sha1: string;

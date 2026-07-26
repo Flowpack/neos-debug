@@ -6,9 +6,10 @@ import Table from '../../presentationals/Table';
 import ContentContextMetrics from './ContentContextMetrics';
 import MessagesMetrics from './MessagesMetrics';
 import ResourceStreamRequestMetrics from './ResourceStreamRequestMetrics';
-import ThumbnailMetrics from './ThumbnailMetrics';
+import ThumbnailGenerationMetrics from './ThumbnailGenerationMetrics';
 
 import { css } from '../../styles/css';
+import CacheMetrics from './CacheMetrics';
 
 const detailsStyle = css`
     summary {
@@ -45,35 +46,9 @@ const AdditionalMetricsOverlay = () => {
     return (
         <Overlay title="Other metrics">
             <ResourceStreamRequestMetrics resourceStreamRequests={resourceStreamRequests} />
-            <ThumbnailMetrics thumbnails={thumbnails} />
+            <ThumbnailGenerationMetrics thumbnails={thumbnails} />
             {Object.keys(additionalMetrics.cacheAccess ?? []).length > 0 && (
-                <details className={detailsStyle}>
-                    <summary>Cache access</summary>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Cache identifier</th>
-                                <th>Backend type</th>
-                                <th>Hits</th>
-                                <th>Misses</th>
-                                <th>Sets</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.keys(additionalMetrics.cacheAccess)
-                                .sort()
-                                .map((cacheIdentifier: string) => (
-                                    <tr>
-                                        <td>{cacheIdentifier}</td>
-                                        <td>{additionalMetrics.cacheAccess[cacheIdentifier].cacheType}</td>
-                                        <td>{additionalMetrics.cacheAccess[cacheIdentifier].hits}</td>
-                                        <td>{additionalMetrics.cacheAccess[cacheIdentifier].misses}</td>
-                                        <td>{additionalMetrics.cacheAccess[cacheIdentifier].updates}</td>
-                                    </tr>
-                                ))}
-                        </tbody>
-                    </Table>
-                </details>
+                <CacheMetrics cacheAccess={additionalMetrics.cacheAccess} />
             )}
             {Object.keys(additionalMetrics.messages ?? []).length > 0 && (
                 <MessagesMetrics messages={additionalMetrics.messages} />
