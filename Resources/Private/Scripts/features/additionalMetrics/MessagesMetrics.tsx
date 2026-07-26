@@ -1,6 +1,4 @@
-import Table from '../../presentationals/Table';
-
-import { css } from '../../styles/css';
+import { Table, Details } from '../../presentationals';
 
 type MessagesMetricsProps = {
     messages: {
@@ -10,21 +8,9 @@ type MessagesMetricsProps = {
     }[];
 };
 
-const detailsStyle = css`
-    summary {
-        cursor: pointer;
-        padding: 5px 0;
-
-        &:hover {
-            color: var(--colors-PrimaryBlueHover);
-        }
-    }
-`;
-
 const MessagesMetrics = ({messages}: MessagesMetricsProps) => {
     return (
-        <details className={detailsStyle}>
-            <summary>Messages ({messages.length})</summary>
+        <Details summary={`Messages (${messages.length})`}>
             <Table>
                 <thead>
                     <tr>
@@ -43,7 +29,7 @@ const MessagesMetrics = ({messages}: MessagesMetricsProps) => {
                     ))}
                 </tbody>
             </Table>
-        </details>
+        </Details>
     );
 }
 

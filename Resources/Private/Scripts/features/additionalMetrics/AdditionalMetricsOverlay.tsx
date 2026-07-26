@@ -3,7 +3,6 @@ import { useComputed } from '@preact/signals';
 import { useDebugContext } from '../../context/DebugContext';
 import Overlay, { overlayState } from '../../presentationals/Overlay';
 import Table from '../../presentationals/Table';
-import Notice from '../../presentationals/Notice';
 
 import { css } from '../../styles/css';
 import ContentContextMetrics from './ContentContextMetrics';
@@ -19,6 +18,7 @@ const detailsStyle = css`
         }
     }
 `;
+import ResourceStreamRequestMetrics from './ResourceStreamRequestMetrics';
 
 const getExecutionTimeColor = (ms: number): string => {
     if (ms > 200) return 'var(--colors-Error)';
@@ -43,33 +43,7 @@ const AdditionalMetricsOverlay = () => {
 
     return (
         <Overlay title="Other metrics">
-            <details className={detailsStyle}>
-                <summary>Resource stream requests ({Object.keys(resourceStreamRequests).length})</summary>
-                <Notice>
-                    These requests show how many persistent resources are loaded during rendering to read their
-                    contents.
-                </Notice>
-                {Object.values(resourceStreamRequests).length > 0 && (
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Filename</th>
-                                <th>SHA1</th>
-                                <th>Collection</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.values(resourceStreamRequests).map((resource, index) => (
-                                <tr key={index}>
-                                    <td>{resource.filename}</td>
-                                    <td>{resource.sha1}</td>
-                                    <td>{resource.collectionName}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                )}
-            </details>
+            <ResourceStreamRequestMetrics resourceStreamRequests={resourceStreamRequests} />
             <details className={detailsStyle}>
                 <summary>Generated thumbnails ({Object.keys(thumbnails).length})</summary>
                 {Object.keys(thumbnails).length > 0 && (

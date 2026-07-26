@@ -1,7 +1,4 @@
-import Table from '../../presentationals/Table';
-import FormattedValue from '../../presentationals/FormattedValue';
-
-import { css } from '../../styles/css';
+import { Table, FormattedValue, Details } from '../../presentationals';
 
 type ContentContextMetricsProps = {
     metrics: Record<
@@ -21,17 +18,6 @@ type ContentContextMetricsProps = {
     >;
 };
 
-const detailsStyle = css`
-    summary {
-        cursor: pointer;
-        padding: 5px 0;
-
-        &:hover {
-            color: var(--colors-PrimaryBlueHover);
-        }
-    }
-`;
-
 const ContentContextMetrics = ({ metrics }: ContentContextMetricsProps) => {
     const nodeCount = Object.values(metrics).reduce((carry, context) => {
         carry += context.firstLevelNodeCache.nodesByIdentifier;
@@ -39,8 +25,7 @@ const ContentContextMetrics = ({ metrics }: ContentContextMetricsProps) => {
     }, 0);
 
     return (
-        <details className={detailsStyle}>
-            <summary>Content context metrics ({nodeCount} loaded nodes)</summary>
+        <Details summary={`Content context metrics (${nodeCount} loaded nodes)`}>
             <Table>
                 <thead>
                     <tr>
@@ -63,7 +48,7 @@ const ContentContextMetrics = ({ metrics }: ContentContextMetricsProps) => {
                     ))}
                 </tbody>
             </Table>
-        </details>
+        </Details>
     );
 };
 
