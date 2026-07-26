@@ -5,6 +5,7 @@ import Overlay, { overlayState } from '../../presentationals/Overlay';
 import Table from '../../presentationals/Table';
 import Notice from '../../presentationals/Notice';
 import FormattedValue from '../../presentationals/FormattedValue';
+import { Icon, iconMagnifyingGlass } from '../../presentationals/Icon';
 
 import { css } from '../../styles/css';
 
@@ -18,6 +19,14 @@ const detailsStyle = css`
         }
     }
 `;
+
+const getExecutionTimeColor = (ms: number): string => {
+    if (ms > 200) return 'var(--colors-Error)';
+    if (ms > 50) return 'var(--colors-Warn)';
+    return 'var(--colors-Success)';
+};
+
+const shortClassName = (fqcn: string): string => fqcn.split('.').pop() ?? fqcn;
 
 /**
  * Overlay to display additional metrics like resource stream requests and thumbnails.
@@ -162,6 +171,33 @@ const AdditionalMetricsOverlay = () => {
                                         </td>
                                     )
                                 )}
+                            </tr>
+                        ))}
+                        </tbody>
+                    </Table>
+                </details>
+            )}
+            {(additionalMetrics.searchQueries ?? []).length > 0 && (
+                <details className={detailsStyle}>
+                    <summary>
+                        Search queries ({additionalMetrics.searchQueries.length}) — {additionalMetrics.searchQueries.reduce((sum, q) => sum + q.executionTime, 0).toFixed(2)}ms total
+                    </summary>
+                    <Table>
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Implementation</th>
+                            <th>Execution time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {additionalMetrics.searchQueries.map((query, index) => (
+                            <tr key={index}>
+                                <td><Icon icon={iconMagnifyingGlass} size='S' /></td>
+                                <td title={query.className}>{shortClassName(query.className)}</td>
+                                <td style={{ color: getExecutionTimeColor(query.executionTime) }}>
+                                    {query.executionTime.toFixed(2)}ms
+                                </td>
                             </tr>
                         ))}
                         </tbody>

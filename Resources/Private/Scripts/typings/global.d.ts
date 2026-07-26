@@ -53,6 +53,11 @@ type SlowQuery = {
     types: number[];
 }
 
+type SearchQuery = {
+    className: string;
+    executionTime: number;
+};
+
 type DebugInfos = {
     renderTime: number;
     startRenderAt: number;
@@ -93,6 +98,7 @@ type DebugInfos = {
                 updates: number;
             };
         };
+        searchQueries: SearchQuery[];
         [key: string]: object;
     };
 };

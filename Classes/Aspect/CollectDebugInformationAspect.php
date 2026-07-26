@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Flowpack\Neos\Debug\DataCollector\CacheAccessCollector;
 use Flowpack\Neos\Debug\DataCollector\ContentContextMetricsCollectorInterface;
 use Flowpack\Neos\Debug\DataCollector\MessagesCollector;
+use Flowpack\Neos\Debug\DataCollector\SearchQueryCollector;
 use Flowpack\Neos\Debug\Domain\Model\Dto\ResourceStreamRequest;
 use Flowpack\Neos\Debug\Logging\DebugStack;
 use Flowpack\Neos\Debug\Service\DebugService;
@@ -68,6 +69,9 @@ class CollectDebugInformationAspect
 
     #[Flow\Inject()]
     protected ContentContextMetricsCollectorInterface $contentContextMetricsCollector;
+
+    #[Flow\Inject]
+    protected SearchQueryCollector $searchQueryCollector;
 
     #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled)")]
     public function debuggingActive(): void
@@ -146,6 +150,7 @@ class CollectDebugInformationAspect
                 $this->messagesCollector->getName() => $this->messagesCollector->collect(),
                 $this->cacheAccessCollector->getName() => $this->cacheAccessCollector->collect(),
                 $this->contentContextMetricsCollector->getName() => $this->contentContextMetricsCollector->collect(),
+                $this->searchQueryCollector->getName() => $this->searchQueryCollector->collect(),
             ]
         ];
         $output = (string)$output;

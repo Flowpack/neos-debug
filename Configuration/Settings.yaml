@@ -6,6 +6,8 @@ Flowpack:
         enabled: true
       serverTimingHeader:
         enabled: false
+      searchQueryTracking:
+        enabled: true
       sql:
         # Set when a query should be considered as slow query. In ms
         slowQueryAfter: 10
