@@ -123,10 +123,17 @@ class CollectDebugInformationAspect
         }
 
         if ($response instanceof ResponseInterface) {
-            /** @phpstan-ignore nullsafe.neverNull */
-            $output = $response->getBody()?->getContents();
-            /** @phpstan-ignore nullsafe.neverNull */
-            $response->getBody()?->rewind();
+            /**
+             * There are cases where the response is not a stream
+             * @var StreamInterface|null $responseBody
+             */
+            $responseBody = $response->getBody();
+            if ($responseBody instanceof StreamInterface) {
+                $output = $responseBody->getContents();
+                $responseBody->rewind();
+            } else {
+                $output = '';
+            }
 
             $contentType = $response->getHeaderLine('Content-Type');
             if (!str_contains($contentType, 'text/html') && !str_contains($output, '<!DOCTYPE html')) {
