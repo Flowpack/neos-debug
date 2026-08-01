@@ -2,12 +2,13 @@ import { useComputed } from '@preact/signals';
 
 import { useDebugContext } from '../../context/DebugContext';
 import Overlay, { overlayState } from '../../presentationals/Overlay';
+import CacheMetrics from './CacheMetrics';
 import ContentContextMetrics from './ContentContextMetrics';
+import DebugAttributeMetrics from './DebugAttributeMetrics';
 import MessagesMetrics from './MessagesMetrics';
 import ResourceStreamRequestMetrics from './ResourceStreamRequestMetrics';
-import ThumbnailGenerationMetrics from './ThumbnailGenerationMetrics';
 import SearchQueryMetrics from './SearchQueryMetrics';
-import CacheMetrics from './CacheMetrics';
+import ThumbnailGenerationMetrics from './ThumbnailGenerationMetrics';
 
 /**
  * Overlay to display additional metrics like resource stream requests and thumbnails.
@@ -17,7 +18,7 @@ import CacheMetrics from './CacheMetrics';
 const AdditionalMetricsOverlay = () => {
     const visible = useComputed(() => overlayState.value === 'additionalMetrics');
     const {
-        debugInfos: { resourceStreamRequests, thumbnails, additionalMetrics }
+        debugInfos: { resourceStreamRequests, thumbnails, additionalMetrics },
     } = useDebugContext();
 
     if (!visible.value) return null;
@@ -37,6 +38,11 @@ const AdditionalMetricsOverlay = () => {
             )}
             {(additionalMetrics.searchQueries ?? []).length > 0 && (
                 <SearchQueryMetrics searchQueries={additionalMetrics.searchQueries} />
+            )}
+            {Object.keys(additionalMetrics.debugMarkedPrototypes ?? []).length > 0 && (
+                <DebugAttributeMetrics
+                    records={additionalMetrics.debugMarkedPrototypes as DebugAttributeMetricEntry[]}
+                />
             )}
         </Overlay>
     );

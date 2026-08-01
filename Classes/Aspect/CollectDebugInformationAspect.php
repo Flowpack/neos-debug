@@ -17,6 +17,7 @@ namespace Flowpack\Neos\Debug\Aspect;
 use Doctrine\ORM\EntityManagerInterface;
 use Flowpack\Neos\Debug\DataCollector\CacheAccessCollector;
 use Flowpack\Neos\Debug\DataCollector\ContentContextMetricsCollectorInterface;
+use Flowpack\Neos\Debug\DataCollector\DebugAttributeCollector;
 use Flowpack\Neos\Debug\DataCollector\MessagesCollector;
 use Flowpack\Neos\Debug\DataCollector\SearchQueryCollector;
 use Flowpack\Neos\Debug\Domain\Model\Dto\ResourceStreamRequest;
@@ -81,6 +82,9 @@ class CollectDebugInformationAspect
     #[Flow\Inject]
     protected SearchQueryCollector $searchQueryCollector;
 
+    #[Flow\Inject]
+    protected DebugAttributeCollector $debugAttributeCollector;
+
     #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled)")]
     public function debuggingActive(): void
     {
@@ -100,6 +104,8 @@ class CollectDebugInformationAspect
 
     protected function addDebugValues(JoinPointInterface $joinPoint): string|ResponseInterface|StreamInterface
     {
+        $this->debugAttributeCollector->reset();
+
         $startRenderAt = microtime(true) * 1000;
         /** @var string|ResponseInterface|StreamInterface $response */
         $response = $joinPoint->getAdviceChain()->proceed($joinPoint);
@@ -169,6 +175,7 @@ class CollectDebugInformationAspect
                 $this->cacheAccessCollector->getName() => $this->cacheAccessCollector->collect(),
                 $this->contentContextMetricsCollector->getName() => $this->contentContextMetricsCollector->collect(),
                 $this->searchQueryCollector->getName() => $this->searchQueryCollector->collect(),
+                $this->debugAttributeCollector->getName() => $this->debugAttributeCollector->collect(),
             ]
         ];
         $output = (string)$output;

@@ -216,6 +216,21 @@ These metrics are always visible in the status bar at the bottom-right of the pa
 - **Use case:** Identifies slow or frequent search queries that may benefit from caching or optimization.
 - **Configuration:** Can be disabled via `searchQueryTracking.enabled: false`.
 
+### Debug-Marked Prototypes
+
+- **What it measures:** Render time and call count of Fusion prototypes marked with the `@debug` meta-attribute.
+- **How it is collected:** The `DebugAttributeAspect` hooks into `RuntimeContentCache::enter()` and `RuntimeContentCache::leave()`, which bracket every Fusion path evaluation. On `enter()` it resolves the path's runtime configuration and, if `__meta.debug` is set, records a start timestamp together with the label and the fusion object type. On `leave()` it computes the elapsed wall-clock time and stores it in the `DebugAttributeCollector`.
+- **Where it appears:** Additional Metrics panel > Debug-marked prototypes section.
+- **What you see:** One row per label (or fusion path, if no string label is set) with columns for Fusion Object, Count, Total, Avg, Min, and Max render time. Times are color-coded (green ≤ 50 ms, yellow 50–200 ms, red > 200 ms). Prototypes sharing the same label are aggregated into one row.
+- **Use case:** Measure the rendering performance of specific prototypes — including cache lookups, cache misses, and nested renderings — without instrumenting your code. Just add `@debug = 'My Label'` to a prototype:
+
+  ```fusion
+  prototype(Vendor.Site:Box.RelatedContent) < prototype(Neos.Fusion:Component) {
+      @debug = 'Related Content'
+  }
+  ```
+- **Note:** The timing covers the whole path evaluation between `enter()` and `leave()`, so it works for cached and uncached evaluations alike.
+
 ### Custom Messages
 
 - **What it measures:** Timestamped debug messages added programmatically via `Flowpack\Neos\Debug\DataCollector\MessagesCollector::addMessage($message, $title)`.

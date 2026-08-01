@@ -18,6 +18,7 @@ This plugin is based on the now unmaintained [t3n/neos-debug](https://github.com
 - **Cache Backend Access Statistics** — Low-level Flow cache get/set/miss counts per cache (Development context only)
 - **Content Context Metrics** — Workspace, dimensions, visibility flags, and first-level node cache statistics
 - **Custom Debug Messages** — API for adding timestamped messages to the debug output
+- **Debug Marked Prototypes** — Track render time and call count of any Fusion prototype marked with a `@debug` meta-attribute
 - **Server-Timing HTTP Header** — Emits request timings as HTTP headers viewable in browser DevTools
 
 ## Screenshots
@@ -158,6 +159,7 @@ The additional metrics panel contains several subsections:
 - **Messages** — Custom debug messages with timestamp, title, and body
 - **Content Context Metrics** — Neos workspace information including dimensions, visibility flags, and first-level node cache statistics
 - **Search Queries** — Elasticsearch/ContentRepository search method invocations with execution times, color-coded by duration
+- **Debug-Marked Prototypes** — Render performance of Fusion prototypes marked with the `@debug` meta-attribute
 
 Learn more about the metrics in the [documentation](Documentation/Metrics.md).
 

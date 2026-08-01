@@ -41,7 +41,7 @@ type QueryGroup = {
     };
     executionTimeSum: number;
     count: number;
-}
+};
 
 type SlowQuery = {
     executionMS: number;
@@ -51,7 +51,7 @@ type SlowQuery = {
     sql: SQLQueryString;
     table: SQLTableName;
     types: number[];
-}
+};
 
 type SearchQuery = {
     className: string;
@@ -90,7 +90,7 @@ type DebugInfos = {
         searchQueries: SearchQuery[];
         [key: string]: object;
     };
-}
+};
 
 type ThumbnailMetrics = Record<string, number>;
 
@@ -114,6 +114,17 @@ type NeosResource = {
     sha1: string;
     filename: string;
     collectionName: string;
+};
+
+type DebugAttributeMetricEntry = {
+    label: string;
+    fusionPath: string;
+    fusionObjectName: string;
+    count: number;
+    totalTime: number;
+    minTime: number;
+    maxTime: number;
+    avgTime: number;
 };
 
 type Overlays = 'cache' | 'query' | 'inspection' | 'additionalMetrics';
