@@ -15,11 +15,8 @@ namespace Flowpack\Neos\Debug\Aspect;
  */
 
 use Doctrine\ORM\EntityManagerInterface;
-use Flowpack\Neos\Debug\DataCollector\CacheAccessCollector;
-use Flowpack\Neos\Debug\DataCollector\ContentContextMetricsCollectorInterface;
+use Flowpack\Neos\Debug\DataCollector\DataCollectorInterface;
 use Flowpack\Neos\Debug\DataCollector\DebugAttributeCollector;
-use Flowpack\Neos\Debug\DataCollector\MessagesCollector;
-use Flowpack\Neos\Debug\DataCollector\SearchQueryCollector;
 use Flowpack\Neos\Debug\Domain\Model\Dto\ResourceStreamRequest;
 use Flowpack\Neos\Debug\Logging\DebugStack;
 use Flowpack\Neos\Debug\Service\DebugService;
@@ -27,6 +24,9 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
+use Neos\Flow\Core\Bootstrap;
+use Neos\Flow\Exception;
+use Neos\Flow\Reflection\ReflectionService;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\Thumbnail;
@@ -42,6 +42,12 @@ class CollectDebugInformationAspect
 
     #[Flow\Inject]
     protected DebugService $debugService;
+
+    #[Flow\Inject]
+    protected Bootstrap $bootstrap;
+
+    #[Flow\Inject]
+    protected ReflectionService $reflectionService;
 
     protected DebugStack $sqlLoggingStack;
 
@@ -71,18 +77,6 @@ class CollectDebugInformationAspect
     protected ?bool $htmlOutputEnabled;
 
     #[Flow\Inject]
-    protected MessagesCollector $messagesCollector;
-
-    #[Flow\Inject]
-    protected CacheAccessCollector $cacheAccessCollector;
-
-    #[Flow\Inject]
-    protected ContentContextMetricsCollectorInterface $contentContextMetricsCollector;
-
-    #[Flow\Inject]
-    protected SearchQueryCollector $searchQueryCollector;
-
-    #[Flow\Inject]
     protected DebugAttributeCollector $debugAttributeCollector;
 
     #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled)")]
@@ -91,21 +85,19 @@ class CollectDebugInformationAspect
     }
 
     #[Flow\Around("method(Neos\Neos\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
-    public function addDebugValuesToNeosFusionView(JoinPointInterface $joinPoint): string|ResponseInterface|StreamInterface
-    {
+    public function addDebugValuesToNeosFusionView(JoinPointInterface $joinPoint
+    ): string|ResponseInterface|StreamInterface {
         return $this->addDebugValues($joinPoint);
     }
 
     #[Flow\Around("method(Neos\Fusion\View\FusionView->render()) && Flowpack\Neos\Debug\Aspect\CollectDebugInformationAspect->debuggingActive")]
-    public function addDebugValuesToDefaultFusionView(JoinPointInterface $joinPoint): string|ResponseInterface|StreamInterface
-    {
+    public function addDebugValuesToDefaultFusionView(JoinPointInterface $joinPoint
+    ): string|ResponseInterface|StreamInterface {
         return $this->addDebugValues($joinPoint);
     }
 
     protected function addDebugValues(JoinPointInterface $joinPoint): string|ResponseInterface|StreamInterface
     {
-        $this->debugAttributeCollector->reset();
-
         $startRenderAt = microtime(true) * 1000;
         /** @var string|ResponseInterface|StreamInterface $response */
         $response = $joinPoint->getAdviceChain()->proceed($joinPoint);
@@ -151,6 +143,11 @@ class CollectDebugInformationAspect
 
         $groupedQueries = $this->groupQueries($this->sqlLoggingStack->queries);
 
+        $additionalMetrics = array_reduce($this->getDataCollectors(), static function (array $metrics, DataCollectorInterface $collector) {
+            $metrics[$collector->getName()] = $collector->collect();
+            return $metrics;
+        }, []);
+
         // TODO: Introduce DTOs for the data
         $data = [
             'startRenderAt' => $startRenderAt,
@@ -169,14 +166,7 @@ class CollectDebugInformationAspect
             // Init as 0 as the actual number has to be resolved from the individual cache entries
             'resourceStreamRequests' => $this->resourceStreamRequests,
             'thumbnails' => $this->thumbnails,
-            'additionalMetrics' => [
-                // TODO: Iterate over all existing collectors
-                $this->messagesCollector->getName() => $this->messagesCollector->collect(),
-                $this->cacheAccessCollector->getName() => $this->cacheAccessCollector->collect(),
-                $this->contentContextMetricsCollector->getName() => $this->contentContextMetricsCollector->collect(),
-                $this->searchQueryCollector->getName() => $this->searchQueryCollector->collect(),
-                $this->debugAttributeCollector->getName() => $this->debugAttributeCollector->collect(),
-            ]
+            'additionalMetrics' => $additionalMetrics,
         ];
         $output = (string)$output;
         $debugOutput = '<!--__NEOS_DEBUG__ ' . json_encode($data) . '-->';
@@ -306,5 +296,27 @@ class CollectDebugInformationAspect
 
             return $carry;
         }, $initial);
+    }
+
+
+    /**
+     * @return DataCollectorInterface[]
+     * @throws Exception
+     */
+    public function getDataCollectors(): array
+    {
+        $objectManager = $this->bootstrap->getObjectManager();
+        $dataCollectors = [];
+        $classNames = $this->reflectionService->getAllImplementationClassNamesForInterface(
+            DataCollectorInterface::class
+        );
+        foreach ($classNames as $className) {
+            $objectName = $objectManager->getObjectNameByClassName($className);
+            $dataCollector = $objectManager->get($objectName);
+            if ($dataCollector instanceof DataCollectorInterface) {
+                $dataCollectors[] = $dataCollector;
+            }
+        }
+        return $dataCollectors;
     }
 }
