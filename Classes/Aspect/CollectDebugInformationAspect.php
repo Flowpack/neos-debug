@@ -59,8 +59,8 @@ class CollectDebugInformationAspect
     protected array $resourceStreamRequests = [];
 
     /**
-     * Map of resource sha1 to number of generated thumbnails
-     * @var array<string, int>
+     * Map of resource sha1 to the names of generated thumbnails
+     * @var array<string, string[]>
      */
     protected array $thumbnails = [];
 
@@ -232,16 +232,11 @@ class CollectDebugInformationAspect
         $asset = $joinPoint->getMethodArgument('asset');
         $thumbnailOrOriginalAsset = $joinPoint->getResult();
         if ($asset && $thumbnailOrOriginalAsset instanceof Thumbnail) {
-            if (!array_key_exists($asset->getResource()->getSha1(), $this->thumbnails)) {
-                $this->thumbnails[$asset->getResource()->getSha1()] = 1;
-            } else {
-                $this->thumbnails[$asset->getResource()->getSha1()]++;
+            $hash = $asset->getResource()->getSha1();
+            if (!array_key_exists($hash, $this->thumbnails)) {
+                $this->thumbnails[$hash] = [];
             }
-
-            MessagesCollector::addMessage(
-                $asset->getResource()->getFilename() . ' (' . $asset->getResource()->getCollectionName() . ')',
-                'Thumbnail generated',
-            );
+            $this->thumbnails[$hash][] = $asset->getResource()->getFilename() . ' (' . $asset->getResource()->getCollectionName() . ')';
         }
     }
 

@@ -19,7 +19,7 @@ const ThumbnailGenerationMetrics = ({ thumbnails }: ThumbnailGenerationMetricsPr
                         {Object.keys(thumbnails).map((sha1, index) => (
                             <tr key={index}>
                                 <td>{sha1}</td>
-                                <td>{thumbnails[sha1]}</td>
+                                <td>{thumbnails[sha1].join(', ')}</td>
                             </tr>
                         ))}
                     </tbody>

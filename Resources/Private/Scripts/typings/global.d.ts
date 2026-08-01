@@ -92,7 +92,7 @@ type DebugInfos = {
     };
 };
 
-type ThumbnailMetrics = Record<string, number>;
+type ThumbnailMetrics = Record<string, string[]>;
 
 type CacheAccessMetrics = {
     [key: string]: {
