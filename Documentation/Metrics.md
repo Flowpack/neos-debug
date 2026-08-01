@@ -218,8 +218,18 @@ These metrics are always visible in the status bar at the bottom-right of the pa
 
 ### Debug-Marked Prototypes
 
+**Note:** This feature needs to be enabled in your settings as it currently has a measurable performance impact:
+
+```yaml
+Flowpack:
+  Neos:
+    Debug:
+      debugMetaAttribute:
+        enabled: true
+```
+
 - **What it measures:** Render time and call count of Fusion prototypes marked with the `@debug` meta-attribute.
-- **How it is collected:** The `DebugAttributeAspect` hooks into `RuntimeContentCache::enter()` and `RuntimeContentCache::leave()`, which bracket every Fusion path evaluation. On `enter()` it resolves the path's runtime configuration and, if `__meta.debug` is set, records a start timestamp together with the label and the fusion object type. On `leave()` it computes the elapsed wall-clock time and stores it in the `DebugAttributeCollector`.
+- **How it is collected:** The `DebugAttributeAspect` hooks into `RuntimeContentCache::enter()` and `RuntimeContentCache::leave()`, which bracket every Fusion path evaluation. On `enter()` it resolves the path's runtime configuration and, if the attribute is set, records a start timestamp together with the label and the fusion object type. On `leave()` it computes the elapsed wall-clock time and stores it in the `DebugAttributeCollector`.
 - **Where it appears:** Additional Metrics panel > Debug-marked prototypes section.
 - **What you see:** One row per label (or fusion path, if no string label is set) with columns for Fusion Object, Count, Total, Avg, Min, and Max render time. Times are color-coded (green ≤ 50 ms, yellow 50–200 ms, red > 200 ms). Prototypes sharing the same label are aggregated into one row.
 - **Use case:** Measure the rendering performance of specific prototypes — including cache lookups, cache misses, and nested renderings — without instrumenting your code. Just add `@debug = 'My Label'` to a prototype:
@@ -229,7 +239,7 @@ These metrics are always visible in the status bar at the bottom-right of the pa
       @debug = 'Related Content'
   }
   ```
-- **Note:** The timing covers the whole path evaluation between `enter()` and `leave()`, so it works for cached and uncached evaluations alike.
+- **Note:** The timing covers the whole path evaluation between `enter()` and `leave()`, so it works for cached and uncached evaluations alike. But, as the methods are called for every Fusion path, there is a performance impact which is why the feature is disabled by default.
 
 ### Custom Messages
 
@@ -242,26 +252,34 @@ These metrics are always visible in the status bar at the bottom-right of the pa
 
 ## Server-Timing HTTP Header
 
+The `Server-Timing` HTTP response header is viewable in your browsers DevTools Network tab.
+
+**Note:** This feature needs to be enabled in your settings:
+
+```yaml
+Flowpack:
+  Neos:
+    Debug:
+      serverTimingHeader:
+        enabled: true
+```
+
 ### processRequest
 
 - **What it measures:** Total request processing time from the start of the HTTP pipeline to the point where the header is added.
 - **How it is collected:** The `MeasureServerTimingMiddleware` starts a timer at the beginning of the HTTP pipeline. The `AddServerTimingMiddleware` reads it before the response is sent.
-- **Where it appears:** `Server-Timing` HTTP response header, viewable in browser DevTools Network tab.
 
 ### fusionRenderTime
 
 - **What it measures:** Total time spent in Fusion view rendering.
 - **How it is collected:** Measured by the around-advice on `FusionView::render()` and registered as a metric in `DebugService`.
-- **Where it appears:** `Server-Timing` HTTP response header.
 
 ### sqlExecutionTime
 
 - **What it measures:** Total SQL query execution time.
 - **How it is collected:** Aggregated by the `DebugStack` SQL logger and registered as a metric in `DebugService`.
-- **Where it appears:** `Server-Timing` HTTP response header.
 
 ### contentCacheHit / contentCacheMiss
 
 - **What it measures:** Count of content cache hits and misses respectively.
 - **How it is collected:** Counted by the around-advice on `ContentCache::getCachedSegment()` and registered as metrics in `DebugService`.
-- **Where it appears:** `Server-Timing` HTTP response header.

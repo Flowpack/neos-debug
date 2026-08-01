@@ -159,7 +159,7 @@ The additional metrics panel contains several subsections:
 - **Messages** — Custom debug messages with timestamp, title, and body
 - **Content Context Metrics** — Neos workspace information including dimensions, visibility flags, and first-level node cache statistics
 - **Search Queries** — Elasticsearch/ContentRepository search method invocations with execution times, color-coded by duration
-- **Debug-Marked Prototypes** — Render performance of Fusion prototypes marked with the `@debug` meta-attribute
+- **Debug-Marked Prototypes** — Render performance of Fusion prototypes marked with the `@debug` meta-attribute (disabled by default)
 
 Learn more about the metrics in the [documentation](Documentation/Metrics.md).
 

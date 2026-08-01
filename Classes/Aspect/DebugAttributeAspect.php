@@ -35,7 +35,7 @@ class DebugAttributeAspect
         $this->runtimeConfigurationCache = new \SplObjectStorage();
     }
 
-    #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled)")]
+    #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled) && setting(Flowpack.Neos.Debug.debugMetaAttribute.enabled)")]
     public function debuggingActive(): void
     {
     }

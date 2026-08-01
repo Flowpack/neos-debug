@@ -39,7 +39,7 @@ class DebugAttributeCollector extends AbstractDataCollector
     public function collect(): array
     {
         $result = [];
-        foreach ($this->records as $key => $record) {
+        foreach ($this->records as $record) {
             $record['avgTime'] = round($record['totalTime'] / $record['count'], 2);
             $record['totalTime'] = round($record['totalTime'], 2);
             $result[] = $record;
