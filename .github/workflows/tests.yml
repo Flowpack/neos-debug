@@ -36,8 +36,7 @@ jobs:
         neosVersion:
           - '8.3'
           - '8.4'
-          # FIXME: Make tests work with Flow 9.1
-          # - '9.1'
+          - '9.1'
 
     name: 'Quality - Neos ${{ matrix.neosVersion }}'
 

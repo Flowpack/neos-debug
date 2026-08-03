@@ -28,8 +28,10 @@ class ContentContextMetricsCollectorFactory
                 $contextFactory,
             );
         } else {
+            $subgraphCachePool = $this->objectManager->get(\Neos\ContentRepositoryRegistry\SubgraphCachingInMemory\SubgraphCachePool::class);
             return new ContentContextMetricsCollectorNeos9(
-                $this->dataFormatter
+                $this->dataFormatter,
+                $subgraphCachePool,
             );
         }
     }
