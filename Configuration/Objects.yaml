@@ -1,7 +1,7 @@
 Flowpack\Neos\Debug\DataFormatter\DataFormatterInterface:
   className: Flowpack\Neos\Debug\DataFormatter\DataFormatter
 
-Flowpack\Neos\Debug\DataCollector\ContentContextMetricsCollectorInterface:
+Flowpack\Neos\Debug\DataCollector\NodeAccessCollectorInterface:
   scope: singleton
-  factoryObjectName: 'Flowpack\Neos\Debug\DataCollector\ContentContextMetricsCollectorFactory'
+  factoryObjectName: 'Flowpack\Neos\Debug\DataCollector\NodeAccessCollectorFactory'
   factoryMethodName: build

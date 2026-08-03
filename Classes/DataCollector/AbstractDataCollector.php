@@ -13,4 +13,12 @@ abstract class AbstractDataCollector implements DataCollectorInterface
         protected ?DataFormatterInterface $dataFormatter = null,
     ) {
     }
+
+    /**
+     * Override this in your implementation if the collector can only be loaded depending on the environment
+     */
+    public static function canBeLoaded(): bool
+    {
+        return true;
+    }
 }

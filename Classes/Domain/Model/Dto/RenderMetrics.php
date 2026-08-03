@@ -19,6 +19,9 @@ class RenderMetrics implements \JsonSerializable
     ) {
     }
 
+    /**
+     * @return array{renderTime: float, sqlQueryCount: int}
+     */
     public function toArray(): array
     {
         return [
@@ -34,6 +37,9 @@ class RenderMetrics implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * @return array{renderTime: float, sqlQueryCount: int}
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();

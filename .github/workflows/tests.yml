@@ -1,0 +1,98 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build JS bundle
+    steps:
+      - name: Checkout package
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build
+        run: yarn build
+
+  quality:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        phpVersion:
+          - '8.3'
+        neosVersion:
+          - '8.3'
+          - '8.4'
+          - '9.1'
+
+    name: 'Quality - Neos ${{ matrix.neosVersion }}'
+
+    steps:
+      - name: Checkout package
+        uses: actions/checkout@v3
+        with:
+          path: package
+
+      - name: Checkout Neos base distribution
+        uses: actions/checkout@v3
+        with:
+          repository: neos/neos-base-distribution
+          ref: ${{ matrix.neosVersion }}
+          path: neos-base-distribution
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.phpVersion }}
+          tools: composer:v2, phpstan, phpunit
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-flow-${{ matrix.neosVersion }}-${{ hashFiles('neos-base-distribution/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-flow-${{ matrix.neosVersion }}-
+
+      - name: Copy package into distribution
+        run: |
+          mkdir -p neos-base-distribution/Packages/Plugins
+          cp -R "$GITHUB_WORKSPACE/package" neos-base-distribution/Packages/Plugins/Flowpack.Neos.Debug
+
+      - name: Install dependencies
+        working-directory: neos-base-distribution
+        run: |
+          composer config --no-plugins allow-plugins.neos/composer-plugin true
+          composer config minimum-stability dev
+          composer config prefer-stable true
+          composer install --no-interaction --no-progress
+
+      - name: Register package and regenerate autoloader
+        working-directory: neos-base-distribution
+        run: |
+          composer config --no-plugins repositories.shel-resource-import path Packages/Plugins/Flowpack.Neos.Debug
+          composer require --no-interaction --no-progress flowpack/neos-debug:@dev
+
+      - name: PHPStan analysis
+        working-directory: neos-base-distribution/Packages/Plugins/Flowpack.Neos.Debug
+        run: phpstan analyse -c phpstan.neon --no-progress
+
+#      - name: PHPUnit tests
+#        working-directory: neos-base-distribution/Packages/Plugins/Flowpack.Neos.Debug
+#        run: phpunit -c phpunit.xml

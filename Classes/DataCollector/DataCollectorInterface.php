@@ -6,8 +6,13 @@ namespace Flowpack\Neos\Debug\DataCollector;
 
 interface DataCollectorInterface
 {
+    /**
+     * @return array<string|int, mixed>
+     */
     public function collect(): array;
 
     public function getName(): string;
+
+    public static function canBeLoaded(): bool;
 
 }

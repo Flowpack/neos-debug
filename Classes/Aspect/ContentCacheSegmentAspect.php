@@ -31,6 +31,9 @@ class ContentCacheSegmentAspect
     public const MODE_UNCACHED = 'uncached';
     public const MODE_DYNAMIC = 'dynamic';
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $interceptedCacheEntryValues = [];
 
     protected string $cacheSegmentTail;
@@ -40,10 +43,39 @@ class ContentCacheSegmentAspect
     #[Flow\Inject]
     protected RenderTimer $renderTimer;
 
+    /**
+     * @return string|false
+     */
+    protected function getStringMethodArgument(JoinPointInterface $joinPoint, string $argumentName): string|false
+    {
+        $value = $joinPoint->getMethodArgument($argumentName);
+        return is_string($value) ? $value : false;
+    }
+
+    /**
+     * @return array<array-key, mixed>
+     */
+    protected function getArrayMethodArgument(JoinPointInterface $joinPoint, string $argumentName): array
+    {
+        $value = $joinPoint->getMethodArgument($argumentName);
+        return is_array($value) ? $value : [];
+    }
+
+    /**
+     * @return string
+     */
+    protected function proceedAsString(JoinPointInterface $joinPoint): string
+    {
+        $result = $joinPoint->getAdviceChain()->proceed($joinPoint);
+        return is_string($result) ? $result : '';
+    }
+
     public function injectContentCache(ContentCache $contentCache): void
     {
         $randomCacheMarker = ObjectAccess::getProperty($contentCache, 'randomCacheMarker', true);
-        $this->cacheSegmentTail = ContentCache::CACHE_SEGMENT_END_TOKEN . $randomCacheMarker;
+        if (is_string($randomCacheMarker)) {
+            $this->cacheSegmentTail = ContentCache::CACHE_SEGMENT_END_TOKEN . $randomCacheMarker;
+        }
     }
 
     #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled) && setting(Flowpack.Neos.Debug.htmlOutput.enabled)")]
@@ -54,18 +86,23 @@ class ContentCacheSegmentAspect
     #[Flow\Around("method(Neos\Fusion\Core\Cache\ContentCache->createCacheSegment()) && Flowpack\Neos\Debug\Aspect\ContentCacheSegmentAspect->debuggingActive")]
     public function wrapCachedSegment(JoinPointInterface $joinPoint): string
     {
-        $segment = $joinPoint->getAdviceChain()->proceed($joinPoint);
-        $fusionPath = $joinPoint->getMethodArgument('fusionPath');
+        $segment = $this->proceedAsString($joinPoint);
+        $fusionPath = $this->getStringMethodArgument($joinPoint, 'fusionPath');
+        if ($fusionPath === false) {
+            return $segment;
+        }
         $renderMetrics = $this->renderTimer->stop($fusionPath);
 
-        return $this->renderCacheInfoIntoSegment($segment, [
+        $result = $this->renderCacheInfoIntoSegment($segment, [
             'mode' => static::MODE_CACHED,
             'fusionPath' => $fusionPath,
             'renderMetrics' => $renderMetrics,
             'entryIdentifier' => $this->interceptedCacheEntryValues,
-            'entryTags' => $joinPoint->getMethodArgument('tags'),
+            'entryTags' => $this->getArrayMethodArgument($joinPoint, 'tags'),
             'lifetime' => $joinPoint->getMethodArgument('lifetime')
         ]);
+
+        return is_string($result) ? $result : $segment;
     }
 
     /**
@@ -79,75 +116,89 @@ class ContentCacheSegmentAspect
         $segment = $joinPoint->getAdviceChain()->proceed($joinPoint);
         $end = microtime(true);
 
+        $path = $this->getStringMethodArgument($joinPoint, 'path');
+
         return $this->renderCacheInfoIntoSegment($segment, [
             'mode' => static::MODE_UNCACHED,
             'renderTime' => round(($end - $start) * 1000, 2) . ' ms',
-            'fusionPath' => $joinPoint->getMethodArgument('path'),
-            'contextVariables' => array_keys($joinPoint->getMethodArgument('contextArray')),
+            'fusionPath' => $path !== false ? $path : '',
+            'contextVariables' => array_keys($this->getArrayMethodArgument($joinPoint, 'contextArray')),
         ]);
     }
 
     #[Flow\Around("method(Neos\Fusion\Core\Cache\ContentCache->createUncachedSegment()) && Flowpack\Neos\Debug\Aspect\ContentCacheSegmentAspect->debuggingActive")]
     public function wrapUncachedSegment(JoinPointInterface $joinPoint): string
     {
-        $segment = $joinPoint->getAdviceChain()->proceed($joinPoint);
+        $segment = $this->proceedAsString($joinPoint);
 
         if ($joinPoint->isMethodArgument('contextVariables')) {
             // Neos 8.x
-            $contextVariables = $joinPoint->getMethodArgument('contextVariables');
+            $contextVariables = $this->getArrayMethodArgument($joinPoint, 'contextVariables');
         } else {
             // Neos 9.x
-            $contextVariables = $joinPoint->getMethodArgument('serializedContext');
+            $contextVariables = $this->getArrayMethodArgument($joinPoint, 'serializedContext');
         }
 
-        return $this->renderCacheInfoIntoSegment($segment, [
+        $fusionPath = $this->getStringMethodArgument($joinPoint, 'fusionPath');
+
+        $result = $this->renderCacheInfoIntoSegment($segment, [
             'mode' => static::MODE_UNCACHED,
-            'fusionPath' => $joinPoint->getMethodArgument('fusionPath'),
+            'fusionPath' => $fusionPath !== false ? $fusionPath : '',
             'contextVariables' => array_keys($contextVariables),
         ]);
+
+        return is_string($result) ? $result : $segment;
     }
 
     #[Flow\Around("method(Neos\Fusion\Core\Cache\ContentCache->createDynamicCachedSegment()) && Flowpack\Neos\Debug\Aspect\ContentCacheSegmentAspect->debuggingActive")]
     public function wrapDynamicSegment(JoinPointInterface $joinPoint): string
     {
-        $segment = $joinPoint->getAdviceChain()->proceed($joinPoint);
+        $segment = $this->proceedAsString($joinPoint);
 
         if ($joinPoint->isMethodArgument('contextVariables')) {
             // Neos 8.x
-            $contextVariables = $joinPoint->getMethodArgument('contextVariables');
+            $contextVariables = $this->getArrayMethodArgument($joinPoint, 'contextVariables');
         } else {
             // Neos 9.x
-            $contextVariables = $joinPoint->getMethodArgument('serializedContext');
+            $contextVariables = $this->getArrayMethodArgument($joinPoint, 'serializedContext');
         }
 
-        return $this->renderCacheInfoIntoSegment($segment, [
+        $fusionPath = $this->getStringMethodArgument($joinPoint, 'fusionPath');
+
+        $result = $this->renderCacheInfoIntoSegment($segment, [
             'mode' => static::MODE_DYNAMIC,
-            'fusionPath' => $joinPoint->getMethodArgument('fusionPath'),
+            'fusionPath' => $fusionPath !== false ? $fusionPath : '',
             'entryIdentifier' => $this->interceptedCacheEntryValues,
-            'entryTags' => $joinPoint->getMethodArgument('tags'),
+            'entryTags' => $this->getArrayMethodArgument($joinPoint, 'tags'),
             'lifetime' => $joinPoint->getMethodArgument('lifetime'),
             'contextVariables' => array_keys($contextVariables),
             'entryDiscriminator' => $joinPoint->getMethodArgument('cacheDiscriminator'),
         ]);
+
+        return is_string($result) ? $result : $segment;
     }
 
     #[Flow\Around("method(Neos\Fusion\Core\Cache\ContentCache->renderContentCacheEntryIdentifier()) && Flowpack\Neos\Debug\Aspect\ContentCacheSegmentAspect->debuggingActive")]
     public function interceptContentCacheEntryIdentifier(JoinPointInterface $joinPoint): string
     {
-        $fusionPath = $joinPoint->getMethodArgument('fusionPath');
+        $fusionPath = $this->getStringMethodArgument($joinPoint, 'fusionPath');
         $cacheIdentifierValues = $joinPoint->getMethodArgument('cacheIdentifierValues');
         $this->interceptedCacheEntryValues = [];
 
-        foreach ($cacheIdentifierValues as $key => $value) {
-            if ($value instanceof CacheAwareInterface) {
-                $this->interceptedCacheEntryValues[$key] = $value->getCacheEntryIdentifier();
-            } elseif (is_string($value) || is_bool($value) || is_int($value)) {
-                $this->interceptedCacheEntryValues[$key] = $value;
+        if (is_array($cacheIdentifierValues)) {
+            foreach ($cacheIdentifierValues as $key => $value) {
+                if ($value instanceof CacheAwareInterface) {
+                    $this->interceptedCacheEntryValues[(string)$key] = $value->getCacheEntryIdentifier();
+                } elseif (is_string($value) || is_bool($value) || is_int($value)) {
+                    $this->interceptedCacheEntryValues[(string)$key] = $value;
+                }
             }
         }
 
-        $result = $joinPoint->getAdviceChain()->proceed($joinPoint);
-        $this->interceptedCacheEntryValues['[fusionPath]'] = htmlspecialchars($fusionPath);
+        $result = $this->proceedAsString($joinPoint);
+        if ($fusionPath !== false) {
+            $this->interceptedCacheEntryValues['[fusionPath]'] = htmlspecialchars($fusionPath);
+        }
         $this->interceptedCacheEntryValues['=> hashed identifier'] = $result;
         return $result;
     }
@@ -155,11 +206,15 @@ class ContentCacheSegmentAspect
     #[Flow\Before("method(Neos\Fusion\Core\Cache\RuntimeContentCache->postProcess()) && Flowpack\Neos\Debug\Aspect\ContentCacheSegmentAspect->debuggingActive")]
     public function interceptFusionObject(JoinPointInterface $joinPoint): void
     {
-        $this->interceptedFusionObject = $joinPoint->getMethodArgument('fusionObject');
+        $fusionObject = $joinPoint->getMethodArgument('fusionObject');
+        if ($fusionObject instanceof AbstractFusionObject) {
+            $this->interceptedFusionObject = $fusionObject;
+        }
     }
 
     /**
      * @param mixed $segment This is mixed as the RuntimeContentCache might also return none string values
+     * @param array{mode?: string, entryIdentifier?: array<string, mixed>} $info
      * @return mixed the cached data might not be of type string, so we cannot define the return type
      */
     protected function renderCacheInfoIntoSegment(mixed $segment, array $info): mixed
@@ -176,7 +231,8 @@ class ContentCacheSegmentAspect
             + array_slice($info, $injectPosition, count($info) - $injectPosition, true);
 
         // Add debug data only to html output
-        $segmentFormat = $info['entryIdentifier']['format'] ?? null;
+        $entryIdentifier = $info['entryIdentifier'] ?? null;
+        $segmentFormat = is_array($entryIdentifier) ? $entryIdentifier['format'] ?? null : null;
 
         if ($segmentFormat !== 'html') {
             return $segment;

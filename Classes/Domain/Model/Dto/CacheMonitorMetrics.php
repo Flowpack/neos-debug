@@ -10,8 +10,19 @@ use Neos\Flow\Annotations as Flow;
 class CacheMonitorMetrics implements \JsonSerializable
 {
 
+    /**
+     * @var list<string>
+     */
     protected array $cacheHits = [];
+
+    /**
+     * @var list<string>
+     */
     protected array $cacheMisses = [];
+
+    /**
+     * @var list<string>
+     */
     protected array $updates = [];
 
     public function __construct(
@@ -35,6 +46,9 @@ class CacheMonitorMetrics implements \JsonSerializable
         $this->updates[] = $entryIdentifier;
     }
 
+    /**
+     * @return array{cacheIdentifier: string, cacheType: string, hits: int, misses: int, updates: int}
+     */
     public function jsonSerialize(): array
     {
         return [

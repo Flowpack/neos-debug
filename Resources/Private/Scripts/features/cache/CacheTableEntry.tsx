@@ -59,7 +59,7 @@ type CacheTableEntryProps = {
     cacheInfo: CacheInfo;
 };
 
-const IGNORED_DETAIL_KEYS = ['mode', 'hit', 'fusionPath'];
+const IGNORED_DETAIL_KEYS = ['mode', 'hit', 'fusionPath', 'renderMetrics'];
 
 const CacheTableEntry: FunctionComponent<CacheTableEntryProps> = ({ cacheInfo }) => {
     const [showPrototypes, setShowPrototypes] = useState(false);
@@ -85,6 +85,8 @@ const CacheTableEntry: FunctionComponent<CacheTableEntryProps> = ({ cacheInfo })
             <tr className={rowStyle} data-cache-hit={cacheInfo.hit}>
                 <td className={modeStyle}>{ucFirst(cacheInfo.mode)}</td>
                 <td className={cacheHitStyle}>{cacheInfo.hit ? 'Yes' : 'No'}</td>
+                <td>{cacheInfo.renderMetrics?.renderTime ?? '–'}</td>
+                <td>{cacheInfo.renderMetrics?.sqlQueryCount ?? '–'}</td>
                 <td>
                     <div
                         className={fusionPathStyle}
@@ -112,8 +114,8 @@ const CacheTableEntry: FunctionComponent<CacheTableEntryProps> = ({ cacheInfo })
                     .filter((key) => !IGNORED_DETAIL_KEYS.includes(key))
                     .map((key) => (
                         <tr key={key} className={rowStyle}>
-                            <td colSpan={2}>{ucFirst(key)}</td>
-                            <td colSpan={2}>
+                            <td colSpan={3}>{ucFirst(key)}</td>
+                            <td colSpan={3}>
                                 <FormattedValue value={cacheInfo[key]} />
                             </td>
                         </tr>

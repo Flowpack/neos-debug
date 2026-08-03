@@ -6,10 +6,9 @@ namespace Flowpack\Neos\Debug\DataCollector;
 
 use Flowpack\Neos\Debug\DataFormatter\DataFormatterInterface;
 use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
-use Neos\Flow\Annotations as Flow;
 use Neos\Utility\ObjectAccess;
 
-class ContentContextMetricsCollectorNeos8 extends AbstractDataCollector implements ContentContextMetricsCollectorInterface
+class NodeAccessCollectorNeos8 extends AbstractDataCollector implements NodeAccessCollectorInterface
 {
     public function __construct(
         ?DataFormatterInterface $dataFormatter,
@@ -21,7 +20,15 @@ class ContentContextMetricsCollectorNeos8 extends AbstractDataCollector implemen
 
     public function getName(): string
     {
-        return 'contentContextMetrics';
+        return 'nodeAccessMetrics';
+    }
+
+    /**
+     * This collector only works with Neos 8 where the ContextFactoryInterface exists
+     */
+    public static function canBeLoaded(): bool
+    {
+        return interface_exists(\Neos\ContentRepository\Domain\Service\ContextFactoryInterface::class);
     }
 
     /**
@@ -40,9 +47,9 @@ class ContentContextMetricsCollectorNeos8 extends AbstractDataCollector implemen
                 'removedContentShown' => $context->isRemovedContentShown(),
                 'inaccessibleContentShown' => $context->isInaccessibleContentShown(),
                 'firstLevelNodeCache' => [
-                    'nodesByPath' => count(ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByPath', true)),
-                    'nodesByIdentifier' => count(ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByIdentifier', true)),
-                    'childNodesByPathAndNodeTypeFilter' => count(ObjectAccess::getProperty($firstLevelNodeCache, 'childNodesByPathAndNodeTypeFilter', true)),
+                    'nodesByPath' => count((array)ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByPath', true)),
+                    'nodesByIdentifier' => count((array)ObjectAccess::getProperty($firstLevelNodeCache, 'nodesByIdentifier', true)),
+                    'childNodesByPathAndNodeTypeFilter' => count((array)ObjectAccess::getProperty($firstLevelNodeCache, 'childNodesByPathAndNodeTypeFilter', true)),
                 ],
             ];
         }

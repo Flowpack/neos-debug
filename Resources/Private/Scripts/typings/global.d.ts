@@ -41,7 +41,7 @@ type QueryGroup = {
     };
     executionTimeSum: number;
     count: number;
-}
+};
 
 type SlowQuery = {
     executionMS: number;
@@ -51,7 +51,13 @@ type SlowQuery = {
     sql: SQLQueryString;
     table: SQLTableName;
     types: number[];
-}
+};
+
+type SearchQuery = {
+    className: string;
+    methodName: string;
+    executionTime: number;
+};
 
 type DebugInfos = {
     renderTime: number;
@@ -72,35 +78,53 @@ type DebugInfos = {
         };
     };
     resourceStreamRequests: NeosResource[];
-    thumbnails: Record<string, number>;
+    thumbnails: ThumbnailMetrics;
     cCacheHits: number;
     // TODO: Create type for cache misses
     cCacheMisses: string[];
     cCacheUncached: number;
     // TODO: Define type for collected data
     additionalMetrics: {
-        messages: {
-            timestamp: number;
-            message: string;
-            title: string;
-        }[];
-        cacheAccess: {
-            [key: string]: {
-                cacheIdentifier: string;
-                cacheType: string;
-                hits: number;
-                misses: number;
-                updates: number;
-            };
-        };
+        messages: CustomMessages;
+        cacheAccess: CacheAccessMetrics;
+        searchQueries: SearchQuery[];
         [key: string]: object;
     };
 };
+
+type ThumbnailMetrics = Record<string, string[]>;
+
+type CacheAccessMetrics = {
+    [key: string]: {
+        cacheIdentifier: string;
+        cacheType: string;
+        hits: number;
+        misses: number;
+        updates: number;
+    };
+};
+
+type CustomMessages = {
+    timestamp: number;
+    message: string;
+    title: string;
+}[];
 
 type NeosResource = {
     sha1: string;
     filename: string;
     collectionName: string;
+};
+
+type DebugAttributeMetricEntry = {
+    label: string;
+    fusionPath: string;
+    fusionObjectName: string;
+    count: number;
+    totalTime: number;
+    minTime: number;
+    maxTime: number;
+    avgTime: number;
 };
 
 type Overlays = 'cache' | 'query' | 'inspection' | 'additionalMetrics';
