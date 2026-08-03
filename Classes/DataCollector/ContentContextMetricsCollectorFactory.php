@@ -28,6 +28,7 @@ class ContentContextMetricsCollectorFactory
                 $contextFactory,
             );
         } else {
+            /** @var \Neos\ContentRepositoryRegistry\SubgraphCachingInMemory\SubgraphCachePool $subgraphCachePool */
             $subgraphCachePool = $this->objectManager->get(\Neos\ContentRepositoryRegistry\SubgraphCachingInMemory\SubgraphCachePool::class);
             return new ContentContextMetricsCollectorNeos9(
                 $this->dataFormatter,
