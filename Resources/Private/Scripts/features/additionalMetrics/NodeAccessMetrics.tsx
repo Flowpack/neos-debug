@@ -1,6 +1,6 @@
 import { Table, FormattedValue, Details } from '../../presentationals';
 
-type ContentContextMetricsProps = {
+type NodeAccessMetricsProps = {
     metrics: Record<
         string,
         {
@@ -18,7 +18,7 @@ type ContentContextMetricsProps = {
     >;
 };
 
-const ContentContextMetrics = ({ metrics }: ContentContextMetricsProps) => {
+const NodeAccessMetrics = ({ metrics }: NodeAccessMetricsProps) => {
     const nodeCount = Object.values(metrics).reduce((carry, context) => {
         carry += context.firstLevelNodeCache.nodesByIdentifier;
         return carry;
@@ -52,4 +52,4 @@ const ContentContextMetrics = ({ metrics }: ContentContextMetricsProps) => {
     );
 };
 
-export default ContentContextMetrics;
+export default NodeAccessMetrics;

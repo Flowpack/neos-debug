@@ -13,7 +13,7 @@ use Neos\ContentRepositoryRegistry\SubgraphCachingInMemory\SubgraphCachePool;
 use Neos\Neos\Domain\SubtreeTagging\NeosSubtreeTag;
 use Neos\Utility\ObjectAccess;
 
-class ContentContextMetricsCollectorNeos9 extends AbstractDataCollector implements ContentContextMetricsCollectorInterface
+class NodeAccessCollectorNeos9 extends AbstractDataCollector implements NodeAccessCollectorInterface
 {
     public function __construct(
         ?DataFormatterInterface $dataFormatter,
@@ -25,7 +25,7 @@ class ContentContextMetricsCollectorNeos9 extends AbstractDataCollector implemen
 
     public function getName(): string
     {
-        return 'contentContextMetrics';
+        return 'nodeAccessMetrics';
     }
 
     /**
@@ -51,14 +51,14 @@ class ContentContextMetricsCollectorNeos9 extends AbstractDataCollector implemen
         $allChildNodesByNodeIdCaches = ObjectAccess::getProperty($this->subgraphCachePool, 'allChildNodesByNodeIdCaches', true);
 
         // Analyse ContentSubgraph
-        $contentContextMetrics = [];
+        $subgraphMetrics = [];
         foreach ($subgraphInstances as $cacheIdentifier => $subgraph) {
             $excludedSubtreeTags = $subgraph->getVisibilityConstraints()->excludedSubtreeTags;
             $nodePathCache = $nodePathCaches[$cacheIdentifier] ?? null;
             $nodeByNodeAggregateIdCache = $nodeByNodeAggregateIdCaches[$cacheIdentifier] ?? null;
             $allChildNodesByNodeIdCache = $allChildNodesByNodeIdCaches[$cacheIdentifier] ?? null;
 
-            $contentContextMetrics[$cacheIdentifier] = [
+            $subgraphMetrics[$cacheIdentifier] = [
                 'workspace' => $subgraph->getWorkspaceName()->value,
                 'dimensions' => $subgraph->getDimensionSpacePoint()->coordinates,
                 'invisibleContentShown' => !$excludedSubtreeTags->contain(NeosSubtreeTag::disabled()),
@@ -74,6 +74,6 @@ class ContentContextMetricsCollectorNeos9 extends AbstractDataCollector implemen
                 ],
             ];
         }
-        return $contentContextMetrics;
+        return $subgraphMetrics;
     }
 }

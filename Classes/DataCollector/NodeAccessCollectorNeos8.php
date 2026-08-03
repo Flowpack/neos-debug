@@ -8,7 +8,7 @@ use Flowpack\Neos\Debug\DataFormatter\DataFormatterInterface;
 use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
 use Neos\Utility\ObjectAccess;
 
-class ContentContextMetricsCollectorNeos8 extends AbstractDataCollector implements ContentContextMetricsCollectorInterface
+class NodeAccessCollectorNeos8 extends AbstractDataCollector implements NodeAccessCollectorInterface
 {
     public function __construct(
         ?DataFormatterInterface $dataFormatter,
@@ -20,7 +20,7 @@ class ContentContextMetricsCollectorNeos8 extends AbstractDataCollector implemen
 
     public function getName(): string
     {
-        return 'contentContextMetrics';
+        return 'nodeAccessMetrics';
     }
 
     /**

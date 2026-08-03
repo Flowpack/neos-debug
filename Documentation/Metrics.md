@@ -192,7 +192,7 @@ These metrics are always visible in the status bar at the bottom-right of the pa
 ### Content Context Metrics
 
 - **What it measures:** Information about Neos content repository contexts including workspace, dimensions, and first-level node cache statistics.
-- **How it is collected:** The `ContentContextMetricsCollector` (Neos 8 variant) iterates over all context instances from the `ContextFactory` and captures:
+- **How it is collected (Neos 8):** The `NodeAccessCollectorNeos8` iterates over all context instances from the `ContextFactory` and captures:
   - Workspace name
   - Dimension values
   - Visibility flags (`invisibleContentShown`, `removedContentShown`, `inaccessibleContentShown`)
@@ -200,9 +200,16 @@ These metrics are always visible in the status bar at the bottom-right of the pa
     - Nodes by path (count)
     - Nodes by identifier (count)
     - Child nodes by path and node type filter (count)
+- **How it is collected (Neos 9):** The `NodeAccessCollectorNeos9` iterates over all context instances from the `ContextFactory` and captures:
+  - Workspace name
+  - Dimension values
+  - Subtree tags (`disabled`, `removed`)
+  - First-level node cache statistics:
+    - Nodes by path (count)
+    - Nodes by identifier (count)
+    - Child nodes by identifier (count)
 - **Where it appears:** Additional Metrics panel > Content Context Metrics section.
 - **Use case:** Understanding which workspaces are active and how the node cache is populated. Helps debug unexpected content visibility or cache behavior.
-- **Note:** Currently implemented for Neos 8 only. The Neos 9 variant returns an empty array.
 
 ### Search Queries
 

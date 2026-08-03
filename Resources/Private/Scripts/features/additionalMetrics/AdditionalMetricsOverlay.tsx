@@ -3,7 +3,7 @@ import { useComputed } from '@preact/signals';
 import { useDebugContext } from '../../context/DebugContext';
 import Overlay, { overlayState } from '../../presentationals/Overlay';
 import CacheMetrics from './CacheMetrics';
-import ContentContextMetrics from './ContentContextMetrics';
+import NodeAccessMetrics from './NodeAccessMetrics';
 import DebugAttributeMetrics from './DebugAttributeMetrics';
 import MessagesMetrics from './MessagesMetrics';
 import ResourceStreamRequestMetrics from './ResourceStreamRequestMetrics';
@@ -33,8 +33,8 @@ const AdditionalMetricsOverlay = () => {
             {Object.keys(additionalMetrics.messages ?? []).length > 0 && (
                 <MessagesMetrics messages={additionalMetrics.messages} />
             )}
-            {Object.keys(additionalMetrics.contentContextMetrics ?? []).length > 0 && (
-                <ContentContextMetrics metrics={additionalMetrics.contentContextMetrics} />
+            {Object.keys(additionalMetrics.NodeAccessMetrics ?? []).length > 0 && (
+                <NodeAccessMetrics metrics={additionalMetrics.NodeAccessMetrics} />
             )}
             {(additionalMetrics.searchQueries ?? []).length > 0 && (
                 <SearchQueryMetrics searchQueries={additionalMetrics.searchQueries} />

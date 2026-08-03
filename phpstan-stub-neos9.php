@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Stub definitions for Neos 9 classes that do not exist in Neos 8.
  *
  * This file is only used for static analysis (PHPStan) via `scanFiles` in phpstan.neon,
- * so the ContentContextMetricsCollectorNeos9 collector can be analysed in a Neos 8 codebase.
+ * so the NodeAccessCollectorNeos9 collector can be analysed in a Neos 8 codebase.
  */
 
 namespace Neos\ContentRepository\Core\Projection\ContentGraph;
