@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace Flowpack\Neos\Debug\DataCollector;
 
-use Flowpack\Neos\Debug\Domain\Model\Dto\CacheMonitorMetrics;
-use Neos\Flow\Annotations as Flow;
+use Neos\ContentRepositoryRegistry\SubgraphCachingInMemory\SubgraphCachePool;
 
 class ContentContextMetricsCollectorNeos9 extends AbstractDataCollector implements ContentContextMetricsCollectorInterface
 {
     public function getName(): string
     {
         return 'contentContextMetrics';
+    }
+
+    /**
+     * This collector only works with Neos 9+ which doesn't have the ContextFactoryInterface anymore
+     */
+    public static function canBeLoaded(): bool
+    {
+        return class_exists(\Neos\ContentRepositoryRegistry\SubgraphCachingInMemory\SubgraphCachePool::class);
     }
 
     /**

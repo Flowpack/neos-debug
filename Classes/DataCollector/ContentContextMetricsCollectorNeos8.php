@@ -6,7 +6,6 @@ namespace Flowpack\Neos\Debug\DataCollector;
 
 use Flowpack\Neos\Debug\DataFormatter\DataFormatterInterface;
 use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
-use Neos\Flow\Annotations as Flow;
 use Neos\Utility\ObjectAccess;
 
 class ContentContextMetricsCollectorNeos8 extends AbstractDataCollector implements ContentContextMetricsCollectorInterface
@@ -22,6 +21,14 @@ class ContentContextMetricsCollectorNeos8 extends AbstractDataCollector implemen
     public function getName(): string
     {
         return 'contentContextMetrics';
+    }
+
+    /**
+     * This collector only works with Neos 8 where the ContextFactoryInterface exists
+     */
+    public static function canBeLoaded(): bool
+    {
+        return interface_exists(\Neos\ContentRepository\Domain\Service\ContextFactoryInterface::class);
     }
 
     /**

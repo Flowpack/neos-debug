@@ -13,4 +13,6 @@ interface DataCollectorInterface
 
     public function getName(): string;
 
+    public static function canBeLoaded(): bool;
+
 }
