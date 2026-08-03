@@ -33,8 +33,8 @@ const AdditionalMetricsOverlay = () => {
             {Object.keys(additionalMetrics.messages ?? []).length > 0 && (
                 <MessagesMetrics messages={additionalMetrics.messages} />
             )}
-            {Object.keys(additionalMetrics.NodeAccessMetrics ?? []).length > 0 && (
-                <NodeAccessMetrics metrics={additionalMetrics.NodeAccessMetrics} />
+            {Object.keys(additionalMetrics.nodeAccessMetrics ?? []).length > 0 && (
+                <NodeAccessMetrics metrics={additionalMetrics.nodeAccessMetrics} />
             )}
             {(additionalMetrics.searchQueries ?? []).length > 0 && (
                 <SearchQueryMetrics searchQueries={additionalMetrics.searchQueries} />
