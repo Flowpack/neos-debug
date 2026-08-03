@@ -9,7 +9,6 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Fusion\Core\Runtime;
 use Neos\Fusion\Core\RuntimeConfiguration;
-use Neos\Utility\ObjectAccess;
 
 #[Flow\Scope("singleton")]
 #[Flow\Aspect]
@@ -23,16 +22,35 @@ class DebugAttributeAspect
     protected array $pendingTimings = [];
 
     /**
-     * @var \SplObjectStorage<Runtime, RuntimeConfiguration>
+     * Resolved Runtime and RuntimeConfiguration references, keyed by the intercepted
+     * RuntimeContentCache proxy instance. The proxy is bound to exactly one Runtime
+     * for its whole lifetime, so we can resolve both once and reuse them for the rest
+     * of the request instead of running reflection on every enter()/leave() call.
+     *
+     * @var \SplObjectStorage<object, array{runtime: Runtime|null, runtimeConfiguration: RuntimeConfiguration|null}>
      */
-    private \SplObjectStorage $runtimeConfigurationCache;
+    private \SplObjectStorage $proxyStateCache;
+
+    /**
+     * Lazily built reflection for the protected RuntimeContentCache::$runtime property.
+     * ReflectionProperty instances are immutable for our read use and can be reused
+     * across any instance of the (proxy) class - building one ReflectionProperty per
+     * call (as ObjectAccess::getProperty(..., true) does internally) is the dominant
+     * cost when this advice fires thousands of times per render.
+     */
+    private ?\ReflectionProperty $runtimePropertyReflection = null;
+
+    /**
+     * Lazily built reflection for the protected Runtime::$runtimeConfiguration property.
+     */
+    private ?\ReflectionProperty $runtimeConfigurationPropertyReflection = null;
 
     #[Flow\Inject]
     protected DebugAttributeCollector $debugAttributeCollector;
 
     public function __construct()
     {
-        $this->runtimeConfigurationCache = new \SplObjectStorage();
+        $this->proxyStateCache = new \SplObjectStorage();
     }
 
     #[Flow\Pointcut("setting(Flowpack.Neos.Debug.enabled) && setting(Flowpack.Neos.Debug.debugMetaAttribute.enabled)")]
@@ -86,30 +104,83 @@ class DebugAttributeAspect
     }
 
     /**
+     * Resolve the cached Runtime + RuntimeConfiguration for the given proxy and
+     * return the Fusion configuration for $fusionPath.
+     *
+     * Resolution is amortised across calls: the first time we see a proxy instance
+     * we reach into the (protected) properties once via ReflectionProperty, then
+     * store references keyed by the proxy. Subsequent calls reuse those references
+     * and bypass ObjectAccess::getProperty() entirely, which would otherwise build
+     * a fresh ReflectionProperty + setAccessible(true) for every single enter()
+     * advice invocation - the dominant cost of this aspect during rendering.
+     *
      * @return array<string, mixed>
      */
     private function getFusionConfiguration(object $runtimeContentCache, string $fusionPath): array
     {
-        $runtime = ObjectAccess::getProperty($runtimeContentCache, 'runtime', true);
-        if (!$runtime instanceof Runtime) {
+        if (!$this->proxyStateCache->contains($runtimeContentCache)) {
+            $runtime = $this->readRuntimeProperty($runtimeContentCache);
+            $runtimeConfiguration = $runtime instanceof Runtime
+                ? $this->readRuntimeConfigurationProperty($runtime)
+                : null;
+
+            $this->proxyStateCache->attach($runtimeContentCache, [
+                'runtime' => $runtime,
+                'runtimeConfiguration' => $runtimeConfiguration,
+            ]);
+        }
+
+        $state = $this->proxyStateCache[$runtimeContentCache];
+        $runtimeConfiguration = $state['runtimeConfiguration'];
+        if (!$runtimeConfiguration instanceof RuntimeConfiguration) {
             return [];
         }
-
-        if (!$this->runtimeConfigurationCache->contains($runtime)) {
-            $runtimeConfiguration = ObjectAccess::getProperty($runtime, 'runtimeConfiguration', true);
-            if ($runtimeConfiguration instanceof RuntimeConfiguration) {
-                $this->runtimeConfigurationCache->attach($runtime, $runtimeConfiguration);
-            }
-        }
-
-        if (!$this->runtimeConfigurationCache->contains($runtime)) {
-            return [];
-        }
-
-        /** @var RuntimeConfiguration $runtimeConfiguration */
-        $runtimeConfiguration = $this->runtimeConfigurationCache[$runtime];
 
         return $runtimeConfiguration->forPath($fusionPath);
+    }
+
+    /**
+     * Read the protected RuntimeContentCache::$runtime property using a cached
+     * ReflectionProperty. The property declaration lives on the original class
+     * (Flow proxy subclasses inherit it), so a single ReflectionProperty is
+     * valid for any instance - including proxies built by Flow's AOP.
+     */
+    private function readRuntimeProperty(object $runtimeContentCache): ?Runtime
+    {
+        if ($this->runtimePropertyReflection === null) {
+            // Use the parent class if this is a Flow AOP proxy so the ReflectionProperty
+            // targets the property declaration rather than the subclass override.
+            $className = get_parent_class($runtimeContentCache) ?: false;
+            if ($className === false || !property_exists($className, 'runtime')) {
+                $className = $runtimeContentCache::class;
+            }
+            $reflection = new \ReflectionProperty($className, 'runtime');
+            $reflection->setAccessible(true);
+            $this->runtimePropertyReflection = $reflection;
+        }
+
+        $value = $this->runtimePropertyReflection->getValue($runtimeContentCache);
+        return $value instanceof Runtime ? $value : null;
+    }
+
+    /**
+     * Read the protected Runtime::$runtimeConfiguration property using a cached
+     * ReflectionProperty, analogous to readRuntimeProperty().
+     */
+    private function readRuntimeConfigurationProperty(Runtime $runtime): ?RuntimeConfiguration
+    {
+        if ($this->runtimeConfigurationPropertyReflection === null) {
+            $className = get_parent_class($runtime);
+            if ($className === false || !property_exists($className, 'runtimeConfiguration')) {
+                $className = $runtime::class;
+            }
+            $reflection = new \ReflectionProperty($className, 'runtimeConfiguration');
+            $reflection->setAccessible(true);
+            $this->runtimeConfigurationPropertyReflection = $reflection;
+        }
+
+        $value = $this->runtimeConfigurationPropertyReflection->getValue($runtime);
+        return $value instanceof RuntimeConfiguration ? $value : null;
     }
 
     /**
