@@ -79,6 +79,8 @@ jobs:
         working-directory: neos-base-distribution
         run: |
           composer config --no-plugins allow-plugins.neos/composer-plugin true
+          composer config minimum-stability dev
+          composer config prefer-stable true
           composer install --no-interaction --no-progress
 
       - name: Register package and regenerate autoloader
