@@ -312,7 +312,7 @@ class CollectDebugInformationAspect
         );
         foreach ($classNames as $className) {
             $objectName = $objectManager->getObjectNameByClassName($className);
-            if (!$className::canBeLoaded()) {
+            if (!$objectName || !$className::canBeLoaded()) {
                 continue;
             }
             $dataCollector = $objectManager->get($objectName);

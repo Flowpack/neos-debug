@@ -5,3 +5,6 @@ parameters:
     treatPhpDocTypesAsCertain: false
     bootstrapFiles:
         - phpstan-bootstrap.php
+    scanFiles:
+        - phpstan-stub-neos8.php
+        - phpstan-stub-neos9.php
