@@ -9,6 +9,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Fusion\Core\Runtime;
 use Neos\Fusion\Core\RuntimeConfiguration;
+use Neos\Fusion\Exception as FusionException;
 
 #[Flow\Scope("singleton")]
 #[Flow\Aspect]
@@ -34,9 +35,7 @@ class DebugAttributeAspect
     /**
      * Lazily built reflection for the protected RuntimeContentCache::$runtime property.
      * ReflectionProperty instances are immutable for our read use and can be reused
-     * across any instance of the (proxy) class - building one ReflectionProperty per
-     * call (as ObjectAccess::getProperty(..., true) does internally) is the dominant
-     * cost when this advice fires thousands of times per render.
+     * across any instance of the (proxy) class.
      */
     private ?\ReflectionProperty $runtimePropertyReflection = null;
 
@@ -107,14 +106,8 @@ class DebugAttributeAspect
      * Resolve the cached Runtime + RuntimeConfiguration for the given proxy and
      * return the Fusion configuration for $fusionPath.
      *
-     * Resolution is amortised across calls: the first time we see a proxy instance
-     * we reach into the (protected) properties once via ReflectionProperty, then
-     * store references keyed by the proxy. Subsequent calls reuse those references
-     * and bypass ObjectAccess::getProperty() entirely, which would otherwise build
-     * a fresh ReflectionProperty + setAccessible(true) for every single enter()
-     * advice invocation - the dominant cost of this aspect during rendering.
-     *
      * @return array<string, mixed>
+     * @throws FusionException
      */
     private function getFusionConfiguration(object $runtimeContentCache, string $fusionPath): array
     {
@@ -139,12 +132,6 @@ class DebugAttributeAspect
         return $runtimeConfiguration->forPath($fusionPath);
     }
 
-    /**
-     * Read the protected RuntimeContentCache::$runtime property using a cached
-     * ReflectionProperty. The property declaration lives on the original class
-     * (Flow proxy subclasses inherit it), so a single ReflectionProperty is
-     * valid for any instance - including proxies built by Flow's AOP.
-     */
     private function readRuntimeProperty(object $runtimeContentCache): ?Runtime
     {
         if ($this->runtimePropertyReflection === null) {
@@ -163,10 +150,6 @@ class DebugAttributeAspect
         return $value instanceof Runtime ? $value : null;
     }
 
-    /**
-     * Read the protected Runtime::$runtimeConfiguration property using a cached
-     * ReflectionProperty, analogous to readRuntimeProperty().
-     */
     private function readRuntimeConfigurationProperty(Runtime $runtime): ?RuntimeConfiguration
     {
         if ($this->runtimeConfigurationPropertyReflection === null) {
